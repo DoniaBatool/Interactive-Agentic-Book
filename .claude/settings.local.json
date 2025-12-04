@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.specify/scripts/bash/check-prerequisites.sh:*)",
+      "Bash(npx create-docusaurus@latest:*)",
+      "Bash(cat:*)",
+      "Bash(.specify/scripts/bash/create-phr.sh:*)",
+      "Bash(xargs:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

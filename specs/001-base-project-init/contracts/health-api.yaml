@@ -1,0 +1,169 @@
+openapi: 3.1.0
+info:
+  title: AI-Native Physical AI & Robotics Textbook API
+  description: |
+    Backend API for the AI-Native Physical AI & Robotics Textbook platform.
+
+    **Phase: Initial Scaffold (Feature 001)**
+    - Only /health endpoint implemented
+    - No authentication required
+    - No business logic endpoints
+
+    Future phases will add:
+    - User authentication (BetterAuth)
+    - RAG chatbot endpoints
+    - Content management
+    - Translation services
+    - Personalization APIs
+  version: 0.1.0
+  contact:
+    name: API Support
+    url: https://github.com/your-username/interactive-agentic-book
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+  - url: https://api.your-domain.com
+    description: Production server (placeholder)
+
+tags:
+  - name: health
+    description: Health check and system status endpoints
+
+paths:
+  /health:
+    get:
+      tags:
+        - health
+      summary: Health check endpoint
+      description: |
+        Returns the health status of the API server.
+
+        **Purpose**:
+        - Verify the server is running
+        - Monitor service availability
+        - Used by orchestration tools (Docker, Kubernetes) for liveness probes
+
+        **Success Criteria**:
+        - HTTP 200 status code
+        - JSON response with "healthy" status
+        - Response time < 100ms
+
+        **Note**: This endpoint does NOT validate external service connections
+        (database, Qdrant, OpenAI) in this initial scaffold phase. Future
+        features will add detailed health checks for dependencies.
+      operationId: getHealth
+      responses:
+        '200':
+          description: Server is healthy and operational
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              examples:
+                success:
+                  summary: Successful health check
+                  value:
+                    status: healthy
+                    timestamp: "2025-12-04T17:30:00.000Z"
+        '500':
+          description: Server error (should not occur for health endpoint)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  summary: Unexpected server error
+                  value:
+                    detail: Internal server error
+                    timestamp: "2025-12-04T17:30:00.000Z"
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - timestamp
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+          description: |
+            Health status of the server:
+            - healthy: All systems operational
+            - degraded: Server running but some non-critical services unavailable
+            - unhealthy: Server experiencing critical issues
+
+            **Note**: In initial scaffold phase, always returns "healthy" since
+            no external dependencies are checked.
+          example: healthy
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of the health check (UTC)
+          example: "2025-12-04T17:30:00.000Z"
+        version:
+          type: string
+          description: API version (optional, may be added in future)
+          example: "0.1.0"
+        uptime:
+          type: number
+          description: Server uptime in seconds (optional, may be added in future)
+          example: 3600
+      description: Health check response indicating server status
+
+    ErrorResponse:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: string
+          description: Human-readable error message
+          example: Internal server error
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when error occurred (UTC)
+          example: "2025-12-04T17:30:00.000Z"
+        error_code:
+          type: string
+          description: Machine-readable error code (optional)
+          example: INTERNAL_ERROR
+      description: Standard error response format
+
+# Security schemes (for future use)
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT token from BetterAuth authentication.
+        Not used in initial scaffold phase.
+        Format: Authorization: Bearer <token>
+
+# Webhook specifications (for future use)
+webhooks: {}
+
+# Additional metadata
+externalDocs:
+  description: Project Documentation
+  url: https://github.com/your-username/interactive-agentic-book
+
+x-tagGroups:
+  - name: System
+    tags:
+      - health
+  - name: Features (Future)
+    tags:
+      - auth
+      - chatbot
+      - content
+      - translation
+      - personalization

@@ -1,0 +1,34 @@
+# Qdrant Vector Database Configuration
+# This is a PLACEHOLDER for future RAG feature implementation
+
+# TODO: Configure Qdrant collection for textbook content
+# collection_name: "textbook_embeddings"
+
+# TODO: Define vector dimensions (must match embedding model)
+# vector_size: 3072  # text-embedding-3-large dimensions
+
+# TODO: Choose distance metric
+# distance: "Cosine"  # Options: Cosine, Euclidean, Dot
+
+# TODO: Configure indexing
+# hnsw_config:
+#   m: 16
+#   ef_construct: 100
+#   full_scan_threshold: 10000
+
+# TODO: Define metadata schema
+# payload_schema:
+#   chapter: { type: "keyword" }
+#   section: { type: "keyword" }
+#   language: { type: "keyword" }  # "en" or "ur"
+#   content_type: { type: "keyword" }  # "text", "code", "image_caption"
+
+# TODO: Configure quantization for storage optimization
+# quantization_config:
+#   scalar:
+#     type: "int8"
+#     quantile: 0.99
+#     always_ram: true
+
+# Note: This configuration will be implemented in the RAG chatbot feature.
+# See Constitution Principle III for RAG architecture requirements.
