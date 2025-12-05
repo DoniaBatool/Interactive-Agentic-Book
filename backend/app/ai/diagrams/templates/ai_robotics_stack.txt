@@ -1,0 +1,29 @@
+# Diagram Template: AI Robotics Stack
+
+## Expected Fields
+- layers: List[str] - Technology stack layers (e.g., ["hardware", "firmware", "software", "ai"])
+- technologies: List[str] - Technologies in each layer (e.g., ["ROS", "TensorFlow", "OpenCV"])
+- dependencies: List[str] - Dependencies between layers (e.g., ["ai-depends-on-software", "software-depends-on-firmware"])
+- chapter_id: int - Chapter identifier
+
+## TODO Guidelines
+- Build prompt from template
+- Substitute variables: {{layers}}, {{technologies}}, {{dependencies}}
+- Call provider with prompt
+- Generate diagram showing AI Robotics technology stack
+
+## Placeholder Instructions
+
+This template is used to generate AI Robotics stack diagrams showing:
+- Technology stack layers (hardware to AI)
+- Technologies in each layer
+- Dependencies between layers
+- Stack architecture and relationships
+
+Example prompt structure:
+"Generate a diagram showing AI Robotics stack with layers: {{layers}}, technologies: {{technologies}}, and dependencies: {{dependencies}}."
+
+TODO: Implement template processing with variable substitution
+TODO: Add validation for required fields
+TODO: Support multiple diagram styles (layered, hierarchical, network)
+

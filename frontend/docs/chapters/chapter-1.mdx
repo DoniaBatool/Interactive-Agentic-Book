@@ -1,0 +1,144 @@
+---
+title: "Chapter 1 — Introduction to Physical AI & Robotics"
+description: "Learn the fundamentals of Physical AI and how robots become intelligent through AI integration"
+sidebar_position: 1
+sidebar_label: "Chapter 1: Intro to Physical AI"
+tags: ["physical-ai", "robotics", "introduction", "beginner"]
+---
+
+import AskQuestionBlock from '@site/src/components/ai/AskQuestionBlock';
+import ExplainLike10Block from '@site/src/components/ai/ExplainLike10Block';
+import InteractiveQuizBlock from '@site/src/components/ai/InteractiveQuizBlock';
+import GenerateDiagramBlock from '@site/src/components/ai/GenerateDiagramBlock';
+
+## What is Physical AI?
+
+Have you ever wondered how a robot vacuum knows where to clean, or how self-driving cars understand their surroundings? That's Physical AI at work. Physical AI refers to artificial intelligence systems that don't just exist in computers or apps, but can actually sense, understand, and interact with the real physical world around them.
+
+Unlike Digital AI—like chatbots or recommendation systems that work entirely in software—Physical AI needs a body. Think of Digital AI as a really smart brain that lives inside a computer. Physical AI takes that brain and puts it into a physical form, like a robot, giving it eyes (cameras), ears (microphones), touch (sensors), and the ability to move and manipulate objects.
+
+Here are some real-world examples of Physical AI you might encounter:
+- **Robot vacuum cleaners** that map your home, avoid obstacles, and remember which areas they've already cleaned
+- **Warehouse robots** at companies like Amazon that navigate aisles, pick up packages, and deliver them to human workers
+- **Surgical robots** that assist doctors by making precise movements during delicate operations
+- **Agricultural drones** that fly over farms, identify which plants need water or have diseases, and take action
+
+What makes these systems "AI" is their ability to learn from experience, make decisions on their own, and adapt to new situations without being explicitly programmed for every possible scenario.
+
+<!-- DIAGRAM: physical-ai-overview -->
+
+<AskQuestionBlock chapterId={1} sectionId="what-is-physical-ai" />
+
+## What is a Robot?
+
+When you hear the word "robot," you might think of the humanoid machines you've seen in movies. But in reality, a robot is any machine that can sense its environment, make decisions based on that information, and take physical action. A robot doesn't need to look human—it just needs these three fundamental abilities.
+
+Every robot has three core components that work together:
+1. **Sensors**: These are the robot's senses. Just like you have eyes to see and skin to feel, robots use cameras, touch sensors, microphones, and other devices to gather information about their surroundings.
+2. **Actuators**: These are the robot's muscles. Actuators include motors, wheels, grippers, and arms that allow the robot to move and interact with objects in the physical world.
+3. **Controllers**: This is the robot's brain. A controller processes information from sensors, makes decisions, and sends commands to actuators. This is where AI comes in—the smarter the controller, the more capable the robot.
+
+Let's look at some everyday robots:
+- A **robotic arm** in a car factory has sensors to detect parts, motors to move precisely, and a controller that coordinates welding or assembly tasks.
+- A **delivery drone** uses GPS and cameras (sensors), propellers (actuators), and flight control software (controller) to navigate and drop off packages.
+- Your **smartphone's camera stabilization** actually uses tiny sensors and motors to detect shaking and adjust the lens—that's a miniature robot system!
+
+The key insight is that robots aren't science fiction—they're all around us, working in factories, hospitals, farms, and even in your pocket.
+
+<!-- DIAGRAM: robot-anatomy -->
+
+<GenerateDiagramBlock diagramType="robot-anatomy" chapterId={1} />
+
+## AI + Robotics = Physical AI Systems
+
+So why do robots need AI? Early robots could only follow pre-programmed instructions, like a recipe. If something unexpected happened—a box wasn't exactly where it was supposed to be, or a door was closed—the robot would fail. AI changes everything by giving robots the ability to handle uncertainty and make smart decisions on the fly.
+
+Think about the difference between a programmable toy car and a self-driving car. The toy car follows a sequence: "move forward 10 feet, turn right, move forward 5 feet." If you put a chair in its path, it crashes. A self-driving car, however, uses AI to:
+- Recognize that an object is blocking the path (perception)
+- Understand that it's a pedestrian crossing the street (interpretation)
+- Decide to slow down and stop (decision-making)
+- Execute smooth braking (control)
+
+This ability to perceive, understand, and respond to changing conditions is called **autonomy**. Robots can have different levels of autonomy:
+- **Level 0**: No autonomy—human controls everything (like a remote-control car)
+- **Level 1**: Assistance—robot helps but human makes decisions (like cruise control in a car)
+- **Level 2**: Partial autonomy—robot handles specific tasks but needs human supervision (robot vacuum that you start and stop)
+- **Level 3-5**: High to full autonomy—robot makes most or all decisions independently (self-driving cars in controlled environments)
+
+<ExplainLike10Block concept="autonomy" chapterId={1} />
+
+Real-world applications of Physical AI systems are transforming industries:
+- **Healthcare**: Robots assist in surgery with precision beyond human capability, and AI-powered prosthetics adapt to users' movements
+- **Manufacturing**: Collaborative robots work alongside humans, learning from demonstrations and adapting to new products
+- **Exploration**: Mars rovers use AI to navigate alien terrain and decide which rocks to analyze, all while millions of miles from human controllers
+- **Agriculture**: Autonomous tractors plant seeds with perfect spacing, and picking robots identify ripe fruit and harvest gently
+
+The combination of AI and robotics creates systems that are not just automated, but truly intelligent and adaptive.
+
+<!-- DIAGRAM: ai-robotics-stack -->
+
+## Core Concepts Introduced in This Book
+
+Throughout this book, you'll explore five fundamental concepts that make Physical AI systems work. Understanding these concepts will help you grasp how robots perceive, think, and act in the real world.
+
+**1. Embodiment**: This is the idea that intelligence isn't just about thinking—it's about having a physical form that interacts with the world. A robot's body shape, sensors, and actuators fundamentally affect what it can learn and do. For example, a flying drone and a wheeled robot develop different strategies for navigating because they have different embodiments.
+
+**2. Perception**: Before a robot can act, it must understand its surroundings. Perception involves processing raw sensor data (like camera images or distance measurements) and extracting meaningful information. When a robot recognizes that a red octagon is a stop sign, that's perception at work.
+
+**3. Decision-Making**: Once a robot understands its environment, it needs to choose what to do next. Decision-making might involve complex reasoning ("Should I wait for this pedestrian to cross?") or learned behaviors ("This pattern of sensor readings means I should turn left"). AI techniques like machine learning and planning algorithms enable sophisticated decision-making.
+
+**4. Control**: Having decided on an action, the robot must execute it smoothly and accurately. Control systems translate high-level decisions ("move to that location") into low-level commands to motors and actuators. Good control ensures a robot can pick up a delicate egg without crushing it or walk on uneven ground without falling.
+
+**5. Interaction**: Physical AI systems don't exist in isolation—they interact with people, other robots, and their environment. Effective interaction requires understanding social cues, communicating intentions, and cooperating safely. When a robot waiter navigates a crowded restaurant, it's constantly managing interactions.
+
+These concepts work together in a continuous loop: a robot perceives its environment, decides on an action, controls its body to execute that action, and interacts with its surroundings—which then provides new information to perceive. This cycle happens many times per second in real robots.
+
+<!-- DIAGRAM: core-concepts-flow -->
+
+<InteractiveQuizBlock chapterId={1} numQuestions={5} />
+
+## Learning Objectives
+
+By the end of this chapter, you should be able to:
+
+- **Define** Physical AI and explain how it differs from Digital AI, giving at least two concrete examples of each
+- **Identify** the three core components of any robot (sensors, actuators, controllers) and describe their functions
+- **Explain** why robots need AI, referencing the concept of autonomy and different levels of autonomous capability
+- **Recognize** the five fundamental concepts of Physical AI systems (embodiment, perception, decision-making, control, interaction) and describe how they work together
+- **Distinguish** between programmed behavior and AI-enabled adaptability in robotic systems
+- **Describe** at least three real-world applications of Physical AI across different industries
+
+**Reflection Questions** (think about these—we'll explore them in later chapters):
+- How might the embodiment of a robot (its physical form) limit or enable different types of intelligence?
+- What ethical considerations arise when robots become more autonomous and make their own decisions?
+- Can you identify Physical AI systems in your daily life that you hadn't recognized before?
+
+## Summary
+
+This chapter introduced you to the exciting world of Physical AI and robotics. We began by defining Physical AI as artificial intelligence systems that exist in and interact with the physical world, distinguishing them from purely digital AI systems that operate only in software.
+
+We explored what makes something a robot: the combination of sensors (to perceive the environment), actuators (to take physical action), and controllers (to process information and make decisions). These three components work together to enable robots to function in the real world.
+
+We then examined why the integration of AI and robotics is so powerful. AI gives robots autonomy—the ability to handle unexpected situations, learn from experience, and make intelligent decisions without constant human guidance. We looked at different levels of autonomy and saw how Physical AI is transforming industries from healthcare to agriculture.
+
+Next, we introduced five core concepts that you'll encounter throughout this book: embodiment (the importance of physical form), perception (understanding the environment), decision-making (choosing actions), control (executing movements), and interaction (working with others). These concepts form the foundation of all Physical AI systems.
+
+Finally, we outlined what you should have learned: the ability to define key terms, identify robot components, explain the role of AI in robotics, and recognize how core concepts work together in real systems.
+
+In the chapters ahead, you'll dive deeper into each of these concepts, learn how they're implemented in real robots, and even explore how to build your own Physical AI systems. Welcome to the beginning of your journey into Physical AI and robotics!
+
+## Glossary
+
+**Physical AI**: Artificial intelligence systems that can sense, understand, and act in the physical world through robotic bodies or embodied systems. Unlike digital AI that exists only in software, Physical AI can pick up objects, navigate spaces, and interact with people and environments. Example: A warehouse robot that autonomously navigates aisles and handles packages.
+
+**Robot**: A machine equipped with sensors to perceive its environment, actuators to take physical action, and a controller to process information and make decisions. Robots can range from simple automated machines to complex autonomous systems. Example: A surgical robot that assists doctors, or a Mars rover that explores distant planets.
+
+**Sensor**: A device that detects and measures physical properties from the environment and converts them into data a computer can understand. Sensors are the robot's "senses." Examples: Cameras (vision), microphones (hearing), force sensors (touch), GPS (location), temperature sensors (warmth).
+
+**Actuator**: A mechanical component that enables a robot to move or manipulate objects by converting energy (usually electrical) into physical motion. Actuators are the robot's "muscles." Examples: Electric motors (rotation), hydraulic cylinders (linear force), grippers (grasping), propellers (flight).
+
+**Autonomy**: The ability of a robot or AI system to make decisions and perform tasks independently without constant human control. Autonomy exists on a spectrum from no autonomy (full human control) to full autonomy (complete independence). Higher autonomy means the system can handle more unexpected situations and complex decisions on its own.
+
+**Perception**: The process of interpreting raw sensor data to build an understanding of the environment. Perception transforms low-level measurements (pixels, distances) into meaningful information (objects, obstacles, people). Example: A self-driving car's perception system recognizes traffic lights, pedestrians, and road signs from camera images.
+
+**Control System**: The computational and mechanical systems that execute decisions by precisely coordinating a robot's movements and actions. Control systems translate high-level commands ("pick up that object") into low-level motor instructions, while managing balance, force, and precision. Example: The control system in a humanoid robot that maintains balance while walking on uneven ground.

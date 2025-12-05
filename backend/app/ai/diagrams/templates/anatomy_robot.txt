@@ -1,0 +1,29 @@
+# Diagram Template: Robot Anatomy
+
+## Expected Fields
+- sensors: List[str] - List of sensor types (e.g., ["camera", "lidar", "imu"])
+- actuators: List[str] - List of actuator types (e.g., ["servo", "motor", "pneumatic"])
+- control_system: str - Control system type (e.g., "PID", "neural-network")
+- chapter_id: int - Chapter identifier
+
+## TODO Guidelines
+- Build prompt from template
+- Substitute variables: {{sensors}}, {{actuators}}, {{control_system}}
+- Call provider with prompt
+- Generate diagram showing robot anatomy with labeled components
+
+## Placeholder Instructions
+
+This template is used to generate robot anatomy diagrams showing:
+- Sensor placement and types
+- Actuator locations and types
+- Control system architecture
+- Component relationships
+
+Example prompt structure:
+"Generate a diagram showing robot anatomy with sensors: {{sensors}}, actuators: {{actuators}}, and control system: {{control_system}}."
+
+TODO: Implement template processing with variable substitution
+TODO: Add validation for required fields
+TODO: Support multiple diagram styles (technical, simplified, educational)
+
