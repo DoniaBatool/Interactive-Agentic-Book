@@ -35,6 +35,16 @@ class Settings(BaseSettings):
     smtp_user: Optional[str] = None
     smtp_password: Optional[str] = None
 
+    # === AI Runtime Configuration ===
+    ai_provider: str = "openai"  # Options: "openai", "gemini", "deepseek"
+    qdrant_collection_ch1: Optional[str] = None  # Qdrant collection name for Chapter 1
+    embedding_model: Optional[str] = None  # Embedding model identifier (e.g., "text-embedding-3-small")
+    llm_model: Optional[str] = None  # LLM model identifier (e.g., "gpt-4o", "gemini-pro")
+
+    # === Diagram Generation Configuration ===
+    diagram_model: Optional[str] = None  # Diagram model identifier (e.g., "gpt-4o", "gemini-flash")
+    diagram_provider: str = "openai"  # Diagram provider selection (openai, gemini)
+
     # === Application Configuration ===
     environment: str = "development"
     backend_port: int = 8000

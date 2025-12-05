@@ -1,0 +1,128 @@
+# Diagram Generation API Contract
+
+**Feature**: 006-diagram-generation-engine
+**Created**: 2025-12-05
+**Status**: Scaffolding Phase
+
+## Endpoint
+
+### POST /api/diagram/generate
+
+Generate a diagram from conceptual inputs.
+
+## Request
+
+### Headers
+
+```
+Content-Type: application/json
+```
+
+### Body Schema
+
+```yaml
+type: object
+properties:
+  diagramType:
+    type: string
+    enum:
+      - anatomy_robot
+      - physical_ai_overview
+      - ai_robotics_stack
+      - core_concepts_flow
+    description: Type of diagram to generate
+    required: true
+  chapterId:
+    type: integer
+    description: Chapter identifier (optional)
+    required: false
+  concepts:
+    type: array
+    items:
+      type: string
+    description: List of concepts to include in diagram
+    required: false
+    default: []
+```
+
+### Example Request
+
+```json
+{
+  "diagramType": "anatomy_robot",
+  "chapterId": 1,
+  "concepts": ["sensors", "actuators", "control-system"]
+}
+```
+
+## Response
+
+### Success Response (200 OK)
+
+**Schema** (Placeholder):
+
+```yaml
+type: object
+properties:
+  svg:
+    type: string
+    description: SVG string (placeholder: "<svg><!-- TODO --></svg>")
+    example: "<svg><!-- TODO --></svg>"
+  format:
+    type: string
+    enum: ["svg", "png", "mermaid"]
+    description: Output format
+    default: "svg"
+  metadata:
+    type: object
+    description: Additional metadata (optional)
+    required: false
+```
+
+### Example Response (Placeholder)
+
+```json
+{
+  "svg": "<svg><!-- TODO --></svg>",
+  "format": "svg",
+  "metadata": null
+}
+```
+
+## Error Responses
+
+### 400 Bad Request
+
+Invalid request payload or missing required fields.
+
+```json
+{
+  "detail": "Invalid diagram type or missing required fields"
+}
+```
+
+### 500 Internal Server Error
+
+Server error during diagram generation.
+
+```json
+{
+  "detail": "Internal server error"
+}
+```
+
+## Notes
+
+- **Current Status**: Scaffolding phase - all responses are placeholders
+- **Future Implementation**: Real AI diagram generation will be added in future features
+- **Provider Selection**: Controlled by `DIAGRAM_PROVIDER` environment variable
+- **Model Selection**: Controlled by `DIAGRAM_MODEL` environment variable
+
+## Future Enhancements
+
+1. **Real AI Implementation**: Add OpenAI/Gemini API calls
+2. **Multiple Formats**: Support PNG, Mermaid, PlantUML output
+3. **Caching**: Cache generated diagrams for performance
+4. **Validation**: Add diagram type and format validation
+5. **Error Handling**: Comprehensive error handling and retry logic
+

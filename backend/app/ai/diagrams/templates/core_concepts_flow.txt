@@ -1,0 +1,29 @@
+# Diagram Template: Core Concepts Flow
+
+## Expected Fields
+- concepts: List[str] - Core concepts (e.g., ["perception", "cognition", "action"])
+- relationships: List[str] - Concept relationships (e.g., ["perception-leads-to-cognition", "cognition-leads-to-action"])
+- flow_direction: str - Flow direction (e.g., "left-to-right", "top-to-bottom")
+- chapter_id: int - Chapter identifier
+
+## TODO Guidelines
+- Build prompt from template
+- Substitute variables: {{concepts}}, {{relationships}}, {{flow_direction}}
+- Call provider with prompt
+- Generate diagram showing core concepts flow
+
+## Placeholder Instructions
+
+This template is used to generate core concepts flow diagrams showing:
+- Core concepts and their definitions
+- Relationships between concepts
+- Flow direction and sequence
+- Concept dependencies and interactions
+
+Example prompt structure:
+"Generate a diagram showing core concepts flow with concepts: {{concepts}}, relationships: {{relationships}}, and flow direction: {{flow_direction}}."
+
+TODO: Implement template processing with variable substitution
+TODO: Add validation for required fields
+TODO: Support multiple diagram styles (flowchart, mind-map, concept-map)
+

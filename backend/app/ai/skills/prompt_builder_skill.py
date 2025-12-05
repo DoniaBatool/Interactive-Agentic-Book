@@ -1,0 +1,52 @@
+"""
+Prompt Builder Skill
+
+Reusable skill for constructing prompts for LLM providers.
+Builds prompts with system instructions, context, and user input.
+"""
+
+from typing import List, Dict, Any
+
+
+def build_prompt(
+    block_type: str,
+    user_input: str,
+    context: List[Dict[str, Any]]
+) -> str:
+    """
+    Prompt construction skill blueprint.
+    
+    Expected Input:
+        block_type: str                        # "ask-question", "explain-like-10", "quiz", "diagram"
+        user_input: str                        # User's question or concept
+        context: [
+            {
+                "text": str,                   # Chunk text
+                "section_id": str,            # Section identifier
+                "score": float                 # Relevance score
+            },
+            ...
+        ]
+    
+    Expected Output:
+        Constructed prompt string for LLM:
+        - System instructions based on block_type
+        - Retrieved context chunks
+        - User input
+        - Formatting instructions
+    
+    TODO: Implement prompt building logic
+    TODO: Build system prompt based on block_type:
+        - ask-question: "You are a helpful tutor answering questions about Physical AI..."
+        - explain-like-10: "Explain this concept like the learner is 10 years old..."
+        - quiz: "Generate quiz questions from the following learning objectives..."
+        - diagram: "Generate a diagram showing the following concepts..."
+    TODO: Include retrieved context chunks in prompt
+    TODO: Format context with section references
+    TODO: Add user input to prompt
+    TODO: Add formatting instructions for structured output
+    TODO: Add source citation instructions
+    """
+    # Placeholder return - no real prompt building logic
+    return ""
+

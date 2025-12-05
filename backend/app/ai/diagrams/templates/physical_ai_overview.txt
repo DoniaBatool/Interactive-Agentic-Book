@@ -1,0 +1,29 @@
+# Diagram Template: Physical AI Overview
+
+## Expected Fields
+- ai_components: List[str] - AI components (e.g., ["perception", "planning", "control"])
+- robotics_components: List[str] - Robotics components (e.g., ["sensors", "actuators", "mechanics"])
+- integration_points: List[str] - Integration points (e.g., ["sensor-fusion", "decision-making"])
+- chapter_id: int - Chapter identifier
+
+## TODO Guidelines
+- Build prompt from template
+- Substitute variables: {{ai_components}}, {{robotics_components}}, {{integration_points}}
+- Call provider with prompt
+- Generate diagram showing Physical AI overview with AI-robotics integration
+
+## Placeholder Instructions
+
+This template is used to generate Physical AI overview diagrams showing:
+- AI components and their roles
+- Robotics components and their functions
+- Integration points between AI and robotics
+- System architecture and data flow
+
+Example prompt structure:
+"Generate a diagram showing Physical AI overview with AI components: {{ai_components}}, robotics components: {{robotics_components}}, and integration points: {{integration_points}}."
+
+TODO: Implement template processing with variable substitution
+TODO: Add validation for required fields
+TODO: Support multiple diagram styles (high-level, detailed, flow-based)
+

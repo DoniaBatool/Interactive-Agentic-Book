@@ -1,15 +1,28 @@
 ---
-id: chapter-1-overview
-title: Chapter 1: Introduction to Physical AI & Robotics
-sidebar_label: Chapter 1
+sidebar_position: 1
+sidebar_label: "Chapter 1 Overview"
 ---
 
-## Placeholder Summary
-This is a placeholder summary for Chapter 1, "Introduction to Physical AI & Robotics." This chapter will introduce the foundational concepts of Physical AI and Robotics, exploring the convergence of artificial intelligence with real-world physical systems. It will cover key definitions, historical context, and the interdisciplinary nature of the field.
+# Chapter 1: Introduction to Physical AI & Robotics
 
-## Sections (Placeholder)
-- Introduction to Physical AI
-- What is Robotics?
-- The Convergence of AI and Robotics
-- Key Applications and Impact
-- Future Directions and Challenges
+## Overview
+
+This chapter introduces the fundamental concepts of Physical AI and Robotics. You'll learn how artificial intelligence enables robots to perceive, understand, and interact with the physical world.
+
+## Summary
+
+Placeholder summary for Chapter 1 introduction. This chapter will cover the basics of Physical AI, robot components, and how AI integration creates intelligent physical systems.
+
+## Sections
+
+<!-- Sections will be populated as content is developed -->
+
+The following sections will be covered in this chapter:
+- What is Physical AI?
+- Robot Components and Architecture
+- AI Integration in Robotic Systems
+- Real-world Applications
+
+---
+
+**Status**: Scaffolding complete. Educational content will be added in future iterations.
