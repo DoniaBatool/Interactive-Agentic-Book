@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "deploy": "cd frontend && npm run deploy",
-    "deploy:win": "cd frontend && set GIT_USER=DoniaBatool && npm run deploy",
-    "deploy:ssh": "cd frontend && set USE_SSH=true && npm run deploy",
+    "deploy:win": "cd frontend && cross-env GIT_USER=DoniaBatool npm run deploy",
+    "deploy:ssh": "cd frontend && cross-env USE_SSH=true npm run deploy",
     "build": "cd frontend && npm run build",
     "start": "cd frontend && npm start",
     "frontend:deploy": "cd frontend && npm run deploy",
