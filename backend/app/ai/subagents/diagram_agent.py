@@ -8,6 +8,82 @@ Supports multiple diagram types (flowcharts, concept maps, architecture diagrams
 from typing import Dict, Any, List
 
 
+def plan_diagram(
+    diagram_type: str,
+    concepts: List[str],
+    context: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Plan diagram structure using LLM reasoning.
+    
+    Args:
+        diagram_type: Type of diagram to generate
+        concepts: List of concepts to include
+        context: RAG context with chunks
+    
+    Returns:
+        Dictionary with planned structure:
+        {
+            "structure": Dict[str, Any],     # Planned structure
+            "nodes": List[str],              # Planned nodes
+            "edges": List[Dict[str, str]]    # Planned edges
+        }
+    
+    TODO: Implement planning logic
+    TODO: Use LLM reasoning to plan diagram structure
+    TODO: Extract nodes and edges from concepts and context
+    TODO: Determine relationships between concepts
+    """
+    # Placeholder return - no real planning logic
+    return {}
+
+
+def create_structure(
+    plan: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Create diagram structure (nodes, edges).
+    
+    Args:
+        plan: Plan from plan_diagram()
+    
+    Returns:
+        Dictionary with structure:
+        {
+            "nodes": List[Dict[str, Any]],  # Diagram nodes
+            "edges": List[Dict[str, Any]]    # Diagram edges
+        }
+    
+    TODO: Implement structure creation
+    TODO: Convert plan into structured nodes and edges
+    TODO: Assign node IDs and positions
+    TODO: Create edge connections
+    """
+    # Placeholder return - no real structure creation
+    return {}
+
+
+def generate_svg_stub(
+    structure: Dict[str, Any]
+) -> str:
+    """
+    Generate SVG stub or code.
+    
+    Args:
+        structure: Structure from create_structure()
+    
+    Returns:
+        SVG string or code
+    
+    TODO: Implement SVG generation
+    TODO: Convert structure to SVG format
+    TODO: Generate SVG elements for nodes and edges
+    TODO: Add SVG styling and layout
+    """
+    # Placeholder return - no real SVG generation
+    return ""
+
+
 async def diagram_agent(
     diagram_type: str,
     concepts: List[str],

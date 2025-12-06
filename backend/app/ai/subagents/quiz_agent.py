@@ -48,15 +48,31 @@ async def quiz_agent(
     4. Use formatting_skill to structure quiz data
     5. Return formatted quiz
     
-    TODO: Implement quiz generation logic
+    TODO: Implement generator selection logic
+    TODO: Select appropriate generator based on question type distribution
+    TODO: Call quiz runtime orchestrator
+    TODO: Return structured quiz results
+    
+    Generator Selection Blueprint:
+    - Determine question type distribution (e.g., 60% MCQ, 30% true/false, 10% fill-in-the-blank)
+    - Call appropriate generator functions based on distribution
+    - Use quiz runtime orchestrator to coordinate generation
+    
+    Structured Results Blueprint:
+    - Return formatted quiz with all question types
+    - Include learning objectives coverage
+    - Include metadata (generation time, question distribution, etc.)
+    
     TODO: Step 1: Call retrieve_content() to get learning objectives
-    TODO: Step 2: Call build_prompt("quiz", learning_objectives, context) to build prompt
-    TODO: Step 3: Call llm_provider.generate(prompt) to generate questions
-    TODO: Step 4: Call format_response(response, "quiz") to structure quiz data
+    TODO: Step 2: Call quiz runtime orchestrator
+    # from app.ai.quiz.runtime import run_quiz
+    # result = await run_quiz(chapter_id, num_questions)
+    # return result
+    TODO: Step 3: Format response using formatting skills
     TODO: Ensure questions cover all learning objectives
-    TODO: Generate diverse question types (multiple choice, true/false, short answer)
+    TODO: Generate diverse question types (multiple choice, true/false, fill-in-the-blank)
     TODO: Add answer explanations
-    TODO: Add error handling for LLM failures
+    TODO: Add error handling for generation failures
     """
     # Placeholder return - no real quiz generation logic
     return {

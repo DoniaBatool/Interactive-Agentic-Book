@@ -1,0 +1,168 @@
+# Diagram Schema Contract
+
+**Feature**: 008-chapter-1-diagram-runtime
+**Created**: 2025-12-05
+**Status**: Scaffolding Phase
+
+## High-Level Diagram Structure
+
+Diagrams are represented as graphs with nodes and edges:
+- **Nodes**: Represent entities, concepts, or components
+- **Edges**: Represent relationships, connections, or flows
+- **SVG**: Visual representation of the diagram
+
+## Request Schema
+
+### DiagramRequest
+
+```yaml
+type: object
+properties:
+  diagram_type:
+    type: string
+    enum:
+      - anatomy_robot
+      - physical_ai_overview
+      - ai_robotics_stack
+      - core_concepts_flow
+    description: Type of diagram to generate
+    required: true
+  chapter_id:
+    type: integer
+    description: Chapter identifier
+    required: false
+  concepts:
+    type: array
+    items:
+      type: string
+    description: Concepts to include in diagram
+    required: false
+    default: []
+```
+
+## Response Schema
+
+### DiagramResponse
+
+```yaml
+type: object
+properties:
+  nodes:
+    type: array
+    items:
+      $ref: '#/components/schemas/DiagramNode'
+    description: List of diagram nodes
+    required: false
+    default: []
+  edges:
+    type: array
+    items:
+      $ref: '#/components/schemas/DiagramEdge'
+    description: List of diagram edges
+    required: false
+    default: []
+  svg:
+    type: string
+    description: SVG string or code
+    required: false
+  metadata:
+    type: object
+    description: Additional metadata
+    required: false
+```
+
+### DiagramNode
+
+```yaml
+type: object
+properties:
+  id:
+    type: string
+    description: Node identifier
+    required: true
+  label:
+    type: string
+    description: Node label
+    required: false
+  type:
+    type: string
+    description: Node type
+    required: false
+  position:
+    type: object
+    properties:
+      x:
+        type: number
+      y:
+        type: number
+    description: Node position (x, y)
+    required: false
+  metadata:
+    type: object
+    description: Additional metadata
+    required: false
+```
+
+### DiagramEdge
+
+```yaml
+type: object
+properties:
+  source:
+    type: string
+    description: Source node ID
+    required: true
+  target:
+    type: string
+    description: Target node ID
+    required: true
+  label:
+    type: string
+    description: Edge label
+    required: false
+  type:
+    type: string
+    description: Edge type
+    required: false
+  metadata:
+    type: object
+    description: Additional metadata
+    required: false
+```
+
+## Example Request
+
+```json
+{
+  "diagram_type": "anatomy_robot",
+  "chapter_id": 1,
+  "concepts": ["sensors", "actuators", "control-system"]
+}
+```
+
+## Example Response (Placeholder)
+
+```json
+{
+  "nodes": [],
+  "edges": [],
+  "svg": "<svg><!-- TODO --></svg>",
+  "metadata": null
+}
+```
+
+## Notes
+
+- **Current Status**: Scaffolding phase - all responses are placeholders
+- **Future Implementation**: Real AI diagram generation will be added in future features
+- **Schema Design**: Models support flexible diagram structures with optional fields
+- **Integration**: Runtime integrates with RAG pipeline, diagram agent, and skills
+
+## Future Enhancements
+
+1. **Real AI Implementation**: Add LLM calls for diagram planning and generation
+2. **SVG Generation**: Implement actual SVG creation from structure
+3. **Layout Algorithms**: Add automatic layout algorithms
+4. **Diagram Validation**: Add structure validation
+5. **Multiple Formats**: Support JSON, Mermaid, PlantUML output formats
+
