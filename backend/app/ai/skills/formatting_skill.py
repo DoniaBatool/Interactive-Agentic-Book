@@ -10,7 +10,8 @@ from typing import Dict, Any
 
 def format_response(
     raw_response: Dict[str, Any],
-    block_type: str
+    block_type: str,
+    chapter_id: int = None
 ) -> Dict[str, Any]:
     """
     Response formatting skill blueprint.
@@ -35,6 +36,15 @@ def format_response(
     TODO: Format sources, examples, questions, etc. based on block_type
     TODO: Add validation for response structure
     TODO: Add error handling for malformed responses
+    
+    TODO: Chapter 2 formatting rules
+    TODO: If chapter_id == 2:
+    TODO:     Apply Chapter 2 formatting rules
+    TODO:     Include ROS 2-specific metadata
+    TODO:     Format ROS 2 source citations
+    TODO:     Format ROS 2 examples and analogies
+    TODO: Elif chapter_id == 1:
+    TODO:     Apply Chapter 1 formatting rules (existing logic)
     """
     # Placeholder return - no real formatting logic
     return {}

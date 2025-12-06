@@ -11,7 +11,8 @@ from typing import List, Dict, Any
 def build_prompt(
     block_type: str,
     user_input: str,
-    context: List[Dict[str, Any]]
+    context: List[Dict[str, Any]],
+    chapter_id: int = None
 ) -> str:
     """
     Prompt construction skill blueprint.
@@ -46,6 +47,16 @@ def build_prompt(
     TODO: Add user input to prompt
     TODO: Add formatting instructions for structured output
     TODO: Add source citation instructions
+    
+    TODO: Chapter-aware prompt builder
+    TODO: If chapter_id == 2:
+    TODO:     Build ROS 2-specific prompts
+    TODO:     Include ROS 2 concepts, analogies, examples
+    TODO:     System prompt: "You are a helpful tutor explaining ROS 2 concepts..."
+    TODO:     Include ROS 2 context chunks
+    TODO:     Add ROS 2 terminology guidelines
+    TODO: Elif chapter_id == 1:
+    TODO:     Build Chapter 1 prompts (existing logic)
     """
     # Placeholder return - no real prompt building logic
     return ""

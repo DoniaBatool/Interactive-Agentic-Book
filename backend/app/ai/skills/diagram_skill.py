@@ -5,6 +5,10 @@ Reusable skills for diagram processing:
 - Extraction: Extract diagram elements from context
 - Layout: Layout diagram structure
 - SVG Conversion: Convert structured diagram to SVG
+
+TODO: Chapter 2 diagram generation rules
+TODO: Generate ROS 2 diagram structures
+TODO: Format ROS 2 diagram metadata
 """
 
 from typing import List, Dict, Any

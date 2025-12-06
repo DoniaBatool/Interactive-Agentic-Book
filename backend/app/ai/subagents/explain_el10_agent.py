@@ -43,6 +43,17 @@ async def explain_el10_agent(
     TODO: Ensure explanation is age-appropriate (10-year-old level)
     TODO: Add analogies and real-world examples
     TODO: Add error handling for LLM failures
+    
+    # TODO: Chapter 2 (ROS 2) Integration
+    # Expected ROS 2 inputs:
+    #   - Concepts: "topics", "nodes", "services", "actions", "packages", "launch-files"
+    #   - Chapter context: chapterId=2
+    # Expected output format: Same as Chapter 1, but with ROS 2 analogies
+    # ROS 2-specific considerations:
+    #   - Use ROS 2 analogies: post office (communication), restaurant (nodes), radio broadcast (topics), phone calls (services), package delivery (actions)
+    #   - Reference real-world examples: TurtleBot 3, navigation stack, robot arm control
+    #   - Simplify ROS 2 terminology for age-appropriate explanations
+    #   - Include visual analogies when helpful
     """
     # Placeholder return - no real explanation logic
     return {

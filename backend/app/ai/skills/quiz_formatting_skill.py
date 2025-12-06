@@ -3,6 +3,10 @@ Quiz Formatting Skill
 
 Provides functions for formatting quiz questions for frontend display.
 Supports formatting for MCQ, true/false, and fill-in-the-blank question types.
+
+TODO: Chapter 2 quiz formatting rules
+TODO: Format ROS 2 quiz questions with ROS 2 terminology
+TODO: Include ROS 2 examples in quiz questions
 """
 
 from typing import Dict, Any

@@ -21,8 +21,11 @@ def generate_embedding(text: str) -> List[float]:
         Example: [0.123, -0.456, 0.789, ...]
     
     TODO: Implement embedding generation using configured embedding model
-    TODO: Use settings.embedding_model for model selection
+    TODO: Use settings.embedding_model for model selection (default: "text-embedding-3-small")
     TODO: Use OpenAI embeddings API or other embedding service
+    TODO: Return 1536-dimensional vector for text-embedding-3-small
+    TODO: Handle max token size (8191 for text-embedding-3-small)
+    TODO: Truncate text if exceeds max tokens
     TODO: Add error handling for API failures
     TODO: Add caching for frequently embedded texts
     """
@@ -43,9 +46,10 @@ def batch_embed(chunks: List[str]) -> List[List[float]]:
     
     TODO: Implement batch embedding generation
     TODO: Use batch API endpoint for efficiency
-    TODO: Handle large batches (split if needed)
+    TODO: Handle large batches (split if needed, e.g., 100 chunks per batch)
     TODO: Add progress tracking for large batches
     TODO: Add error handling for partial failures
+    TODO: Return list of 1536-dimensional vectors
     """
     # Placeholder return - no real batch embedding
     return []

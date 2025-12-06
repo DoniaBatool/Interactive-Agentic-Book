@@ -1,0 +1,159 @@
+# Chapter 2 RAG Schema Contract
+
+**Feature**: 012-chapter-2-rag
+**Created**: 2025-12-05
+**Status**: Draft
+
+## Overview
+
+This contract defines the data schemas for Chapter 2 RAG operations: chunk structure, vector schema, metadata schema, and Qdrant collection schema.
+
+## Chapter 2 Chunk Schema
+
+```yaml
+Chunk:
+  id: str                       # Unique chunk ID (format: "ch2-s{section}-c{chunk}")
+                                # Example: "ch2-s1-c0" (Chapter 2, Section 1, Chunk 0)
+  text: str                     # Chunk text content (max length: configurable, TODO)
+  chapter_id: int               # Chapter identifier (always 2 for Chapter 2)
+  section_id: str               # Section identifier (e.g., "introduction-to-ros2")
+  position: int                 # Position in chapter (0-based)
+  word_count: int               # Word count in chunk
+  metadata:
+    heading: str                # Section heading (e.g., "Introduction to ROS 2")
+    type: str                    # Content type: "paragraph", "heading", "glossary", "code", "diagram"
+    has_diagram: bool            # True if section has diagram placeholder
+    has_ai_block: bool           # True if section has AI block
+    ros2_concepts: List[str]     # ROS 2 concepts in chunk (e.g., ["nodes", "topics"])
+    difficulty: str              # Difficulty level: "beginner", "intermediate", "advanced"
+```
+
+## Chapter 2 Vector Schema
+
+```yaml
+Vector:
+  id: str                       # Same as chunk ID
+  vector: List[float]           # Embedding vector (dimension: depends on model)
+                                # Example: [0.123, -0.456, 0.789, ...] (1536 dimensions for text-embedding-3-small)
+  payload:
+    text: str                   # Original text chunk
+    chapter_id: int              # Chapter identifier (2)
+    section_id: str              # Section identifier
+    position: int               # Position in chapter
+    word_count: int             # Word count
+    metadata:
+      heading: str
+      type: str
+      has_diagram: bool
+      has_ai_block: bool
+      ros2_concepts: List[str]
+      difficulty: str
+```
+
+## Chapter 2 Metadata Schema
+
+```yaml
+Metadata:
+  chunk_id: str                 # Unique chunk ID
+  chapter_id: int               # Chapter identifier (2)
+  section_id: str               # Section identifier
+  position: int                 # Position in chapter
+  word_count: int               # Word count
+  heading: str                  # Section heading
+  type: str                     # Content type
+  has_diagram: bool             # Diagram placeholder flag
+  has_ai_block: bool            # AI block flag
+  ros2_concepts: List[str]      # ROS 2 concepts in chunk
+  difficulty: str                # Difficulty level
+```
+
+## Qdrant Collection Schema for Chapter 2
+
+```yaml
+Collection:
+  name: "chapter_2"              # Collection name (from QDRANT_COLLECTION_CH2 env var)
+  vector_size: int               # Vector dimensions (depends on embedding model)
+                                # Example: 1536 for text-embedding-3-small
+  distance: str                 # Distance metric: "Cosine" (default)
+  hnsw_config:                  # HNSW index configuration (TODO)
+    m: int                       # Number of connections
+    ef_construct: int            # Size of dynamic candidate list
+  payload_schema:
+    text: str                    # Text field (required)
+    chapter_id: int              # Chapter ID field (required, filterable)
+    section_id: str              # Section ID field (required, filterable)
+    position: int               # Position field (required, sortable)
+    word_count: int             # Word count field (optional)
+    metadata: object            # Metadata object (optional)
+```
+
+## Chapter 2 Section IDs
+
+```yaml
+SectionIDs:
+  - "introduction-to-ros2"
+  - "nodes-and-node-communication"
+  - "topics-and-messages"
+  - "services-and-actions"
+  - "ros2-packages"
+  - "launch-files-and-workflows"
+  - "learning-objectives"
+  - "summary"
+  - "glossary"
+```
+
+## ROS 2 Concepts
+
+```yaml
+ROS2Concepts:
+  - "nodes"
+  - "topics"
+  - "services"
+  - "actions"
+  - "packages"
+  - "launch-files"
+  - "messages"
+  - "publishers"
+  - "subscribers"
+  - "clients"
+  - "servers"
+```
+
+## Chunking Rules (TODO)
+
+```yaml
+ChunkingRules:
+  max_token_size: int           # Maximum tokens per chunk (TODO: determine value)
+  semantic_segmentation: bool    # Use semantic segmentation (TODO)
+  heading_aware: bool            # Respect heading boundaries (TODO)
+  overlap: int                  # Overlap between chunks in tokens (TODO)
+  min_chunk_size: int           # Minimum chunk size in tokens (TODO)
+```
+
+## Embedding Model Configuration
+
+```yaml
+EmbeddingModel:
+  name: str                     # Model name (from EMBEDDING_MODEL env var)
+                                # Example: "text-embedding-3-small"
+  provider: str                 # Provider: "openai" or "gemini" (TODO)
+  dimensions: int               # Vector dimensions
+                                # Example: 1536 for text-embedding-3-small
+  max_tokens: int               # Maximum input tokens
+                                # Example: 8191 for text-embedding-3-small
+```
+
+## RAG Configuration
+
+```yaml
+RAGConfig:
+  max_context: int              # Maximum number of chunks in context (from RAG_MAX_CONTEXT env var)
+                                # Default: 4
+  top_k: int                    # Number of chunks to retrieve (default: 5)
+  similarity_threshold: float  # Minimum similarity score (TODO: determine value)
+  context_assembly: str         # Context assembly strategy (TODO: "concatenate", "summarize")
+```
+
+## Status
+
+⚠️ **All schemas are placeholders. Real implementation will be added in future features.**

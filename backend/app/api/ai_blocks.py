@@ -1,7 +1,8 @@
 """
 AI Blocks API Endpoints
 
-Placeholder API endpoints for AI-interactive blocks in Chapter 1.
+Placeholder API endpoints for AI-interactive blocks.
+Supports Chapter 1 (chapterId=1) and Chapter 2 (chapterId=2).
 These endpoints route to the AI runtime engine for processing.
 
 TODO: Future RAG Integration
