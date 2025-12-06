@@ -1,0 +1,5 @@
+# MDX Lint Report (Placeholder)
+
+# TODO: Generate real MDX lint report
+
+Lint results will be generated here (TODO)

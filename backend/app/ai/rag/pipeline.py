@@ -64,6 +64,14 @@ async def run_rag_pipeline(
     # Step 5: Pass into provider LLM (TODO - handled by subagents)
     # response = await llm_provider.generate(prompt=query, context=context)
     
+    # TODO: retrieve_quiz_context(chapter_id)
+    # Function to retrieve chapter context specifically for quiz generation
+    # Should return learning outcomes, section text, and key concepts
+    
+    # TODO: embed_quiz_query(question_text)
+    # Function to embed quiz question text for context matching
+    # Should use embedding client to generate query vector
+    
     # Placeholder return - no real RAG pipeline execution
     return {
         "context": "",

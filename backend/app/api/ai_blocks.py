@@ -132,14 +132,15 @@ async def quiz(request: QuizRequest) -> AIBlockResponse:
         AIBlockResponse with placeholder message and received payload
     
     TODO: Update response model when real AI logic implemented
-    TODO: Generate quiz questions from chapter learning objectives using LLM
+    TODO: Generate quiz questions from chapter learning objectives using quiz generators
     TODO: Ensure questions cover all learning objectives
     TODO: Add difficulty adjustment based on user performance
     TODO: Return structured quiz data with questions, answers, explanations
     """
-    # Route to runtime engine
-    result = await run_ai_block("quiz", request.model_dump())
-    # TODO: Update response model to match runtime engine output format
+    # Route to quiz runtime
+    from app.ai.quiz.runtime import run_quiz
+    result = await run_quiz(request.chapterId, request.numQuestions or 5)
+    # TODO: Update response model to match quiz runtime output format
     return AIBlockResponse(
         message="AI block placeholder",
         received=request.model_dump()
@@ -151,8 +152,8 @@ async def diagram(request: DiagramRequest) -> AIBlockResponse:
     """
     Placeholder endpoint for generating visual diagrams.
     
-    This endpoint will generate diagrams using OpenAI vision API or
-    diagram generation libraries (Mermaid, PlantUML, etc.).
+    This endpoint routes to the diagram runtime orchestrator which will generate
+    diagrams using LLM reasoning + structured outputs.
     
     Args:
         request: DiagramRequest with diagramType, chapterId, and concepts
@@ -161,14 +162,19 @@ async def diagram(request: DiagramRequest) -> AIBlockResponse:
         AIBlockResponse with placeholder message and received payload
     
     TODO: Update response model when real AI logic implemented
-    TODO: Generate diagram using LLM or diagram generation library
+    TODO: Generate diagram using LLM reasoning + structured outputs
     TODO: Support multiple diagram types (flowcharts, concept maps, architecture diagrams)
-    TODO: Return diagram URL or base64-encoded image
+    TODO: Return structured diagram (nodes, edges, SVG)
     TODO: Add diagram metadata (title, description, concepts included)
     """
-    # Route to runtime engine
-    result = await run_ai_block("diagram", request.model_dump())
-    # TODO: Update response model to match runtime engine output format
+    # Route to diagram runtime
+    from app.ai.diagram.runtime import run_diagram_generator
+    result = await run_diagram_generator(
+        request.diagramType,
+        request.chapterId or 1,
+        request.concepts or []
+    )
+    # TODO: Update response model to match diagram runtime output format
     return AIBlockResponse(
         message="AI block placeholder",
         received=request.model_dump()

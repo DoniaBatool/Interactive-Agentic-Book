@@ -1,0 +1,185 @@
+# Quiz Runtime API Contract
+
+**Feature**: 007-ch1-quiz-engine
+**Created**: 2025-12-05
+**Status**: Scaffolding Phase
+
+## High-Level Quiz Flow
+
+```
+Request → Context Retrieval (RAG) → Question Generation → Formatting → Validation → Result
+```
+
+## Endpoint
+
+### POST /api/ai/quiz
+
+Generate quiz questions for a chapter.
+
+## Request
+
+### Headers
+
+```
+Content-Type: application/json
+```
+
+### Body Schema
+
+```yaml
+type: object
+properties:
+  chapterId:
+    type: integer
+    description: Chapter identifier
+    required: true
+  numQuestions:
+    type: integer
+    description: Number of questions to generate (1-20)
+    required: false
+    default: 5
+```
+
+### Example Request
+
+```json
+{
+  "chapterId": 1,
+  "numQuestions": 5
+}
+```
+
+## Response
+
+### Success Response (200 OK)
+
+**Schema** (Placeholder):
+
+```yaml
+type: object
+properties:
+  questions:
+    type: array
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Question ID
+        question:
+          type: string
+          description: Question text
+        type:
+          type: string
+          enum: ["mcq", "true_false", "fill_blank"]
+          description: Question type
+        options:
+          type: array
+          items:
+            type: string
+          description: Answer options (for MCQ)
+        correct_answer:
+          type: string
+          description: Correct answer
+        explanation:
+          type: string
+          description: Answer explanation
+    description: List of generated questions
+  chapter_id:
+    type: integer
+    description: Chapter identifier
+  num_questions:
+    type: integer
+    description: Number of questions generated
+  metadata:
+    type: object
+    description: Additional metadata (optional)
+    required: false
+```
+
+### Example Response (Placeholder)
+
+```json
+{
+  "questions": [],
+  "chapter_id": 1,
+  "num_questions": 5,
+  "metadata": null
+}
+```
+
+## Quiz Generation Flow
+
+### Step 1: Context Retrieval
+
+**RAG Pipeline Integration**:
+- Retrieve chapter chunks using RAG pipeline
+- Extract learning outcomes from chapter metadata
+- Get relevant section text for fill-in-the-blank questions
+
+**TODO Hooks**:
+- `retrieve_quiz_context(chapter_id)` - Retrieve chapter content
+- `embed_quiz_query(question_text)` - Embed question for context matching
+
+### Step 2: Question Generation
+
+**Generator Functions**:
+- `generate_mcq(learning_outcomes)` - Generate multiple choice questions
+- `generate_true_false(learning_outcomes)` - Generate true/false questions
+- `generate_fill_blank(section_text)` - Generate fill-in-the-blank questions
+
+**Question Types**:
+- **MCQ**: 4 options, 1 correct answer
+- **True/False**: Binary choice
+- **Fill-in-the-Blank**: Text with blanks
+
+### Step 3: Formatting
+
+**Formatting Skills**:
+- `format_mcq(question_data)` - Format MCQ for frontend
+- `format_true_false(question_data)` - Format true/false for frontend
+- `format_fill_blank(question_data)` - Format fill-in-the-blank for frontend
+
+### Step 4: Validation (Future)
+
+**Validator Functions**:
+- `validate_answer(user_answer, correct_answer)` - Validate user answer
+- `score_quiz(answers_list)` - Calculate quiz score
+
+## Error Responses
+
+### 400 Bad Request
+
+Invalid request payload or missing required fields.
+
+```json
+{
+  "detail": "Invalid chapter ID or missing required fields"
+}
+```
+
+### 500 Internal Server Error
+
+Server error during quiz generation.
+
+```json
+{
+  "detail": "Internal server error"
+}
+```
+
+## Notes
+
+- **Current Status**: Scaffolding phase - all responses are placeholders
+- **Future Implementation**: Real AI quiz generation will be added in future features
+- **RAG Integration**: Quiz generation leverages RAG pipeline for context retrieval
+- **Question Types**: Supports MCQ, true/false, and fill-in-the-blank questions
+
+## Future Enhancements
+
+1. **Real AI Implementation**: Add LLM calls for question generation
+2. **Advanced Validation**: Implement fuzzy matching, partial credit
+3. **Question Bank**: Store generated questions for reuse
+4. **Adaptive Quizzes**: Adjust difficulty based on user performance
+5. **Analytics**: Track quiz performance and learning outcomes
+
