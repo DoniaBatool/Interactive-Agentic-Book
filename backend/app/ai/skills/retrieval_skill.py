@@ -40,6 +40,15 @@ async def retrieve_content(
     TODO: Format results as list of chunk dictionaries
     TODO: Add error handling for retrieval failures
     TODO: Add caching for frequently retrieved queries
+    
+    TODO: Chapter-aware retrieval
+    TODO: If chapter_id == 2:
+    TODO:     Use Chapter 2 RAG pipeline
+    TODO:     from app.ai.rag.pipeline import run_rag_pipeline
+    TODO:     context = await run_rag_pipeline(query, chapter_id=2, top_k=top_k)
+    TODO:     Return Chapter 2 chunks with ROS 2 context
+    TODO: Elif chapter_id == 1:
+    TODO:     Use Chapter 1 RAG pipeline (existing logic)
     """
     # Placeholder return - no real retrieval logic
     return []

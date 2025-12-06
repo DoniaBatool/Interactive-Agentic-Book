@@ -22,7 +22,10 @@ def create_collection(collection_name: str) -> bool:
     
     TODO: Implement Qdrant collection creation
     TODO: Use settings.qdrant_url and settings.qdrant_api_key for connection
-    TODO: Configure collection with appropriate vector size (from embedding model)
+    TODO: For Chapter 2: collection_name = "chapter_2" (from QDRANT_COLLECTION_CH2 env var)
+    TODO: Configure collection with appropriate vector size (1536 for text-embedding-3-small)
+    TODO: Set distance metric to Cosine similarity
+    TODO: Configure HNSW index (m, ef_construct parameters)
     TODO: Add collection metadata (chapter_id, created_at, etc.)
     TODO: Handle collection already exists error
     TODO: Add error handling for connection failures
@@ -57,6 +60,9 @@ def upsert_vectors(
     
     TODO: Implement vector upsert operation
     TODO: Use Qdrant client to batch upsert vectors
+    TODO: For Chapter 2: collection_name = "chapter_2"
+    TODO: Vector structure: {id, vector (1536 dims), payload (metadata)}
+    TODO: Payload metadata: {text, chapter_id, section_id, position, word_count, metadata}
     TODO: Handle large batches (split if needed)
     TODO: Add error handling for upsert failures
     TODO: Add validation for vector structure
@@ -97,6 +103,8 @@ def similarity_search(
     TODO: Implement similarity search operation
     TODO: Embed query text using embedding_client.generate_embedding()
     TODO: Use Qdrant client to perform vector search
+    TODO: For Chapter 2: collection_name = "chapter_2"
+    TODO: Return top_k results sorted by similarity score
     TODO: Filter by chapter_id if provided
     TODO: Add error handling for search failures
     TODO: Add result validation and filtering

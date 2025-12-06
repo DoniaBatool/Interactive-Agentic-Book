@@ -1,0 +1,384 @@
+# Chapter 2 AI Blocks Contract
+
+**Feature**: 013-chapter-2-runtime-engine
+**Created**: 2025-12-05
+**Status**: Draft
+
+## Overview
+
+This contract defines the API contracts for Chapter 2 AI blocks integration. All endpoints reuse existing patterns from Chapter 1 but route to Chapter 2 runtime engine with ROS 2-specific context.
+
+## Endpoint Contracts
+
+### POST /api/ai/ask-question
+
+**Request** (Chapter 2):
+```json
+{
+  "question": "What is a ROS 2 node?",
+  "chapterId": 2,
+  "sectionId": "introduction-to-ros2" (optional)
+}
+```
+
+**Response** (Placeholder):
+```json
+{
+  "message": "AI block placeholder",
+  "received": {
+    "question": "What is a ROS 2 node?",
+    "chapterId": 2,
+    "sectionId": "introduction-to-ros2"
+  }
+}
+```
+
+**Chapter 2 Runtime Flow**:
+1. API routes to `run_ai_block("ask-question", request_data)` with `chapterId=2`
+2. Runtime engine routes to `ch2_ask_question_agent`
+3. RAG pipeline retrieves Chapter 2 context (TODO)
+4. Subagent processes with ROS 2 context (TODO)
+5. LLM generates response (TODO)
+6. Response formatted and returned
+
+---
+
+### POST /api/ai/explain-like-10
+
+**Request** (Chapter 2):
+```json
+{
+  "concept": "topics",
+  "chapterId": 2
+}
+```
+
+**Response** (Placeholder):
+```json
+{
+  "message": "AI block placeholder",
+  "received": {
+    "concept": "topics",
+    "chapterId": 2
+  }
+}
+```
+
+**Chapter 2 Runtime Flow**:
+1. API routes to `run_ai_block("explain-like-10", request_data)` with `chapterId=2`
+2. Runtime engine routes to `ch2_explain_el10_agent`
+3. RAG pipeline retrieves Chapter 2 context for concept "topics" (TODO)
+4. Subagent generates age-appropriate ROS 2 explanation (TODO)
+5. LLM generates response (TODO)
+6. Response formatted and returned
+
+---
+
+### POST /api/ai/quiz
+
+**Request** (Chapter 2):
+```json
+{
+  "chapterId": 2,
+  "numQuestions": 5
+}
+```
+
+**Response** (Placeholder):
+```json
+{
+  "message": "AI block placeholder",
+  "received": {
+    "chapterId": 2,
+    "numQuestions": 5
+  }
+}
+```
+
+**Chapter 2 Runtime Flow**:
+1. API routes to `run_ai_block("quiz", request_data)` with `chapterId=2`
+2. Runtime engine routes to `ch2_quiz_agent`
+3. RAG pipeline retrieves Chapter 2 learning objectives and content (TODO)
+4. Subagent generates ROS 2 quiz questions (TODO)
+5. LLM generates quiz (TODO)
+6. Response formatted and returned
+
+---
+
+### POST /api/ai/diagram
+
+**Request** (Chapter 2):
+```json
+{
+  "diagramType": "node-communication-architecture",
+  "chapterId": 2,
+  "concepts": ["nodes", "topics", "services"]
+}
+```
+
+**Response** (Placeholder):
+```json
+{
+  "message": "AI block placeholder",
+  "received": {
+    "diagramType": "node-communication-architecture",
+    "chapterId": 2,
+    "concepts": ["nodes", "topics", "services"]
+  }
+}
+```
+
+**Chapter 2 Runtime Flow**:
+1. API routes to `run_ai_block("diagram", request_data)` with `chapterId=2`
+2. Runtime engine routes to `ch2_diagram_agent` (or existing diagram pipeline)
+3. RAG pipeline retrieves Chapter 2 context for diagram concepts (TODO)
+4. Subagent generates ROS 2 diagram structure (TODO)
+5. Diagram generated (TODO)
+6. Response formatted and returned
+
+---
+
+## Chapter 2 Subagent Contracts
+
+### ch2_ask_question_agent
+
+**Function**: `async def ch2_ask_question_agent(question: str, context: Dict[str, Any]) -> Dict[str, Any]`
+
+**Input**:
+```yaml
+question: str                    # User question about ROS 2
+context:
+  context: str                    # RAG-retrieved Chapter 2 context
+  chunks: List[Dict]             # Retrieved chunks with metadata
+  query_embedding: List[float]    # Query embedding
+```
+
+**Output**:
+```yaml
+answer: str                       # Generated answer about ROS 2
+sources: List[str]                # Source citations (section IDs)
+confidence: float                 # Confidence score (0.0-1.0)
+```
+
+**ROS 2 Context**:
+- Concepts: nodes, topics, services, actions, packages, launch-files
+- Analogies: post office, restaurant, phone calls, package delivery
+- Examples: TurtleBot 3, navigation stack, robot arm control
+
+---
+
+### ch2_explain_el10_agent
+
+**Function**: `async def ch2_explain_el10_agent(concept: str, context: Dict[str, Any]) -> Dict[str, Any]`
+
+**Input**:
+```yaml
+concept: str                      # ROS 2 concept (e.g., "topics", "nodes")
+context:
+  context: str                    # RAG-retrieved Chapter 2 context
+  chunks: List[Dict]             # Retrieved chunks
+```
+
+**Output**:
+```yaml
+explanation: str                  # Age-appropriate ROS 2 explanation
+examples: List[str]               # ROS 2 examples
+analogies: List[str]              # Age-appropriate analogies
+```
+
+**ROS 2 Concepts**:
+- "topics" → Radio broadcast analogy
+- "nodes" → Restaurant chefs analogy
+- "services" → Phone call analogy
+- "actions" → Package delivery analogy
+
+---
+
+### ch2_quiz_agent
+
+**Function**: `async def ch2_quiz_agent(chapter_id: int, num_questions: int, context: Dict[str, Any]) -> Dict[str, Any]`
+
+**Input**:
+```yaml
+chapter_id: 2                     # Chapter identifier
+num_questions: int                # Number of questions (1-20)
+context:
+  context: str                    # RAG-retrieved Chapter 2 context
+  chunks: List[Dict]             # Retrieved chunks
+```
+
+**Output**:
+```yaml
+questions:
+  - id: int
+    text: str                     # ROS 2 question
+    type: str                     # "multiple-choice", "true-false", "short-answer"
+    options: List[str]            # Answer options
+    correct_answer: str           # Correct answer
+    explanation: str              # Answer explanation
+learning_objectives: List[str]   # Covered ROS 2 learning objectives
+```
+
+**ROS 2 Learning Objectives**:
+- Define ROS 2 and explain its role
+- Explain node communication
+- Distinguish between topics, services, and actions
+- Describe ROS 2 package structure
+- Explain launch file coordination
+
+---
+
+### ch2_diagram_agent
+
+**Function**: `async def ch2_diagram_agent(diagram_type: str, concepts: List[str], context: Dict[str, Any]) -> Dict[str, Any]`
+
+**Input**:
+```yaml
+diagram_type: str                 # "ros2-ecosystem-overview", "node-communication-architecture", etc.
+concepts: List[str]               # ROS 2 concepts to include
+context:
+  context: str                    # RAG-retrieved Chapter 2 context
+  chunks: List[Dict]             # Retrieved chunks
+```
+
+**Output**:
+```yaml
+diagram_url: str                  # URL or base64-encoded image
+diagram_type: str                 # Diagram type
+metadata:
+  title: str                      # Diagram title
+  description: str                 # Diagram description
+  concepts: List[str]             # Included ROS 2 concepts
+  format: str                     # "svg", "png", "mermaid", etc.
+```
+
+**Chapter 2 Diagram Types**:
+- "ros2-ecosystem-overview"
+- "node-communication-architecture"
+- "topic-pubsub-flow"
+- "services-actions-comparison"
+
+---
+
+## Skills Integration Contracts
+
+### Retrieval Skill (Chapter 2)
+
+**Function**: `async def retrieve_content(query: str, chapter_id: int, top_k: int = 5)`
+
+**Chapter 2 Usage**:
+```python
+# TODO: Chapter 2 retrieval
+if chapter_id == 2:
+    # TODO: Use Chapter 2 RAG pipeline
+    # TODO: Return Chapter 2 chunks with ROS 2 context
+```
+
+### Prompt Builder Skill (Chapter 2)
+
+**Function**: `def build_prompt(block_type: str, user_input: str, context: List[Dict], chapter_id: int)`
+
+**Chapter 2 Usage**:
+```python
+# TODO: Chapter-aware prompt builder for Chapter 2
+if chapter_id == 2:
+    # TODO: Build ROS 2-specific prompts
+    # TODO: Include ROS 2 concepts, analogies, examples
+```
+
+### Formatting Skill (Chapter 2)
+
+**Function**: `def format_response(response: Dict, block_type: str, chapter_id: int)`
+
+**Chapter 2 Usage**:
+```python
+# TODO: Chapter 2 formatting rules
+if chapter_id == 2:
+    # TODO: Apply Chapter 2 formatting rules
+    # TODO: Include ROS 2-specific metadata
+```
+
+---
+
+## ChatKit Integration Contracts
+
+### Session Manager (Multi-Chapter Context)
+
+**Function**: `def create_session(user_id: str) -> str`
+
+**Chapter 2 Support** (TODO):
+```python
+# TODO: Multi-chapter session contexts
+# TODO: Track Chapter 2 context in session
+# TODO: Support cross-chapter queries
+```
+
+### Tools (Chapter 2 Blocks)
+
+**Tool Definitions** (TODO):
+```yaml
+ch2_ask_question_tool:
+  name: "ch2_ask_question"
+  description: "Ask questions about ROS 2 concepts"
+  input:
+    question: str
+    sectionId: str (optional)
+  output:
+    answer: str
+    sources: List[str]
+
+ch2_explain_el10_tool:
+  name: "ch2_explain_el10"
+  description: "Explain ROS 2 concepts like I'm 10"
+  input:
+    concept: str
+  output:
+    explanation: str
+    examples: List[str]
+
+ch2_quiz_tool:
+  name: "ch2_quiz"
+  description: "Generate ROS 2 quizzes"
+  input:
+    numQuestions: int
+  output:
+    questions: List[Dict]
+    learning_objectives: List[str]
+
+ch2_diagram_tool:
+  name: "ch2_diagram"
+  description: "Generate ROS 2 diagrams"
+  input:
+    diagramType: str
+    concepts: List[str]
+  output:
+    diagram_url: str
+    metadata: Dict
+```
+
+---
+
+## Configuration Contracts
+
+### Settings
+
+**Environment Variables**:
+```yaml
+DEFAULT_CH2_MODEL: str            # Default LLM model for Chapter 2 (default: "gpt-4o")
+DEFAULT_CH2_EMBEDDINGS: str        # Default embedding model for Chapter 2 (default: "text-embedding-3-small")
+ENABLE_CHAPTER_2_RUNTIME: bool    # Enable/disable Chapter 2 runtime (default: True)
+```
+
+**Settings.py Structure**:
+```python
+# TODO: Chapter 2 runtime settings
+DEFAULT_CH2_MODEL = os.getenv("DEFAULT_CH2_MODEL", "gpt-4o")
+DEFAULT_CH2_EMBEDDINGS = os.getenv("DEFAULT_CH2_EMBEDDINGS", "text-embedding-3-small")
+ENABLE_CHAPTER_2_RUNTIME = os.getenv("ENABLE_CHAPTER_2_RUNTIME", "True").lower() == "true"
+```
+
+---
+
+## Status
+
+⚠️ **All contracts are placeholders. Real implementation will be added in future features.**

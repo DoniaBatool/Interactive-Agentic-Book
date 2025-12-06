@@ -48,3 +48,56 @@ Tools will be implemented when ChatKit is fully integrated.
 # TODO: Handle tool calls from ChatKit
 # TODO: Return tool results to ChatKit
 
+# TODO: Chapter 2 Tool Definitions
+# 
+# ch2_ask_question_tool:
+#   name: "ch2_ask_question"
+#   description: "Ask questions about ROS 2 concepts"
+#   input: {
+#     "question": str,
+#     "sectionId": str (optional)
+#   }
+#   output: {
+#     "answer": str,
+#     "sources": List[str]
+#   }
+# 
+# ch2_explain_el10_tool:
+#   name: "ch2_explain_el10"
+#   description: "Explain ROS 2 concepts like I'm 10"
+#   input: {
+#     "concept": str
+#   }
+#   output: {
+#     "explanation": str,
+#     "examples": List[str]
+#   }
+# 
+# ch2_quiz_tool:
+#   name: "ch2_quiz"
+#   description: "Generate ROS 2 quizzes"
+#   input: {
+#     "numQuestions": int
+#   }
+#   output: {
+#     "questions": List[Dict],
+#     "learning_objectives": List[str]
+#   }
+# 
+# ch2_diagram_tool:
+#   name: "ch2_diagram"
+#   description: "Generate ROS 2 diagrams"
+#   input: {
+#     "diagramType": str,
+#     "concepts": List[str]
+#   }
+#   output: {
+#     "diagram_url": str,
+#     "metadata": Dict
+#   }
+# 
+# TODO: Implement tool definitions when ChatKit integrated
+# TODO: Register tools with ChatKit session
+# TODO: Handle tool calls from ChatKit
+# TODO: Return tool results to ChatKit
+

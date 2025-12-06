@@ -1,0 +1,248 @@
+# Runtime Flow Contract for Chapter 2
+
+**Feature**: 013-chapter-2-runtime-engine
+**Created**: 2025-12-05
+**Status**: Draft
+
+## Overview
+
+This contract defines the runtime flow for Chapter 2 AI blocks through the AI Runtime Engine. The flow orchestrates routing, RAG binding, LLM invocation, and response formatting for ROS 2 knowledge.
+
+## Runtime Flow
+
+```
+Frontend Component (Chapter 2)
+    ↓
+API Endpoint (ai_blocks.py)
+    ↓
+Runtime Engine (engine.py)
+    │
+    ├─► Router: Determine block type → Select Chapter 2 subagent
+    │
+    ├─► RAG Pipeline (pipeline.py)
+    │   ├─► Load Chapter 2 chunks (chapter_2_chunks.py)
+    │   ├─► Embed user query (embedding_client.py)
+    │   ├─► Qdrant similarity search (collection="chapter_2")
+    │   └─► Construct retrieval context
+    │
+    ├─► Skills System
+    │   ├─► Retrieval Skill (retrieval_skill.py) - Chapter 2 context
+    │   ├─► Prompt Builder Skill (prompt_builder_skill.py) - ROS 2 prompts
+    │   └─► Formatting Skill (formatting_skill.py) - Chapter 2 formatting
+    │
+    ├─► Chapter 2 Subagent
+    │   ├─► ch2_ask_question_agent.py
+    │   ├─► ch2_explain_el10_agent.py
+    │   ├─► ch2_quiz_agent.py
+    │   └─► ch2_diagram_agent.py
+    │
+    ├─► LLM Provider (base_llm.py → openai_provider.py | gemini_provider.py)
+    │   └─► Generates response with ROS 2 context
+    │
+    └─► Response Formatting → Return to API → Frontend
+```
+
+## Step 1: API Endpoint Routing
+
+**Endpoint**: `POST /api/ai/{block_type}`
+
+**Request** (Chapter 2):
+```yaml
+ask-question:
+  question: str
+  chapterId: 2
+  sectionId: str (optional)
+
+explain-like-10:
+  concept: str
+  chapterId: 2
+
+quiz:
+  chapterId: 2
+  numQuestions: int
+
+diagram:
+  diagramType: str
+  chapterId: 2
+  concepts: List[str]
+```
+
+**Routing**: All endpoints call `run_ai_block(block_type, request_data)` with `chapterId=2`
+
+## Step 2: Runtime Engine Routing
+
+**Function**: `run_ai_block(block_type: str, request_data: Dict[str, Any])`
+
+**Chapter 2 Routing Logic** (TODO):
+```python
+# TODO: Chapter 2 routing
+chapter_id = request_data.get("chapterId", 1)
+if chapter_id == 2:
+    # TODO: Route to Chapter 2 subagent
+    # TODO: Load Chapter 2 RAG context
+    # TODO: Call Chapter 2 subagent with context
+elif chapter_id == 1:
+    # Existing Chapter 1 logic
+```
+
+**Subagent Mapping** (TODO):
+```python
+# TODO: Chapter 2 subagent mapping
+CH2_SUBAGENT_MAP = {
+    "ask-question": ch2_ask_question_agent,
+    "explain-like-10": ch2_explain_el10_agent,
+    "quiz": ch2_quiz_agent,
+    "diagram": ch2_diagram_agent,
+}
+```
+
+## Step 3: RAG Pipeline Binding
+
+**Function**: `run_rag_pipeline(query: str, chapter_id: int, top_k: int = 5)`
+
+**Chapter 2 Flow** (TODO):
+```python
+# TODO: Chapter 2 RAG binding
+if chapter_id == 2:
+    # TODO: Load Chapter 2 chunks
+    # from app.content.chapters.chapter_2_chunks import get_chapter_chunks
+    # chunks = get_chapter_chunks(chapter_id=2)
+    
+    # TODO: Embed query
+    # query_embedding = generate_embedding(query)
+    
+    # TODO: Search in Qdrant collection "chapter_2"
+    # results = similarity_search(collection_name="chapter_2", query_embedding, top_k)
+    
+    # TODO: Assemble context
+    # context = assemble_context(results)
+```
+
+**Context Structure**:
+```yaml
+context:
+  context: str                   # Assembled context string
+  chunks: List[Dict[str, Any]]   # Retrieved chunks with metadata
+  query_embedding: List[float]    # Query embedding vector
+```
+
+## Step 4: Skills Integration
+
+**Retrieval Skill** (TODO):
+```python
+# TODO: Chapter 2 retrieval
+async def retrieve_content(query: str, chapter_id: int, top_k: int = 5):
+    # TODO: If chapter_id == 2, use Chapter 2 RAG pipeline
+    # TODO: Return Chapter 2 chunks with ROS 2 context
+```
+
+**Prompt Builder Skill** (TODO):
+```python
+# TODO: Chapter-aware prompt builder for Chapter 2
+def build_prompt(block_type: str, user_input: str, context: List[Dict], chapter_id: int):
+    # TODO: If chapter_id == 2, build ROS 2-specific prompts
+    # TODO: Include ROS 2 concepts, analogies, examples
+```
+
+**Formatting Skill** (TODO):
+```python
+# TODO: Chapter 2 formatting rules
+def format_response(response: Dict, block_type: str, chapter_id: int):
+    # TODO: If chapter_id == 2, apply Chapter 2 formatting rules
+    # TODO: Include ROS 2-specific metadata
+```
+
+## Step 5: Chapter 2 Subagent Invocation
+
+**Subagent Functions** (TODO):
+```python
+# ch2_ask_question_agent.py
+async def ch2_ask_question_agent(question: str, context: Dict[str, Any]) -> Dict[str, Any]:
+    # TODO: Process ROS 2 question with Chapter 2 context
+    # TODO: Use ROS 2 concepts, analogies, examples
+    # TODO: Return formatted answer
+
+# ch2_explain_el10_agent.py
+async def ch2_explain_el10_agent(concept: str, context: Dict[str, Any]) -> Dict[str, Any]:
+    # TODO: Generate ROS 2 explanation with Chapter 2 context
+    # TODO: Use age-appropriate analogies for ROS 2 concepts
+    # TODO: Return formatted explanation
+
+# ch2_quiz_agent.py
+async def ch2_quiz_agent(chapter_id: int, num_questions: int, context: Dict[str, Any]) -> Dict[str, Any]:
+    # TODO: Generate ROS 2 quiz with Chapter 2 context
+    # TODO: Cover ROS 2 learning objectives
+    # TODO: Return formatted quiz
+
+# ch2_diagram_agent.py
+async def ch2_diagram_agent(diagram_type: str, concepts: List[str], context: Dict[str, Any]) -> Dict[str, Any]:
+    # TODO: Generate ROS 2 diagram with Chapter 2 context
+    # TODO: Use ROS 2 concepts and relationships
+    # TODO: Return formatted diagram
+```
+
+## Step 6: LLM Provider Invocation
+
+**LLM Call** (TODO):
+```python
+# TODO: Chapter 2 LLM invocation
+# provider = get_provider()  # Based on DEFAULT_CH2_MODEL
+# response = await provider.generate(
+#     prompt=formatted_prompt,
+#     system=ros2_system_prompt,
+#     temperature=0.7
+# )
+```
+
+**Chapter 2 Model Selection**:
+- Default: `DEFAULT_CH2_MODEL` (from settings, default: "gpt-4o")
+- Embeddings: `DEFAULT_CH2_EMBEDDINGS` (from settings, default: "text-embedding-3-small")
+
+## Step 7: Response Formatting
+
+**Formatting** (TODO):
+```python
+# TODO: Format Chapter 2 response
+# formatted = format_response(llm_response, block_type, chapter_id=2)
+# Return formatted response to API
+```
+
+**Response Structure**:
+```yaml
+ask-question:
+  answer: str
+  sources: List[str]
+  confidence: float
+
+explain-like-10:
+  explanation: str
+  examples: List[str]
+  analogies: List[str]
+
+quiz:
+  questions: List[Dict]
+  learning_objectives: List[str]
+
+diagram:
+  diagram_url: str
+  metadata: Dict
+```
+
+## Chapter 2 Specific Considerations
+
+- **ROS 2 Context**: All subagents use ROS 2-specific context (nodes, topics, services, actions)
+- **Section Filtering**: If `sectionId` provided, filter RAG context by section
+- **Model Selection**: Use `DEFAULT_CH2_MODEL` for Chapter 2 LLM calls
+- **Embedding Model**: Use `DEFAULT_CH2_EMBEDDINGS` for Chapter 2 embeddings
+- **Runtime Flag**: Check `ENABLE_CHAPTER_2_RUNTIME` before processing Chapter 2 requests
+
+## Error Handling
+
+- If Chapter 2 runtime disabled: Return error or placeholder response
+- If Chapter 2 chunks unavailable: Return placeholder response with warning
+- If Chapter 2 subagent missing: Log error and return appropriate error response
+- If RAG pipeline fails: Return partial response or error message
+
+## Status
+
+⚠️ **All flow steps are placeholders with TODO markers. No real implementation exists.**

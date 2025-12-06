@@ -127,6 +127,19 @@ async def diagram_agent(
     TODO: Generate diagram code or image based on diagram_type
     TODO: Add diagram metadata (title, description, concepts)
     TODO: Add error handling for generation failures
+    
+    # TODO: Chapter 2 (ROS 2) Integration
+    # Expected ROS 2 inputs:
+    #   - Diagram types: "ros2-ecosystem-overview", "node-communication-architecture", "topic-pubsub-flow", "services-actions-comparison"
+    #   - Chapter context: chapterId=2
+    #   - ROS 2 concepts: nodes, topics, services, actions
+    # Expected output format: Same as Chapter 1, but with ROS 2 diagram content
+    # ROS 2-specific considerations:
+    #   - Generate diagrams showing ROS 2 architecture (nodes, topics, services, actions)
+    #   - Include node communication graphs
+    #   - Show topic publish/subscribe flows
+    #   - Compare services vs actions visually
+    #   - Use ROS 2 terminology in diagram labels
     """
     # Placeholder return - no real diagram generation logic
     return {

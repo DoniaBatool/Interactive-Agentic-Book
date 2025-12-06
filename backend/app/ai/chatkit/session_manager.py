@@ -23,6 +23,18 @@ def create_session(user_id: str) -> str:
     TODO: Store session in database (Neon Postgres)
     TODO: Initialize session metadata (created_at, user_id, etc.)
     TODO: Add error handling for database failures
+    
+    TODO: Multi-chapter session contexts
+    TODO: Track Chapter 2 context in session
+    TODO: Initialize chapter_context dictionary:
+    TODO:     {
+    TODO:         2: {
+    TODO:             "last_accessed": timestamp,
+    TODO:             "message_count": 0,
+    TODO:             "topics": []
+    TODO:         }
+    TODO:     }
+    TODO: Support cross-chapter queries
     """
     # Placeholder return - no real session creation
     return ""
@@ -52,12 +64,18 @@ def append_message(
     TODO: Update session last_updated timestamp
     TODO: Add error handling for database failures
     TODO: Support message metadata (sources, confidence, etc.)
+    
+    TODO: Append message with Chapter 2 context
+    TODO: If message has chapterId=2:
+    TODO:     Update Chapter 2 context in session
+    TODO:     Track ROS 2 topics discussed
+    TODO:     Update last_accessed timestamp
     """
     # Placeholder return - no real message appending
     return False
 
 
-def get_history(session_id: str) -> List[Dict[str, Any]]:
+def get_history(session_id: str, chapter_id: int = None) -> List[Dict[str, Any]]:
     """
     Retrieve session message history.
     
@@ -81,6 +99,12 @@ def get_history(session_id: str) -> List[Dict[str, Any]]:
     TODO: Add error handling for database failures
     TODO: Add pagination for long conversations
     TODO: Add message filtering (by role, date range, etc.)
+    
+    TODO: Retrieve session history with Chapter 2 context
+    TODO: If chapter_id == 2:
+    TODO:     Filter messages by chapterId=2
+    TODO:     Include Chapter 2 context metadata
+    TODO: Return Chapter 2 message history
     """
     # Placeholder return - no real history retrieval
     return []

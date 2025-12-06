@@ -73,6 +73,18 @@ async def quiz_agent(
     TODO: Generate diverse question types (multiple choice, true/false, fill-in-the-blank)
     TODO: Add answer explanations
     TODO: Add error handling for generation failures
+    
+    # TODO: Chapter 2 (ROS 2) Integration
+    # Expected ROS 2 inputs:
+    #   - Chapter context: chapterId=2
+    #   - Learning objectives from Chapter 2 metadata
+    #   - ROS 2 concepts: nodes, topics, services, actions, packages, launch files
+    # Expected output format: Same as Chapter 1, but with ROS 2 questions
+    # ROS 2-specific considerations:
+    #   - Generate questions covering all ROS 2 fundamentals
+    #   - Include questions about: node communication, topic pub/sub, services vs actions, package structure, launch files
+    #   - Use ROS 2 terminology correctly in questions and answers
+    #   - Reference real-world ROS 2 examples in questions
     """
     # Placeholder return - no real quiz generation logic
     return {

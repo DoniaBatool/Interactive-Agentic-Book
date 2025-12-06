@@ -1,0 +1,224 @@
+# API Schema Contract: Chapter 2 AI Blocks Integration
+
+**Feature**: 011-chapter-2-ai-blocks
+**Date**: 2025-12-05
+**Purpose**: Define API contracts for Chapter 2 AI block endpoints
+
+## Overview
+
+This contract defines the API structure for Chapter 2 AI blocks integration. All endpoints reuse existing patterns from Chapter 1 but route to Chapter 2 knowledge source (chapterId=2).
+
+## Endpoint Contracts
+
+### POST /api/ai/ask-question
+
+**Request**:
+```json
+{
+  "question": "string",
+  "chapterId": 2,
+  "sectionId": "string (optional, e.g., 'introduction-to-ros2')"
+}
+```
+
+**Response** (Placeholder):
+```json
+{
+  "message": "AI block placeholder",
+  "received": {
+    "question": "string",
+    "chapterId": 2,
+    "sectionId": "string"
+  }
+}
+```
+
+**Chapter 2 Context**: Routes to runtime engine with chapterId=2, retrieves Chapter 2 chunks via RAG pipeline (TODO).
+
+---
+
+### POST /api/ai/explain-like-10
+
+**Request**:
+```json
+{
+  "concept": "string (e.g., 'topics', 'nodes', 'services')",
+  "chapterId": 2
+}
+```
+
+**Response** (Placeholder):
+```json
+{
+  "message": "AI block placeholder",
+  "received": {
+    "concept": "string",
+    "chapterId": 2
+  }
+}
+```
+
+**Chapter 2 Context**: Routes to runtime engine with chapterId=2, retrieves Chapter 2 concept context via RAG pipeline (TODO).
+
+---
+
+### POST /api/ai/quiz
+
+**Request**:
+```json
+{
+  "chapterId": 2,
+  "numQuestions": 5
+}
+```
+
+**Response** (Placeholder):
+```json
+{
+  "message": "AI block placeholder",
+  "received": {
+    "chapterId": 2,
+    "numQuestions": 5
+  }
+}
+```
+
+**Chapter 2 Context**: Routes to runtime engine with chapterId=2, retrieves Chapter 2 learning objectives and content via RAG pipeline (TODO).
+
+---
+
+### POST /api/ai/diagram
+
+**Request**:
+```json
+{
+  "diagramType": "string (e.g., 'node-communication-architecture')",
+  "chapterId": 2
+}
+```
+
+**Response** (Placeholder):
+```json
+{
+  "message": "AI block placeholder",
+  "received": {
+    "diagramType": "string",
+    "chapterId": 2
+  }
+}
+```
+
+**Chapter 2 Context**: Routes to runtime engine with chapterId=2, retrieves Chapter 2 diagram context via RAG pipeline (TODO).
+
+---
+
+## Runtime Engine Contract
+
+### Knowledge Source Mapping
+
+**Chapter 2 Identifier**: `chapter_id=2` or `"chapter_2"`
+
+**RAG Pipeline Integration** (TODO):
+- Retrieve chunks from `chapter_2_chunks.py` via `get_chapter_chunks(chapter_id=2)`
+- Use Chapter 2 metadata from `chapter_2.py` for context
+- Filter chunks by section_id when sectionId provided
+
+---
+
+## Subagent Contracts
+
+### Ask Question Agent (Chapter 2)
+
+**Expected ROS 2 Inputs**:
+- Questions about: nodes, topics, services, actions, packages, launch files
+- Section-specific: introduction-to-ros2, nodes-and-node-communication, topics-and-messages, services-and-actions
+
+**Expected Output Format**:
+```json
+{
+  "answer": "string (ROS 2 concept explanation)",
+  "sources": ["introduction-to-ros2", "nodes-and-node-communication"],
+  "confidence": 0.85
+}
+```
+
+---
+
+### Explain Like 10 Agent (Chapter 2)
+
+**Expected ROS 2 Inputs**:
+- Concepts: "topics", "nodes", "services", "actions", "packages", "launch-files"
+- Chapter context: chapterId=2
+
+**Expected Output Format**:
+```json
+{
+  "explanation": "string (simplified ROS 2 explanation)",
+  "analogies": ["post office", "restaurant", "phone calls"],
+  "examples": ["TurtleBot 3", "navigation stack"]
+}
+```
+
+---
+
+### Quiz Agent (Chapter 2)
+
+**Expected ROS 2 Inputs**:
+- Chapter context: chapterId=2
+- Learning objectives from Chapter 2 metadata
+- ROS 2 concepts: nodes, topics, services, actions, packages, launch files
+
+**Expected Output Format**:
+```json
+{
+  "questions": [
+    {
+      "question": "string",
+      "options": ["string", "string", "string", "string"],
+      "correct": 0,
+      "explanation": "string"
+    }
+  ],
+  "quizId": "string"
+}
+```
+
+---
+
+### Diagram Agent (Chapter 2)
+
+**Expected ROS 2 Inputs**:
+- Diagram types: "ros2-ecosystem-overview", "node-communication-architecture", "topic-pubsub-flow", "services-actions-comparison"
+- Chapter context: chapterId=2
+- ROS 2 concepts: nodes, topics, services, actions
+
+**Expected Output Format**:
+```json
+{
+  "diagramUrl": "string (URL to generated diagram)",
+  "diagramType": "string",
+  "metadata": {
+    "chapterId": 2,
+    "concepts": ["nodes", "topics"]
+  }
+}
+```
+
+---
+
+## Validation Rules
+
+- **chapterId**: Must be 2 for Chapter 2 AI blocks
+- **sectionId**: Must match section anchors from chapter-2.mdx (kebab-case)
+- **concept**: Must be valid ROS 2 concept (topics, nodes, services, actions, packages, launch-files)
+- **diagramType**: Must match diagram placeholders from chapter-2.mdx (kebab-case)
+- **numQuestions**: Must be positive integer (1-10 recommended)
+
+---
+
+## Error Handling
+
+- **Invalid chapterId**: Return 400 Bad Request with error message
+- **Missing required fields**: Return 422 Unprocessable Entity (Pydantic validation)
+- **Chapter 2 chunks not available**: Return placeholder response (chunks not yet implemented)
+- **Backend errors**: Return 500 Internal Server Error with generic message

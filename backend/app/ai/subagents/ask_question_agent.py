@@ -45,6 +45,18 @@ async def ask_question_agent(
     TODO: Extract source citations from retrieved chunks
     TODO: Calculate confidence score based on retrieved context relevance
     TODO: Add error handling for LLM failures
+    
+    # TODO: Chapter 2 (ROS 2) Integration
+    # Expected ROS 2 inputs:
+    #   - Questions about: nodes, topics, services, actions, packages, launch files
+    #   - Section-specific: introduction-to-ros2, nodes-and-node-communication, topics-and-messages, services-and-actions
+    # Expected output format: Same as Chapter 1, but with ROS 2 context
+    # ROS 2-specific considerations:
+    #   - Use ROS 2 analogies (post office, restaurant, phone calls, package delivery)
+    #   - Reference real-world examples (TurtleBot 3, navigation stack, robot arm control)
+    #   - Handle ROS 2 terminology correctly (nodes, topics, services, actions)
+    #   - Include section context when sectionId provided
+    #   - Filter chunks by section_id for section-specific questions
     """
     # Placeholder return - no real question-answering logic
     return {
