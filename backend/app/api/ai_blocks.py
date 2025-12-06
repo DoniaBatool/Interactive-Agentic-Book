@@ -5,6 +5,9 @@ Placeholder API endpoints for AI-interactive blocks.
 Supports Chapter 1 (chapterId=1) and Chapter 2 (chapterId=2).
 These endpoints route to the AI runtime engine for processing.
 
+TODO: For chapterId=2, all block types route to run_ai_block(block_type, chapter_id=2)
+TODO: Runtime engine will handle Chapter 2 routing internally
+
 TODO: Future RAG Integration
 - [ ] Implement RAG pipeline for retrieving relevant chapter content
 - [ ] Add OpenAI API calls for generating answers, explanations, quizzes, diagrams
@@ -80,6 +83,13 @@ async def ask_question(request: AskQuestionRequest) -> AIBlockResponse:
     TODO: Implement RAG pipeline, call LLM provider, return real answer
     TODO: Add source citations from retrieved chapter content
     TODO: Add personalization based on user profile
+    
+    TODO: Load Chapter 2 context if chapterId=2
+    TODO: Import build_context_for_ch2 from pipeline
+    # if request.chapterId == 2:
+    #     from app.ai.rag.pipeline import build_context_for_ch2
+    #     context = await build_context_for_ch2(request.question)
+    #     # Pass context to runtime engine
     """
     # Route to runtime engine
     result = await run_ai_block("ask-question", request.model_dump())
@@ -108,6 +118,13 @@ async def explain_like_10(request: ExplainLike10Request) -> AIBlockResponse:
     TODO: Implement explanation generation using LLM with ELI10 prompt
     TODO: Add concept context retrieval from chapter content
     TODO: Add analogies and examples for better understanding
+    
+    TODO: Load Chapter 2 context if chapterId=2
+    TODO: Import build_context_for_ch2 from pipeline
+    # if request.chapterId == 2:
+    #     from app.ai.rag.pipeline import build_context_for_ch2
+    #     context = await build_context_for_ch2(request.concept)
+    #     # Pass context to runtime engine
     """
     # Route to runtime engine
     result = await run_ai_block("explain-like-10", request.model_dump())
@@ -137,6 +154,14 @@ async def quiz(request: QuizRequest) -> AIBlockResponse:
     TODO: Ensure questions cover all learning objectives
     TODO: Add difficulty adjustment based on user performance
     TODO: Return structured quiz data with questions, answers, explanations
+    
+    TODO: Load Chapter 2 context if chapterId=2
+    TODO: Import build_context_for_ch2 from pipeline
+    # if request.chapterId == 2:
+    #     from app.ai.rag.pipeline import build_context_for_ch2
+    #     # Quiz context may need different approach (all sections)
+    #     context = await build_context_for_ch2("")  # Empty query for full chapter context
+    #     # Pass context to runtime engine
     """
     # Route to quiz runtime
     from app.ai.quiz.runtime import run_quiz
@@ -167,6 +192,15 @@ async def diagram(request: DiagramRequest) -> AIBlockResponse:
     TODO: Support multiple diagram types (flowcharts, concept maps, architecture diagrams)
     TODO: Return structured diagram (nodes, edges, SVG)
     TODO: Add diagram metadata (title, description, concepts included)
+    
+    TODO: Load Chapter 2 context if chapterId=2
+    TODO: Import build_context_for_ch2 from pipeline
+    # if request.chapterId == 2:
+    #     from app.ai.rag.pipeline import build_context_for_ch2
+    #     # Diagram context may need concepts-based query
+    #     query = " ".join(request.concepts or [])
+    #     context = await build_context_for_ch2(query)
+    #     # Pass context to runtime engine
     """
     # Route to diagram runtime
     from app.ai.diagram.runtime import run_diagram_generator

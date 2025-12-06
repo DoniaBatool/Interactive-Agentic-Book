@@ -42,10 +42,14 @@ async def retrieve_content(
     TODO: Add caching for frequently retrieved queries
     
     TODO: Chapter-aware retrieval
+    TODO: support CH2 collection name
     TODO: If chapter_id == 2:
     TODO:     Use Chapter 2 RAG pipeline
+    TODO:     from app.ai.rag.collections.ch2_collection import CH2_COLLECTION_NAME
+    TODO:     Use CH2_COLLECTION_NAME for Chapter 2 collection
     TODO:     from app.ai.rag.pipeline import run_rag_pipeline
     TODO:     context = await run_rag_pipeline(query, chapter_id=2, top_k=top_k)
+    TODO:     Call RAG pipeline with Chapter 2 collection
     TODO:     Return Chapter 2 chunks with ROS 2 context
     TODO: Elif chapter_id == 1:
     TODO:     Use Chapter 1 RAG pipeline (existing logic)

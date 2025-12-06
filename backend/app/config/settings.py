@@ -42,6 +42,9 @@ class Settings(BaseSettings):
     llm_model: Optional[str] = None  # LLM model identifier (e.g., "gpt-4o", "gemini-pro")
     
     # === Chapter 2 Runtime Configuration ===
+    qdrant_collection_ch2: Optional[str] = None  # Qdrant collection name for Chapter 2 RAG operations
+    ch2_embedding_model: Optional[str] = None  # Embedding model for Chapter 2 (e.g., "text-embedding-3-small")
+    ch2_llm_model: Optional[str] = None  # LLM model for Chapter 2 (e.g., "gpt-4o-mini")
     default_ch2_model: Optional[str] = None  # Default LLM model for Chapter 2 runtime (e.g., "gpt-4o-mini")
     default_ch2_embeddings: Optional[str] = None  # Default embedding model for Chapter 2 (e.g., "text-embedding-3-small")
     enable_chapter_2_runtime: bool = True  # Enable/disable Chapter 2 runtime engine

@@ -1,0 +1,194 @@
+# Runtime Extension Contract for Chapter 2
+
+**Feature**: 020-chapter-2-ai-runtime
+**Created**: 2025-12-05
+**Status**: Draft
+
+## Overview
+
+This contract defines the extension of the AI Runtime Engine (Feature 005) to support Chapter 2 content. The extension includes RAG collection setup, embedding pipeline extension, runtime routing, subagents, skills reuse, and ChatKit integration.
+
+## RAG Collection Setup
+
+**File**: `backend/app/ai/rag/collections/ch2_collection.py`
+
+**Constants**:
+```yaml
+CH2_COLLECTION_NAME: "chapter_2"
+```
+
+**Functions** (TODO stubs):
+```yaml
+create_collection:
+  description: "Create Qdrant collection for Chapter 2"
+  input: {}
+  output: {}
+  status: TODO
+
+upsert_vectors:
+  description: "Upsert vectors to Chapter 2 collection"
+  input:
+    chunks: List[str]
+    embeddings: List[List[float]]
+  output: {}
+  status: TODO
+
+search:
+  description: "Search Chapter 2 collection"
+  input:
+    query_embedding: List[float]
+    top_k: int
+  output:
+    results: List[Dict]
+  status: TODO
+```
+
+## Embedding Pipeline Extension
+
+**File**: `backend/app/ai/embeddings/embedding_client.py`
+
+**Extensions** (TODO stubs):
+```yaml
+chapter_2_support:
+  description: "Add chapter=2 support to embedding functions"
+  functions:
+    - generate_embedding (extend for chapter_id parameter)
+    - batch_embed (extend for chapter_id parameter)
+  status: TODO
+
+batch_embed_ch2:
+  description: "Batch embedding for Chapter 2 chunks"
+  input:
+    chunks: List[str]
+    chapter_id: 2
+  output:
+    embeddings: List[List[float]]
+  status: TODO
+```
+
+## Runtime Routing Extension
+
+**File**: `backend/app/ai/runtime/engine.py`
+
+**Chapter 2 Routing** (TODO):
+```yaml
+routing_logic:
+  description: "Route chapterId=2 calls to CH2 RAG"
+  flow:
+    - Check chapterId in request_data
+    - If chapterId == 2:
+      - Route to CH2 RAG pipeline
+      - Call CH2 subagents
+      - Use CH2 context
+  status: TODO
+
+handler_functions:
+  - handle_ch2_ask_question (TODO)
+  - handle_ch2_explain_el10 (TODO)
+  - handle_ch2_quiz (TODO)
+  - handle_ch2_diagram (TODO)
+```
+
+## Subagents Extension
+
+**Files**:
+- `backend/app/ai/subagents/ch2_ask_question_agent.py`
+- `backend/app/ai/subagents/ch2_el10_agent.py`
+- `backend/app/ai/subagents/ch2_quiz_agent.py`
+- `backend/app/ai/subagents/ch2_diagram_agent.py`
+
+**Schema** (each subagent):
+```yaml
+input_schema:
+  description: "Input schema placeholder"
+  status: TODO
+
+output_schema:
+  description: "Output schema placeholder"
+  status: TODO
+
+orchestration:
+  description: "TODO: orchestrate provider + RAG"
+  status: TODO
+```
+
+## Skills Reuse
+
+**File**: `backend/app/ai/skills/retrieval_skill.py`
+
+**Extension**:
+```yaml
+ch2_collection_support:
+  description: "TODO: support CH2 collection name"
+  status: TODO
+```
+
+**File**: `backend/app/ai/skills/prompt_builder_skill.py`
+
+**Extension**:
+```yaml
+ch2_templates:
+  description: "TODO: templates for CH2"
+  status: TODO
+```
+
+## ChatKit Session Support
+
+**File**: `backend/app/ai/chatkit/session_manager.py`
+
+**Extension**:
+```yaml
+chapter_2_tracking:
+  description: "Extend session_manager to track chapterId=2"
+  status: TODO
+
+ch2_memory_nodes:
+  description: "TODO stub: attach CH2 memory nodes"
+  status: TODO
+```
+
+## Configuration
+
+**File**: `backend/app/config/settings.py`
+
+**New Settings**:
+```yaml
+QDRANT_COLLECTION_CH2:
+  type: Optional[str]
+  default: None
+  description: "Qdrant collection name for Chapter 2"
+
+CH2_EMBEDDING_MODEL:
+  type: Optional[str]
+  default: None
+  description: "Embedding model for Chapter 2"
+
+CH2_LLM_MODEL:
+  type: Optional[str]
+  default: None
+  description: "LLM model for Chapter 2"
+```
+
+**File**: `.env.example`
+
+**New Variables**:
+```yaml
+QDRANT_COLLECTION_CH2: "chapter_2"
+CH2_EMBEDDING_MODEL: "text-embedding-3-small"
+CH2_LLM_MODEL: "gpt-4o-mini"
+```
+
+## API Stability
+
+**File**: `backend/app/api/ai_blocks.py`
+
+**Behavior**:
+```yaml
+chapter_2_routing:
+  description: "Treat chapterId=2 the same as chapterId=1"
+  behavior:
+    - All block types route to runtime engine
+    - chapterId=2 requests route to run_ai_block(block_type, chapter_id=2)
+    - No special handling needed (routing handled by runtime engine)
+  status: Already implemented (verify)
+```

@@ -25,6 +25,8 @@ def create_session(user_id: str) -> str:
     TODO: Add error handling for database failures
     
     TODO: Multi-chapter session contexts
+    TODO: Extend session_manager to track chapterId=2
+    TODO: Support chapterId=2, track Chapter 2 sessions separately
     TODO: Track Chapter 2 context in session
     TODO: Initialize chapter_context dictionary:
     TODO:     {

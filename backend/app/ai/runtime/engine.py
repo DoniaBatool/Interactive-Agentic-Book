@@ -90,53 +90,73 @@ async def run_ai_block(
     # context = await run_rag_pipeline(query, chapter_id)
     
     # TODO: Chapter 2 routing
-    # chapter_id = request_data.get("chapterId", 1)
-    # if chapter_id == 2:
-    #     # TODO: Check ENABLE_CHAPTER_2_RUNTIME flag
-    #     # from app.config.settings import ENABLE_CHAPTER_2_RUNTIME
-    #     # if not ENABLE_CHAPTER_2_RUNTIME:
-    #     #     return {"error": "Chapter 2 runtime disabled"}
-    #     
-    #     # TODO: Import Chapter 2 subagents
-    #     # from app.ai.subagents.ch2_ask_question_agent import ch2_ask_question_agent
-    #     # from app.ai.subagents.ch2_explain_el10_agent import ch2_explain_el10_agent
-    #     # from app.ai.subagents.ch2_quiz_agent import ch2_quiz_agent
-    #     # from app.ai.subagents.ch2_diagram_agent import ch2_diagram_agent
-    #     
-    #     # TODO: Route to Chapter 2 subagent
-    #     # CH2_SUBAGENT_MAP = {
-    #     #     "ask-question": ch2_ask_question_agent,
-    #     #     "explain-like-10": ch2_explain_el10_agent,
-    #     #     "quiz": ch2_quiz_agent,
-    #     #     "diagram": ch2_diagram_agent,
-    #     # }
-    #     # subagent = CH2_SUBAGENT_MAP.get(block_type)
-    #     # if not subagent:
-    #     #     return {"error": f"Unknown block type: {block_type}"}
-    #     
-    #     # TODO: Load Chapter 2 RAG context
-    #     # from app.ai.rag.pipeline import run_rag_pipeline
-    #     # query = request_data.get("question") or request_data.get("concept") or ""
-    #     # context = await run_rag_pipeline(query, chapter_id=2, top_k=5)
-    #     
-    #     # TODO: Placeholder LLM invocation for Chapter 2
-    #     # LLM provider will be selected from DEFAULT_CH2_MODEL setting
-    #     # LLM will receive ROS 2 context from RAG pipeline
-    #     # LLM will generate response with ROS 2 knowledge
-    #     
-    #     # TODO: Call Chapter 2 subagent with context
-    #     # result = await subagent(request_data, context)
-    #     
-    #     # TODO: Format response
-    #     # from app.ai.skills.formatting_skill import format_response
-    #     # formatted = format_response(result, block_type, chapter_id=2)
-    #     # return formatted
-    # elif chapter_id == 1:
-    #     from app.content.chapters.chapter_1_chunks import get_chapter_chunks
-    #     chunks = get_chapter_chunks(chapter_id=1)
-    #     # Existing Chapter 1 logic
-    # else:
-    #     raise ValueError(f"Unknown chapter_id: {chapter_id}")
+    chapter_id = request_data.get("chapterId", 1)
+    if chapter_id == 2:
+        # TODO: Check ENABLE_CHAPTER_2_RUNTIME flag
+        # from app.config.settings import settings
+        # if not settings.enable_chapter_2_runtime:
+        #     return {"error": "Chapter 2 runtime disabled"}
+        
+        # TODO: Import Chapter 2 subagents
+        # from app.ai.subagents.ch2_ask_question_agent import ch2_ask_question_agent
+        # from app.ai.subagents.ch2_explain_el10_agent import ch2_explain_el10_agent
+        # from app.ai.subagents.ch2_quiz_agent import ch2_quiz_agent
+        # from app.ai.subagents.ch2_diagram_agent import ch2_diagram_agent
+        
+        # TODO: Route to Chapter 2 subagent
+        # CH2_SUBAGENT_MAP = {
+        #     "ask-question": ch2_ask_question_agent,
+        #     "explain-like-10": ch2_explain_el10_agent,
+        #     "quiz": ch2_quiz_agent,
+        #     "diagram": ch2_diagram_agent,
+        # }
+        # subagent = CH2_SUBAGENT_MAP.get(block_type)
+        # if not subagent:
+        #     return {"error": f"Unknown block type: {block_type}"}
+        
+        # TODO: Load Chapter 2 RAG context
+        # TODO: Import build_context_for_ch2 from pipeline
+        # from app.ai.rag.pipeline import build_context_for_ch2
+        # TODO: Extract query from request_data
+        # query = request_data.get("question") or request_data.get("concept") or ""
+        # TODO: Call build_context_for_ch2(query) to get context
+        # context = await build_context_for_ch2(query)
+        # TODO: Use context for subagent processing
+        # TODO: Pass context to Chapter 2 subagent along with request_data
+        
+        # TODO: Provider selection for Chapter 2
+        # TODO: Select LLM provider based on CH2_LLM_MODEL setting
+        # from app.config.settings import settings
+        # provider = get_provider(settings.ch2_llm_model)
+        # TODO: Use provider for Chapter 2 LLM calls
+        # TODO: LLM provider will be selected from CH2_LLM_MODEL setting
+        # TODO: LLM will receive ROS 2 context from RAG pipeline
+        # TODO: LLM will generate response with ROS 2 knowledge
+        
+        # TODO: Context merging for Chapter 2
+        # TODO: Merge RAG context with request_data for subagent processing
+        # merged_context = {
+        #     "rag_context": context,  # From build_context_for_ch2
+        #     "request_data": request_data,  # Original request
+        #     "chapter_id": 2,
+        #     "block_type": block_type
+        # }
+        # TODO: Pass merged_context to Chapter 2 subagent
+        
+        # TODO: Call Chapter 2 subagent with context
+        # result = await subagent(request_data, context)
+        
+        # TODO: Format response
+        # from app.ai.skills.formatting_skill import format_response
+        # formatted = format_response(result, block_type, chapter_id=2)
+        # return formatted
+        pass
+    elif chapter_id == 1:
+        # Existing Chapter 1 logic
+        pass
+    else:
+        # TODO: Handle unknown chapter_id
+        pass
     
     # Step 3: LLM Selection - Choose provider based on config (TODO)
     # provider = get_provider()  # Based on settings.ai_provider
@@ -152,4 +172,89 @@ async def run_ai_block(
         "message": "placeholder",
         "data": {}
     }
+
+
+# TODO: Chapter 2 handler functions
+async def handle_ch2_ask_question(
+    request_data: Dict[str, Any],
+    context: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Handle Chapter 2 ask-question block.
+    
+    Args:
+        request_data: Request payload with question and chapterId=2
+        context: RAG context from Chapter 2 collection
+    
+    Returns:
+        Formatted response with answer
+    
+    TODO: Implement Chapter 2 ask-question handler
+    TODO: Call ch2_ask_question_agent with request_data and context
+    TODO: Format response for frontend
+    """
+    return {"answer": "TODO: Implement Chapter 2 ask-question handler"}
+
+
+async def handle_ch2_explain_el10(
+    request_data: Dict[str, Any],
+    context: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Handle Chapter 2 explain-like-10 block.
+    
+    Args:
+        request_data: Request payload with concept and chapterId=2
+        context: RAG context from Chapter 2 collection
+    
+    Returns:
+        Formatted response with explanation
+    
+    TODO: Implement Chapter 2 explain-like-10 handler
+    TODO: Call ch2_el10_agent with request_data and context
+    TODO: Format response for frontend
+    """
+    return {"explanation": "TODO: Implement Chapter 2 explain-like-10 handler"}
+
+
+async def handle_ch2_quiz(
+    request_data: Dict[str, Any],
+    context: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Handle Chapter 2 quiz block.
+    
+    Args:
+        request_data: Request payload with chapterId=2 and numQuestions
+        context: RAG context from Chapter 2 collection
+    
+    Returns:
+        Formatted response with quiz questions
+    
+    TODO: Implement Chapter 2 quiz handler
+    TODO: Call ch2_quiz_agent with request_data and context
+    TODO: Format response for frontend
+    """
+    return {"quiz": "TODO: Implement Chapter 2 quiz handler"}
+
+
+async def handle_ch2_diagram(
+    request_data: Dict[str, Any],
+    context: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Handle Chapter 2 diagram block.
+    
+    Args:
+        request_data: Request payload with diagramType, chapterId=2, and concepts
+        context: RAG context from Chapter 2 collection
+    
+    Returns:
+        Formatted response with diagram
+    
+    TODO: Implement Chapter 2 diagram handler
+    TODO: Call ch2_diagram_agent with request_data and context
+    TODO: Format response for frontend
+    """
+    return {"diagram": "TODO: Implement Chapter 2 diagram handler"}
 

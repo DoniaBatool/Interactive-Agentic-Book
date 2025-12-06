@@ -49,11 +49,14 @@ def build_prompt(
     TODO: Add source citation instructions
     
     TODO: Chapter-aware prompt builder
+    TODO: templates for CH2
     TODO: If chapter_id == 2:
     TODO:     Build ROS 2-specific prompts
+    TODO:     Use ROS 2 prompt templates
     TODO:     Include ROS 2 concepts, analogies, examples
     TODO:     System prompt: "You are a helpful tutor explaining ROS 2 concepts..."
     TODO:     Include ROS 2 context chunks
+    TODO:     Format context with ROS 2-specific instructions
     TODO:     Add ROS 2 terminology guidelines
     TODO: Elif chapter_id == 1:
     TODO:     Build Chapter 1 prompts (existing logic)

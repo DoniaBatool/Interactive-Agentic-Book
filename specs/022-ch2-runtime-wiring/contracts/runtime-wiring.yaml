@@ -1,0 +1,437 @@
+# Runtime Wiring Contract for Chapter 2
+# Feature: 022-ch2-runtime-wiring
+# Created: 2025-12-05
+# Status: Draft
+
+---
+# Overview
+# This contract defines the runtime wiring architecture for Chapter 2 AI blocks,
+# including chapter selection flow, RAG pipeline integration, LLM routing,
+# and context assembly contracts.
+
+contract_version: "1.0.0"
+feature_id: "022-ch2-runtime-wiring"
+chapter_id: 2
+
+---
+# Chapter Selection Flow Contract
+
+chapter_selection:
+  description: |
+    Flow for selecting and routing Chapter 2 requests through the AI Runtime Engine.
+    
+    Request Flow:
+    1. API Endpoint receives request with chapterId=2
+    2. API Endpoint routes to runtime engine (run_ai_block)
+    3. Runtime engine checks chapter_id from request_data
+    4. Runtime engine routes to Chapter 2 handling path (if chapter_id=2)
+    5. Runtime engine calls RAG pipeline for Chapter 2 context
+    6. Runtime engine routes to appropriate Chapter 2 subagent
+    7. Subagent processes request with Chapter 2 context
+    8. Response is formatted and returned to API endpoint
+    
+  routing_logic:
+    chapter_id_extraction: |
+      - Extract chapterId from request_data
+      - Default to chapter_id=1 if not provided
+      - Route to Chapter 2 path if chapter_id=2
+      
+    chapter_2_path: |
+      - Check ENABLE_CHAPTER_2_RUNTIME flag (TODO)
+      - Import Chapter 2 subagents (TODO)
+      - Route to Chapter 2 subagent based on block_type (TODO)
+      - Load Chapter 2 RAG context (TODO)
+      - Call Chapter 2 subagent with context (TODO)
+      - Format response for Chapter 2 (TODO)
+      
+  placeholders:
+    - name: "ENABLE_CHAPTER_2_RUNTIME check"
+      location: "backend/app/ai/runtime/engine.py"
+      description: "Check if Chapter 2 runtime is enabled before processing"
+      
+    - name: "Chapter 2 subagent imports"
+      location: "backend/app/ai/runtime/engine.py"
+      description: "Import Chapter 2-specific subagents (ch2_ask_question_agent, etc.)"
+      
+    - name: "Chapter 2 subagent routing"
+      location: "backend/app/ai/runtime/engine.py"
+      description: "Route to appropriate Chapter 2 subagent based on block_type"
+      
+    - name: "Chapter 2 RAG context loading"
+      location: "backend/app/ai/runtime/engine.py"
+      description: "Load Chapter 2 context from RAG pipeline"
+      
+    - name: "Chapter 2 provider selection"
+      location: "backend/app/ai/runtime/engine.py"
+      description: "Select LLM provider for Chapter 2 (CH2_LLM_MODEL setting)"
+
+---
+# RAG Pipeline Integration Contract
+
+rag_pipeline:
+  description: |
+    Contract for RAG pipeline functions specific to Chapter 2.
+    All functions are placeholders (TODO stubs) with no real implementation.
+    
+  functions:
+    - name: "embed_chapter_2"
+      location: "backend/app/ai/rag/pipeline.py"
+      signature: "async def embed_chapter_2() -> None"
+      description: |
+        Embed Chapter 2 chunks into vector database.
+        - Load Chapter 2 chunks from chapter_2_chunks.py
+        - Generate embeddings using CH2_EMBEDDING_MODEL
+        - Upsert embeddings into Chapter 2 collection (chapter_2)
+        - TODO: Implement embedding batch processing
+        - TODO: Implement Qdrant upsert operations
+      inputs: []
+      outputs: []
+      placeholders:
+        - "Load Chapter 2 chunks"
+        - "Generate embeddings"
+        - "Upsert to Qdrant collection"
+        
+    - name: "retrieve_chapter_2_relevant_chunks"
+      location: "backend/app/ai/rag/pipeline.py"
+      signature: "async def retrieve_chapter_2_relevant_chunks(query: str, top_k: int = 5) -> List[Dict[str, Any]]"
+      description: |
+        Retrieve relevant Chapter 2 chunks for a given query.
+        - Embed user query using CH2_EMBEDDING_MODEL
+        - Perform semantic search in Chapter 2 collection (chapter_2)
+        - Return top-k most relevant chunks with metadata
+        - TODO: Implement query embedding
+        - TODO: Implement Qdrant similarity search
+      inputs:
+        - query: str (user query text)
+        - top_k: int (number of chunks to retrieve, default: 5)
+      outputs:
+        - List[Dict[str, Any]]: Retrieved chunks with metadata
+      placeholders:
+        - "Embed user query"
+        - "Perform semantic search"
+        - "Return top-k chunks"
+        
+    - name: "build_context_for_ch2"
+      location: "backend/app/ai/rag/pipeline.py"
+      signature: "async def build_context_for_ch2(query: str) -> Dict[str, Any]"
+      description: |
+        Build retrieval context for Chapter 2 requests.
+        - Retrieve relevant chunks using retrieve_chapter_2_relevant_chunks
+        - Assemble chunks into context string with metadata
+        - Include section context and chunk metadata
+        - TODO: Implement context assembly
+        - TODO: Implement context formatting
+      inputs:
+        - query: str (user query text)
+      outputs:
+        - Dict[str, Any]: Context dictionary with structure:
+          {
+            "context": str,                    # Assembled context string
+            "chunks": List[Dict[str, Any]],   # Retrieved chunks with metadata
+            "query_embedding": List[float]    # Query embedding vector
+          }
+      placeholders:
+        - "Retrieve relevant chunks"
+        - "Assemble context string"
+        - "Format context with metadata"
+        
+  constants:
+    - name: "CHAPTER_2_COLLECTION_NAME"
+      location: "backend/app/ai/rag/pipeline.py"
+      value: "chapter_2"
+      description: "Qdrant collection name for Chapter 2 RAG operations"
+      source: "Can be imported from app.ai.rag.collections.ch2_collection.CH2_COLLECTION_NAME"
+
+---
+# API-Level Routing Contract
+
+api_routing:
+  description: |
+    Contract for API endpoint routing to runtime engine for Chapter 2.
+    All endpoints must support chapterId=2 and route to runtime engine.
+    
+  endpoints:
+    - path: "/api/ai/ask-question"
+      method: "POST"
+      request_model: "AskQuestionRequest"
+      chapter_support: |
+        - Accepts chapterId (optional, defaults to 1)
+        - Routes to runtime engine with chapterId=2 support
+        - TODO: Load Chapter 2 context before routing
+      routing:
+        - Extract chapterId from request
+        - Route to run_ai_block("ask-question", request_data)
+        - Runtime engine handles chapter_id=2 routing internally
+      placeholders:
+        - "Load Chapter 2 context"
+        - "Route to runtime engine"
+        
+    - path: "/api/ai/explain-like-10"
+      method: "POST"
+      request_model: "ExplainLike10Request"
+      chapter_support: |
+        - Accepts chapterId (optional, defaults to 1)
+        - Routes to runtime engine with chapterId=2 support
+        - TODO: Load Chapter 2 context before routing
+      routing:
+        - Extract chapterId from request
+        - Route to run_ai_block("explain-like-10", request_data)
+        - Runtime engine handles chapter_id=2 routing internally
+      placeholders:
+        - "Load Chapter 2 context"
+        - "Route to runtime engine"
+        
+    - path: "/api/ai/quiz"
+      method: "POST"
+      request_model: "QuizRequest"
+      chapter_support: |
+        - Accepts chapterId (required)
+        - Routes to runtime engine with chapterId=2 support
+        - TODO: Load Chapter 2 context before routing
+      routing:
+        - Extract chapterId from request
+        - Route to run_ai_block("quiz", request_data)
+        - Runtime engine handles chapter_id=2 routing internally
+      placeholders:
+        - "Load Chapter 2 context"
+        - "Route to runtime engine"
+        
+    - path: "/api/ai/diagram"
+      method: "POST"
+      request_model: "DiagramRequest"
+      chapter_support: |
+        - Accepts chapterId (optional, defaults to 1)
+        - Routes to runtime engine with chapterId=2 support
+        - TODO: Load Chapter 2 context before routing
+      routing:
+        - Extract chapterId from request
+        - Route to run_ai_block("diagram", request_data)
+        - Runtime engine handles chapter_id=2 routing internally
+      placeholders:
+        - "Load Chapter 2 context"
+        - "Route to runtime engine"
+
+---
+# Context-Building Contract
+
+context_building:
+  description: |
+    Contract for building retrieval context for Chapter 2 requests.
+    Context assembly combines RAG retrieval results into formatted context strings.
+    
+  context_structure:
+    context_dict: |
+      {
+        "context": str,                    # Assembled context string
+        "chunks": List[Dict[str, Any]],   # Retrieved chunks with metadata
+        "query_embedding": List[float]    # Query embedding vector
+      }
+      
+    chunk_structure: |
+      {
+        "id": str,                    # Unique chunk ID (e.g., "ch2-s1-c0")
+        "text": str,                  # Chunk text content
+        "chapter_id": 2,              # Chapter identifier
+        "section_id": str,            # Section identifier (e.g., "introduction-to-ros2")
+        "position": int,              # Position in chapter (0-based)
+        "word_count": int,            # Word count
+        "metadata": {                 # Additional metadata
+          "heading": str,            # Section heading
+          "type": str,               # "paragraph", "heading", "glossary", etc.
+          "has_diagram": bool,       # True if section has diagram placeholder
+          "has_ai_block": bool       # True if section has AI block
+        }
+      }
+      
+  context_assembly_steps:
+    - step: 1
+      name: "Retrieve relevant chunks"
+      description: "Call retrieve_chapter_2_relevant_chunks(query, top_k)"
+      placeholder: "TODO: Implement chunk retrieval"
+      
+    - step: 2
+      name: "Assemble context string"
+      description: "Combine chunk text into formatted context string"
+      placeholder: "TODO: Implement context string assembly"
+      
+    - step: 3
+      name: "Include metadata"
+      description: "Include chunk metadata in context dictionary"
+      placeholder: "TODO: Implement metadata inclusion"
+      
+    - step: 4
+      name: "Format context"
+      description: "Format context for LLM prompt inclusion"
+      placeholder: "TODO: Implement context formatting"
+      
+  context_merging:
+    description: |
+      Contract for merging Chapter 2 context with request data.
+      Context merging combines RAG context with user request for subagent processing.
+      
+    merging_steps:
+      - step: 1
+        name: "Extract query from request"
+        description: "Extract question/concept from request_data"
+        placeholder: "TODO: Implement query extraction"
+        
+      - step: 2
+        name: "Load Chapter 2 context"
+        description: "Call build_context_for_ch2(query) to get context"
+        placeholder: "TODO: Implement context loading"
+        
+      - step: 3
+        name: "Merge context with request"
+        description: "Combine context with request_data for subagent"
+        placeholder: "TODO: Implement context merging"
+        
+      - step: 4
+        name: "Pass to subagent"
+        description: "Pass merged context to Chapter 2 subagent"
+        placeholder: "TODO: Implement subagent call"
+
+---
+# Subagent Integration Contract
+
+subagent_integration:
+  description: |
+    Contract for Chapter 2 subagent integration with runtime engine.
+    All subagents must have TODO comments for Chapter 2 handling path.
+    
+  subagents:
+    - name: "ask_question_agent"
+      location: "backend/app/ai/subagents/ask_question_agent.py"
+      chapter_2_support: |
+        - TODO: Chapter 2 handling path
+        - TODO: Process Chapter 2 requests with ROS 2 context
+        - TODO: Use Chapter 2 RAG context in prompts
+        - TODO: Format Chapter 2 responses
+      placeholders:
+        - "Chapter 2 request processing"
+        - "Chapter 2 context integration"
+        - "Chapter 2 response formatting"
+        
+    - name: "explain_el10_agent"
+      location: "backend/app/ai/subagents/explain_el10_agent.py"
+      chapter_2_support: |
+        - TODO: Chapter 2 handling path
+        - TODO: Process Chapter 2 requests with ROS 2 context
+        - TODO: Use Chapter 2 RAG context in prompts
+        - TODO: Format Chapter 2 responses
+      placeholders:
+        - "Chapter 2 request processing"
+        - "Chapter 2 context integration"
+        - "Chapter 2 response formatting"
+        
+    - name: "quiz_agent"
+      location: "backend/app/ai/subagents/quiz_agent.py"
+      chapter_2_support: |
+        - TODO: Chapter 2 handling path
+        - TODO: Process Chapter 2 requests with ROS 2 context
+        - TODO: Use Chapter 2 RAG context in prompts
+        - TODO: Format Chapter 2 responses
+      placeholders:
+        - "Chapter 2 request processing"
+        - "Chapter 2 context integration"
+        - "Chapter 2 response formatting"
+        
+    - name: "diagram_agent"
+      location: "backend/app/ai/subagents/diagram_agent.py"
+      chapter_2_support: |
+        - TODO: Chapter 2 handling path
+        - TODO: Process Chapter 2 requests with ROS 2 context
+        - TODO: Use Chapter 2 RAG context in prompts
+        - TODO: Format Chapter 2 responses
+      placeholders:
+        - "Chapter 2 request processing"
+        - "Chapter 2 context integration"
+        - "Chapter 2 response formatting"
+
+---
+# Knowledge Source Contract
+
+knowledge_source:
+  description: |
+    Contract for Chapter 2 knowledge source structure.
+    Knowledge source provides chunk metadata and readiness flags.
+    
+  module: "backend/app/content/chapters/chapter_2_chunks.py"
+  
+  structural_placeholders:
+    - name: "chunk_count"
+      type: "int"
+      description: "Expected number of chunks for Chapter 2"
+      placeholder: "TODO: Calculate chunk count from MDX content"
+      default: 0
+      
+    - name: "expected_section_map"
+      type: "Dict[str, List[int]]"
+      description: "Mapping of section IDs to expected chunk ranges"
+      placeholder: "TODO: Build section map from MDX structure"
+      structure: |
+        {
+          "introduction-to-ros2": [0, 1, 2],
+          "nodes-and-node-communication": [3, 4, 5],
+          "topics-and-messages": [6, 7, 8],
+          ...
+        }
+        
+    - name: "embedding_ready"
+      type: "bool"
+      description: "Flag indicating whether chunks are ready for embedding"
+      placeholder: "TODO: Set embedding_ready based on chunk availability"
+      default: False
+      
+  function_signature:
+    name: "get_chapter_chunks"
+    signature: "def get_chapter_chunks(chapter_id: int = 2) -> List[Dict[str, Any]]"
+    description: "Return list of text chunks from Chapter 2 with metadata"
+    placeholders:
+      - "Load Chapter 2 MDX content"
+      - "Extract chunks using chunk markers"
+      - "Generate chunk metadata"
+      - "Return chunks with structure"
+
+---
+# Validation Contract
+
+validation:
+  description: |
+    Contract for validating Chapter 2 runtime wiring implementation.
+    All validations must pass before feature is considered complete.
+    
+  validation_checks:
+    - check: "Backend starts with no errors"
+      location: "backend/app/main.py"
+      method: "Start backend server and verify no import errors or runtime exceptions"
+      expected: "Backend starts successfully"
+      
+    - check: "All imports resolve"
+      location: "All modified files"
+      method: "Verify all import statements resolve without errors"
+      expected: "No import errors"
+      
+    - check: "Runtime engine aware of Chapter 2"
+      location: "backend/app/ai/runtime/engine.py"
+      method: "Verify chapter_id=2 handling path exists"
+      expected: "chapter_id=2 routing exists in run_ai_block()"
+      
+    - check: "RAG pipeline contains CH2 entry points"
+      location: "backend/app/ai/rag/pipeline.py"
+      method: "Verify TODO stubs for embed_chapter_2, retrieve_chapter_2_relevant_chunks, build_context_for_ch2"
+      expected: "All three function stubs exist with TODO comments"
+      
+    - check: "AI block runtime supports CH2 selection"
+      location: "backend/app/api/ai_blocks.py"
+      method: "Verify all endpoints can accept chapterId=2"
+      expected: "All endpoints route to runtime engine with chapterId=2 support"
+      
+    - check: "All routing and placeholder comments exist"
+      location: "All modified files"
+      method: "Verify TODO comments exist in all required locations"
+      expected: "All TODO placeholders documented in contract exist"
+      
+    - check: "No business logic implemented"
+      location: "All modified files"
+      method: "Verify only TODO comments and function stubs exist, no real implementation"
+      expected: "Only scaffolding, no business logic"

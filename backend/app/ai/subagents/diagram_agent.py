@@ -127,20 +127,26 @@ async def diagram_agent(
     TODO: Generate diagram code or image based on diagram_type
     TODO: Add diagram metadata (title, description, concepts)
     TODO: Add error handling for generation failures
-    
-    # TODO: Chapter 2 (ROS 2) Integration
-    # Expected ROS 2 inputs:
-    #   - Diagram types: "ros2-ecosystem-overview", "node-communication-architecture", "topic-pubsub-flow", "services-actions-comparison"
-    #   - Chapter context: chapterId=2
-    #   - ROS 2 concepts: nodes, topics, services, actions
-    # Expected output format: Same as Chapter 1, but with ROS 2 diagram content
-    # ROS 2-specific considerations:
-    #   - Generate diagrams showing ROS 2 architecture (nodes, topics, services, actions)
-    #   - Include node communication graphs
-    #   - Show topic publish/subscribe flows
-    #   - Compare services vs actions visually
-    #   - Use ROS 2 terminology in diagram labels
     """
+    # TODO: Chapter 2 handling path
+    # TODO: Check if context contains chapter_id=2 or extract from request_data
+    # chapter_id = context.get("chapter_id") or request_data.get("chapterId", 1)
+    # if chapter_id == 2:
+    #     # TODO: Process Chapter 2 requests with ROS 2 context
+    #     # TODO: Use Chapter 2 RAG context in prompts
+    #     # TODO: Format Chapter 2 responses
+    #     # TODO: Generate ROS 2-specific diagrams (node communication, topic pubsub, services/actions)
+    #     # TODO: Generate diagrams showing ROS 2 architecture (nodes, topics, services, actions)
+    #     # TODO: Include node communication graphs
+    #     # TODO: Show topic publish/subscribe flows
+    #     # TODO: Compare services vs actions visually
+    #     # TODO: Use ROS 2 terminology in diagram labels
+    #     # TODO: Support ROS 2 diagram types: "ros2-ecosystem-overview", "node-communication-architecture", "topic-pubsub-flow", "services-actions-comparison"
+    #     pass
+    # elif chapter_id == 1:
+    #     # Existing Chapter 1 logic
+    #     pass
+    
     # Placeholder return - no real diagram generation logic
     return {
         "diagram_url": "",
