@@ -22,7 +22,7 @@ Built for the **Agentic AI Hackathon** following **Spec-Driven Development (SDD)
 Before you begin, ensure you have the following installed:
 
 - **Node.js 18+** - [Download](https://nodejs.org/)
-- **Python 3.11+** - [Download](https://www.python.org/downloads/)
+- **Python 3.12+** - [Download](https://www.python.org/downloads/)
 - **Git** - [Download](https://git-scm.com/downloads/)
 
 Verify installations:
