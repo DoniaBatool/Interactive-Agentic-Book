@@ -28,9 +28,9 @@ Navigate through the sidebar to explore different chapters and topics. Use the s
 
 This project follows **Spec-Driven Development (SDD)** methodology. Check out:
 
-- **[Project Constitution](../../.specify/memory/constitution.md)** - Core principles
-- **[Feature Specifications](../../specs/)** - Detailed requirements
-- **[Contributing Guide](../../README.md#contributing)** - How to contribute
+- **[Project Constitution](https://github.com/DoniaBatool/Interactive-Agentic-Book/blob/main/.specify/memory/constitution.md)** - Core principles
+- **[Feature Specifications](https://github.com/DoniaBatool/Interactive-Agentic-Book/tree/main/specs)** - Detailed requirements
+- **[Contributing Guide](https://github.com/DoniaBatool/Interactive-Agentic-Book/blob/main/README.md#contributing)** - How to contribute
 
 ## 🛠️ Technology Stack
 
@@ -57,8 +57,8 @@ _(Content coming in future features)_
 
 This textbook is open-source and community-driven. Contributions are welcome!
 
-- **GitHub**: [View Repository](https://github.com/your-username/interactive-agentic-book)
-- **Issues**: [Report Bugs or Request Features](https://github.com/your-username/interactive-agentic-book/issues)
+- **GitHub**: [View Repository](https://github.com/DoniaBatool/Interactive-Agentic-Book)
+- **Issues**: [Report Bugs or Request Features](https://github.com/DoniaBatool/Interactive-Agentic-Book/issues)
 
 ## 🎓 About This Project
 

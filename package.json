@@ -1,0 +1,24 @@
+{
+  "name": "interactive-agentic-book",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "deploy": "cd frontend && npm run deploy",
+    "deploy:win": "cd frontend && set GIT_USER=DoniaBatool && npm run deploy",
+    "deploy:ssh": "cd frontend && set USE_SSH=true && npm run deploy",
+    "build": "cd frontend && npm run build",
+    "start": "cd frontend && npm start",
+    "frontend:deploy": "cd frontend && npm run deploy",
+    "frontend:build": "cd frontend && npm run build",
+    "frontend:start": "cd frontend && npm start"
+  },
+  "description": "AI-Native Physical AI & Robotics Textbook - Interactive Learning Platform",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DoniaBatool/Interactive-Agentic-Book.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
+}
