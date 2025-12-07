@@ -1,0 +1,266 @@
+# Chapter 3 AI Runtime Engine Integration Contract
+
+**Feature**: 030-ch3-ai-runtime
+**Created**: 2025-01-27
+**Status**: Draft
+
+## Overview
+
+This contract defines the AI Runtime Engine integration for Chapter 3 AI blocks. The flow orchestrates API routing, runtime engine routing, RAG pipeline invocation, subagent selection, and response formatting for Physical AI Perception Systems knowledge.
+
+## Runtime Flow
+
+```
+Frontend Component (Chapter 3)
+    ↓
+API Endpoint (ai_blocks.py)
+    ├─► POST /ai/ch3/ask-question
+    ├─► POST /ai/ch3/explain-el10
+    ├─► POST /ai/ch3/quiz
+    └─► POST /ai/ch3/diagram
+    ↓
+Runtime Engine (engine.py)
+    │
+    ├─► Router: Determine block type → Select Chapter 3 subagent
+    │
+    ├─► RAG Pipeline (ch3_pipeline.py)
+    │   ├─► Load Chapter 3 chunks (chapter_3_chunks.py)
+    │   ├─► Embed user query (embedding_client.py)
+    │   ├─► Qdrant similarity search (collection="chapter3")
+    │   └─► Construct retrieval context
+    │
+    ├─► Skills System
+    │   ├─► Retrieval Skill (retrieval_skill.py) - Chapter 3 context
+    │   ├─► Prompt Builder Skill (prompt_builder_skill.py) - Physical AI prompts
+    │   └─► Formatting Skill (formatting_skill.py) - Chapter 3 formatting
+    │
+    ├─► Chapter 3 Subagent
+    │   ├─► ch3_ask_question_agent.py
+    │   ├─► ch3_explain_el10_agent.py
+    │   ├─► ch3_quiz_agent.py
+    │   └─► ch3_diagram_agent.py
+    │
+    ├─► LLM Provider (base_llm.py → openai_provider.py | gemini_provider.py)
+    │   └─► Generates response with Physical AI context
+    │
+    └─► Response Formatting → Return to API → Frontend
+```
+
+## Step 1: API Endpoint Routing
+
+**Endpoints**:
+- `POST /ai/ch3/ask-question`
+- `POST /ai/ch3/explain-el10`
+- `POST /ai/ch3/quiz`
+- `POST /ai/ch3/diagram`
+
+**Request Models**:
+```yaml
+ask-question:
+  question: str
+  chapterId: 3
+  sectionId: str (optional)
+
+explain-el10:
+  concept: str
+  chapterId: 3
+
+quiz:
+  chapterId: 3
+  numQuestions: int
+  learningObjectives: List[str] (optional)
+
+diagram:
+  diagramType: str
+  chapterId: 3
+  concepts: List[str]
+```
+
+**Routing**: All endpoints call `run_ai_block(block_type, chapter=3, payload=...)`
+
+## Step 2: Runtime Engine Routing
+
+**Function**: `run_ai_block(block_type: str, request_data: Dict[str, Any]) -> Dict[str, Any]`
+
+**Chapter 3 Routing Logic** (Placeholder):
+```python
+chapter_id = request_data.get("chapterId", 1)
+if chapter_id == 3:
+    # TODO: Route to Chapter 3 subagent
+    # TODO: Call ch3_pipeline for RAG context
+    # TODO: Select provider for Chapter 3
+    # TODO: Call appropriate Chapter 3 subagent
+    # TODO: Format response
+```
+
+**Block Type → Subagent Mapping** (Chapter 3):
+- "ask-question" → ch3_ask_question_agent
+- "explain-like-10" → ch3_explain_el10_agent
+- "quiz" → ch3_quiz_agent
+- "diagram" → ch3_diagram_agent
+
+## Step 3: RAG Pipeline Invocation
+
+**Function**: `run_ch3_rag_pipeline(query: str, top_k: int = 5) -> Dict[str, Any]`
+
+**Input**:
+- `query`: User query text
+- `top_k`: Number of chunks to retrieve (default: 5)
+
+**Output**:
+```yaml
+context: str                    # Assembled context string
+chunks: List[Dict[str, Any]]   # Retrieved chunks with metadata
+query_embedding: List[float]   # Query embedding vector
+```
+
+**Integration**: Runtime engine calls `ch3_pipeline.run_ch3_rag_pipeline()` when chapterId=3
+
+## Step 4: Subagent Responsibilities
+
+### ch3_ask_question_agent
+
+**Input**:
+```yaml
+question: str
+context: {
+  context: str
+  chunks: List[Dict]
+  query_embedding: List[float]
+}
+```
+
+**Output**:
+```yaml
+answer: str
+sources: List[str]
+confidence: float
+```
+
+**Responsibilities**:
+- Process Physical AI questions with Chapter 3 context
+- Use retrieval_skill for additional context
+- Use prompt_builder_skill for Physical AI prompts
+- Call LLM provider with Physical AI context
+- Format response with source citations
+
+### ch3_explain_el10_agent
+
+**Input**:
+```yaml
+concept: str
+context: {
+  context: str
+  chunks: List[Dict]
+}
+```
+
+**Output**:
+```yaml
+explanation: str
+examples: List[str]
+analogies: List[str]
+```
+
+**Responsibilities**:
+- Generate ELI10 explanations for Physical AI concepts
+- Use Physical AI analogies (sensors as eyes/ears, signal processing as filtering)
+- Include real-world examples (autonomous vehicles, robotics, drones)
+- Format response for age-appropriate understanding
+
+### ch3_quiz_agent
+
+**Input**:
+```yaml
+chapterId: 3
+numQuestions: int
+learningObjectives: List[str] (optional)
+context: {
+  context: str
+  chunks: List[Dict]
+}
+```
+
+**Output**:
+```yaml
+questions: List[Dict]
+learning_objectives: List[str]
+metadata: Dict
+```
+
+**Responsibilities**:
+- Generate quiz questions for Chapter 3 content
+- Cover Physical AI concepts (perception, sensors, vision, signal processing)
+- Use learning objectives to focus questions
+- Format questions with multiple choice options
+
+### ch3_diagram_agent
+
+**Input**:
+```yaml
+diagramType: str
+concepts: List[str]
+context: {
+  context: str
+  chunks: List[Dict]
+}
+```
+
+**Output**:
+```yaml
+nodes: List[Dict]
+edges: List[Dict]
+svg: str
+metadata: Dict
+```
+
+**Responsibilities**:
+- Generate diagrams for Physical AI concepts
+- Support diagram types: perception-overview, sensor-types, cv-depth-flow, feature-extraction-pipeline
+- Use Physical AI concepts in diagram structure
+- Format response as graph structure with SVG
+
+## Step 5: Skills Integration
+
+### Retrieval Skill
+
+**Function**: `retrieve_content(query: str, chapter_id: int, top_k: int = 5) -> List[Dict[str, Any]]`
+
+**Chapter 3 Support** (TODO):
+- Route to ch3_pipeline when chapter_id=3
+- Use Chapter 3 collection ("chapter3")
+- Return Chapter 3 chunks with Physical AI metadata
+
+### Prompt Builder Skill
+
+**Function**: `build_prompt(block_type: str, user_input: str, context: List[Dict], chapter_id: int = None) -> str`
+
+**Chapter 3 Support** (TODO):
+- Build Physical AI-specific prompts when chapter_id=3
+- Include Physical AI concepts (perception, sensors, vision, signal processing)
+- Use Physical AI analogies and examples
+- Format prompts for Chapter 3 context
+
+## Step 6: Response Formatting
+
+**Format**: Response structure depends on block_type:
+- ask-question: `{answer: str, sources: List[str], confidence: float}`
+- explain-el10: `{explanation: str, examples: List[str], analogies: List[str]}`
+- quiz: `{questions: List[Dict], learning_objectives: List[str], metadata: Dict}`
+- diagram: `{nodes: List[Dict], edges: List[Dict], svg: str, metadata: Dict}`
+
+## Error Handling
+
+**Placeholder Error Handling**:
+- Missing subagent: Return error response with message
+- RAG pipeline failure: Return placeholder response
+- LLM provider failure: Return error response
+- Invalid block_type: Return error response
+
+## Notes
+
+- All functions are placeholders with TODO comments
+- No real RAG/LLM logic implemented
+- Structure only, no implementation details
+- Follows Chapter 2 AI runtime patterns (Feature 017 or 020)
+

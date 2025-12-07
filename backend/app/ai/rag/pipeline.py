@@ -10,6 +10,7 @@ Orchestrates the Retrieval-Augmented Generation pipeline:
 """
 
 from typing import Dict, Any, List
+from app.config.settings import settings
 
 # Chapter 2 collection name constant
 # Option 1: Import from ch2_collection.py
@@ -53,6 +54,13 @@ async def run_rag_pipeline(
         - Step 1: Call get_chapter_chunks(chapter_id=2) to retrieve Chapter 2 chunks
         - Step 2: Call generate_embedding(query) to embed user query
         - Step 3: Call similarity_search(collection="chapter_2", query_embedding, top_k) to find relevant chunks
+        - Step 4: Assemble retrieved chunks into context string with metadata
+        - Step 5: Return context to runtime engine for LLM prompts
+    
+    TODO: Chapter 3 specific flow (when chapter_id=3):
+        - Step 1: Call get_chapter_chunks(chapter_id=3) to retrieve Chapter 3 chunks
+        - Step 2: Call generate_embedding(query, chapter_id=3) to embed user query
+        - Step 3: Call similarity_search(collection="chapter_3", query_embedding, top_k) to find relevant chunks
         - Step 4: Assemble retrieved chunks into context string with metadata
         - Step 5: Return context to runtime engine for LLM prompts
     
@@ -101,61 +109,158 @@ async def run_rag_pipeline(
     TODO: Add error handling for each step
     TODO: Add logging for pipeline execution
     """
-    # Step 1: Retrieve chapter chunks (TODO)
-    # if chapter_id == 2:
-    #     from app.content.chapters.chapter_2_chunks import get_chapter_chunks
-    #     chunks = get_chapter_chunks(chapter_id=2)
+    import os
+    from app.config.settings import settings
+    from app.ai.embeddings.embedding_client import generate_embedding
+    from app.ai.rag.qdrant_store import similarity_search
     
-    # Step 2: Embed user query (TODO)
-    # query_embedding = generate_embedding(query)
+    try:
+        # Step 1: Embed user query
+        query_embedding = await generate_embedding(query, chapter_id=chapter_id)
+        
+        # Step 2: Determine collection name
+        collection_name = f"chapter_{chapter_id}"
+        if chapter_id == 1 and settings.qdrant_collection_ch1:
+            collection_name = settings.qdrant_collection_ch1
+        elif chapter_id == 2 and settings.qdrant_collection_ch2:
+            collection_name = settings.qdrant_collection_ch2
+        elif chapter_id == 3 and settings.qdrant_collection_ch3:
+            collection_name = settings.qdrant_collection_ch3
+        
+        # Step 3: Perform Qdrant search
+        search_results = await similarity_search(
+            collection_name=collection_name,
+            query_embedding=query_embedding,
+            top_k=top_k,
+            chapter_id=chapter_id
+        )
+        
+        # Step 4: Build context window
+        # Limit context size (use RAG_MAX_CONTEXT env var, default: 4 chunks)
+        max_chunks = int(os.getenv("RAG_MAX_CONTEXT", "4"))
+        limited_results = search_results[:max_chunks]
+        
+        # Assemble context string
+        context_parts = []
+        for result in limited_results:
+            payload = result.get("payload", {})
+            text = payload.get("text", "")
+            section_id = payload.get("section_id", "")
+            
+            if text:
+                if section_id:
+                    context_parts.append(f"[Section: {section_id}]\n{text}")
+                else:
+                    context_parts.append(text)
+        
+        context_string = "\n\n".join(context_parts)
+        
+        # Step 5: Return context dictionary
+        return {
+            "context": context_string,
+            "chunks": limited_results,
+            "query_embedding": query_embedding
+        }
+        
+    except Exception as e:
+        # TODO: Add proper error logging
+        # Fallback: return empty context
+        return {
+            "context": "",
+            "chunks": [],
+            "query_embedding": []
+        }
+
+
+async def embed_chapter_content(chapter_id: int) -> bool:
+    """
+    Embeds all chunks of a given chapter into the Qdrant vector database.
     
-    # Step 3: Perform Qdrant search (TODO)
-    # if chapter_id == 2:
-    #     results = similarity_search(collection_name="chapter_2", query_embedding, top_k)
+    Args:
+        chapter_id: The ID of the chapter to embed (1, 2, or 3)
     
-    # Step 4: Construct retrieval context (TODO)
-    # context = assemble_context(results, max_chunks=RAG_MAX_CONTEXT)
+    Returns:
+        True if successful, False otherwise
+    """
+    from app.content.chapters.chapter_1_chunks import get_chapter_chunks as get_ch1_chunks
+    from app.content.chapters.chapter_2_chunks import get_chapter_chunks as get_ch2_chunks
+    from app.content.chapters.chapter_3_chunks import get_chapter_chunks as get_ch3_chunks
+    from app.ai.embeddings.embedding_client import batch_embed
+    from app.ai.rag.qdrant_store import create_collection, upsert_vectors
     
-    # Step 5: Return context (TODO)
-    # return {"context": context, "chunks": results, "query_embedding": query_embedding}
-    
-    # TODO: retrieve_quiz_context(chapter_id)
-    # Function to retrieve chapter context specifically for quiz generation
-    # Should return learning outcomes, section text, and key concepts
-    
-    # TODO: embed_quiz_query(question_text)
-    # Function to embed quiz question text for context matching
-    # Should use embedding client to generate query vector
-    
-    # Placeholder return - no real RAG pipeline execution
-    return {
-        "context": "",
-        "chunks": [],
-        "query_embedding": []
+    # Map chapter IDs to their chunk retrieval functions
+    CHAPTER_CHUNK_GETTERS = {
+        1: get_ch1_chunks,
+        2: get_ch2_chunks,
+        3: get_ch3_chunks,
     }
+    
+    get_chunks_func = CHAPTER_CHUNK_GETTERS.get(chapter_id)
+    if not get_chunks_func:
+        print(f"Error: No chunk getter function found for chapter ID: {chapter_id}")
+        return False
+    
+    # Get chapter chunks
+    chapter_chunks_raw = get_chunks_func(chapter_id=chapter_id)
+    if not chapter_chunks_raw:
+        print(f"Warning: No chunks found for chapter ID: {chapter_id}. Skipping embedding.")
+        return True  # Considered successful if no chunks to embed
+    
+    # Extract just the text for batch embedding
+    texts_to_embed = [chunk["text"] for chunk in chapter_chunks_raw]
+    
+    print(f"Generating embeddings for {len(texts_to_embed)} chunks from Chapter {chapter_id}...")
+    embeddings = await batch_embed(texts_to_embed, chapter_id=chapter_id)
+    
+    if not embeddings or len(embeddings) != len(texts_to_embed):
+        print(f"Error: Failed to generate embeddings for all chunks in Chapter {chapter_id}.")
+        return False
+    
+    # Prepare vectors for upsert
+    vectors_for_upsert = []
+    for i, chunk in enumerate(chapter_chunks_raw):
+        vectors_for_upsert.append({
+            "id": chunk.get("id", i),  # Use chunk ID or index
+            "vector": embeddings[i],
+            "payload": chunk  # Store full chunk as payload
+        })
+    
+    # Determine collection name
+    collection_name = None
+    if chapter_id == 1:
+        collection_name = settings.qdrant_collection_ch1 or "chapter_1"
+    elif chapter_id == 2:
+        collection_name = settings.qdrant_collection_ch2 or "chapter_2"
+    elif chapter_id == 3:
+        collection_name = settings.qdrant_collection_ch3 or "chapter_3"
+    
+    if not collection_name:
+        print(f"Error: Qdrant collection name not configured for chapter {chapter_id}.")
+        return False
+    
+    # Create collection if it doesn't exist
+    vector_size = 1536  # Default for text-embedding-3-small
+    await create_collection(collection_name, vector_size=vector_size)
+    
+    print(f"Upserting {len(vectors_for_upsert)} vectors to Qdrant collection '{collection_name}'...")
+    success = await upsert_vectors(collection_name, vectors_for_upsert)
+    
+    if success:
+        print(f"Successfully embedded and upserted Chapter {chapter_id} content.")
+    else:
+        print(f"Failed to upsert vectors for Chapter {chapter_id}.")
+    
+    return success
 
 
 async def embed_chapter_2() -> None:
     """
     Embed Chapter 2 chunks into vector database.
     
-    This function will:
-    1. Load Chapter 2 chunks from chapter_2_chunks.py
-    2. Generate embeddings using CH2_EMBEDDING_MODEL
-    3. Upsert embeddings into Chapter 2 collection (chapter_2)
-    
-    TODO: Implement embedding batch processing
-    TODO: Load Chapter 2 chunks from app.content.chapters.chapter_2_chunks
-    TODO: Use batch_embed_ch2() from embedding_client.py
-    TODO: Process chunks in batches (e.g., 100 chunks per batch)
-    TODO: Use CH2_EMBEDDING_MODEL for Chapter 2 embeddings
-    TODO: Implement Qdrant upsert operations
-    TODO: Use upsert_vectors() from ch2_collection.py
-    TODO: Add error handling for embedding failures
-    TODO: Add error handling for upsert failures
-    TODO: Verify embedding and upsert success
+    Deprecated: Use embed_chapter_content(2) instead.
     """
-    pass
+    print("TODO: embed_chapter_2 is deprecated. Use embed_chapter_content(2) instead.")
+    await embed_chapter_content(2)
 
 
 async def retrieve_chapter_2_relevant_chunks(

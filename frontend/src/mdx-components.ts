@@ -21,6 +21,10 @@ import GenerateDiagramBlock from '@site/src/components/ai/GenerateDiagramBlock';
  * ```mdx
  * <AskQuestionBlock chapterId={1} sectionId="what-is-physical-ai" />
  * ```
+ * 
+ * Components support Chapter 1 (chapterId=1), Chapter 2 (chapterId=2), and Chapter 3 (chapterId=3).
+ * Chapter 2 usage: <AskQuestionBlock chapterId={2} sectionId="introduction-to-ros2" />
+ * Chapter 3 usage: <AskQuestionBlock chapterId={3} sectionId="what-is-perception-in-physical-ai" />
  */
 export default {
   AskQuestionBlock,

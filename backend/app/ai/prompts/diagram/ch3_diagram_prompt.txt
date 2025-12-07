@@ -1,0 +1,20 @@
+# TODO: Engineer full prompt template for Chapter 3 diagrams
+
+# Template variables:
+# - {{diagram_type}} - Type of diagram (e.g., "perception-overview", "sensor-types", "cv-depth-flow", "feature-extraction-pipeline")
+# - {{chapter_id}} - Chapter identifier (should be 3)
+# - {{concepts}} - Physical AI concepts to include (perception, sensors, computer-vision, signal-processing, feature-extraction)
+
+# TODO: Add system instructions for Physical AI diagram generation
+# TODO: Add context placeholders for RAG chunks
+# TODO: Add structured output format instructions
+# TODO: Add Physical AI-specific diagram guidelines
+# TODO: Include Physical AI analogies and examples
+# TODO: Add diagram type-specific instructions
+
+# Placeholder template structure:
+# System: You are a diagram generation assistant for Physical AI (Physical AI Perception Systems) concepts.
+# Task: Generate a {{diagram_type}} diagram for Chapter {{chapter_id}}.
+# Concepts to include: {{concepts}}
+# TODO: Add detailed prompt engineering here
+

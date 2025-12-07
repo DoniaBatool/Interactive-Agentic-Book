@@ -1,0 +1,224 @@
+# Chapter 2 AI Block Runtime Contract
+
+**Feature**: 034-chapter-2-ai-blocks
+**Created**: 2025-01-27
+**Status**: Draft
+
+## Overview
+
+This contract defines the AI Runtime Engine integration for Chapter 2 AI blocks. The flow orchestrates API routing, runtime engine routing, RAG pipeline invocation, subagent selection, and response formatting for Mechanical Systems knowledge.
+
+## Runtime Flow
+
+```
+Frontend Component (Chapter 2)
+    ↓
+API Endpoint (ai_blocks.py)
+    ├─► POST /ai/ch2/ask
+    ├─► POST /ai/ch2/explain
+    ├─► POST /ai/ch2/quiz
+    └─► POST /ai/ch2/diagram
+    ↓
+Runtime Engine (engine.py)
+    │
+    ├─► Router: Determine block type → Select Chapter 2 subagent
+    │
+    ├─► RAG Pipeline (pipeline.py)
+    │   ├─► Load Chapter 2 chunks (chapter_2_chunks.py)
+    │   ├─► Embed user query (embedding_client.py)
+    │   ├─► Qdrant similarity search (collection="chapter_2")
+    │   └─► Construct retrieval context
+    │
+    ├─► Skills System
+    │   ├─► Retrieval Skill (retrieval_skill.py) - Chapter 2 context
+    │   ├─► Prompt Builder Skill (prompt_builder_skill.py) - Mechanical Systems prompts
+    │   └─► Formatting Skill (formatting_skill.py) - Chapter 2 formatting
+    │
+    ├─► Chapter 2 Subagent
+    │   ├─► ch2_ask_agent.py
+    │   ├─► ch2_explain_agent.py
+    │   ├─► ch2_quiz_agent.py
+    │   └─► ch2_diagram_agent.py
+    │
+    ├─► LLM Provider (base_llm.py → openai_provider.py | gemini_provider.py)
+    │   └─► Generates response with Mechanical Systems context
+    │
+    └─► Response Formatting → Return to API → Frontend
+```
+
+## Step 1: API Endpoint Routing
+
+**Endpoints**:
+- `POST /ai/ch2/ask`
+- `POST /ai/ch2/explain`
+- `POST /ai/ch2/quiz`
+- `POST /ai/ch2/diagram`
+
+**Request Models** (high-level):
+```yaml
+ask:
+  question: str
+  chapterId: 2
+  sectionId: str (optional)
+
+explain:
+  concept: str
+  chapterId: 2
+
+quiz:
+  chapterId: 2
+  numQuestions: int
+
+diagram:
+  diagramType: str
+  chapterId: 2
+  concepts: List[str]
+```
+
+**Routing**: All endpoints call `run_ai_block(block_type, request_data)` where `request_data` includes `chapterId=2`
+
+---
+
+## Step 2: Runtime Engine Routing
+
+**Location**: `backend/app/ai/runtime/engine.py`
+
+**Routing Logic** (placeholder):
+```python
+# TODO: Chapter 2 routing
+chapter_id = request_data.get("chapterId", 1)
+if chapter_id == 2:
+    # TODO: Route to Chapter 2 subagent based on block_type
+    # TODO: Call RAG pipeline for Chapter 2
+    # TODO: Select LLM provider for Chapter 2
+    # TODO: Format response for Chapter 2
+```
+
+**Block Type → Subagent Mapping**:
+- "ask-question" → ch2_ask_agent
+- "explain-like-i-am-10" → ch2_explain_agent
+- "interactive-quiz" → ch2_quiz_agent
+- "generate-diagram" → ch2_diagram_agent
+
+---
+
+## Step 3: Subagent Responsibilities
+
+### ch2_ask_agent.py
+
+**Input**: `question: str, context: Dict[str, Any]`
+**Output**: `{"answer": str, "sources": List[str], "confidence": float}`
+**Responsibility**: Answer questions about Mechanical Systems using Chapter 2 context
+
+### ch2_explain_agent.py
+
+**Input**: `concept: str, context: Dict[str, Any]`
+**Output**: `{"explanation": str, "examples": List[str], "analogies": List[str]}`
+**Responsibility**: Explain Mechanical Systems concepts in simple terms using Chapter 2 context
+
+### ch2_quiz_agent.py
+
+**Input**: `chapter_id: int, num_questions: int, context: Dict[str, Any]`
+**Output**: `{"questions": List[Dict], "learning_objectives": List[str]}`
+**Responsibility**: Generate quiz questions about Mechanical Systems using Chapter 2 context
+
+### ch2_diagram_agent.py
+
+**Input**: `diagram_type: str, concepts: List[str], context: Dict[str, Any]`
+**Output**: `{"diagram_url": str, "metadata": Dict}`
+**Responsibility**: Generate diagrams for Mechanical Systems concepts using Chapter 2 context
+
+---
+
+## Step 4: Skills Integration
+
+### Prompt Builder Skill
+
+**Location**: `backend/app/ai/skills/prompt_builder_skill.py`
+
+**Chapter 2 Functions** (TODO):
+- `build_ask_prompt_ch2(question, context) -> str`
+- `build_explain_prompt_ch2(concept, context) -> str`
+- `build_quiz_prompt_ch2(num_questions, context) -> str`
+- `build_diagram_prompt_ch2(diagram_type, concepts, context) -> str`
+
+### Formatting Skill
+
+**Location**: `backend/app/ai/skills/formatting_skill.py`
+
+**Chapter 2 Functions** (TODO):
+- `format_ask_response_ch2(raw_response) -> Dict`
+- `format_explain_response_ch2(raw_response) -> Dict`
+- `format_quiz_response_ch2(raw_response) -> Dict`
+- `format_diagram_response_ch2(raw_response) -> Dict`
+
+---
+
+## Step 5: RAG Pipeline Integration
+
+**Location**: `backend/app/ai/rag/pipeline.py`
+
+**Chapter 2 Routing** (placeholder):
+```python
+# TODO: Chapter 2 RAG routing
+if chapter_id == 2:
+    # TODO: Load chapter_2_chunks
+    # TODO: Embed query for Chapter 2
+    # TODO: Search Chapter 2 collection
+    # TODO: Return Chapter 2 context
+```
+
+---
+
+## Placeholder Schemas
+
+### Request Schema (High-Level)
+
+```yaml
+Ask Request:
+  question: string
+  chapterId: 2
+  sectionId: string (optional)
+
+Explain Request:
+  concept: string
+  chapterId: 2
+
+Quiz Request:
+  chapterId: 2
+  numQuestions: integer
+
+Diagram Request:
+  diagramType: string
+  chapterId: 2
+  concepts: list of strings
+```
+
+### Response Schema (High-Level)
+
+```yaml
+Ask Response:
+  answer: string
+  sources: list of strings
+  confidence: float
+
+Explain Response:
+  explanation: string
+  examples: list of strings
+  analogies: list of strings
+
+Quiz Response:
+  questions: list of question objects
+  learning_objectives: list of strings
+
+Diagram Response:
+  diagram_url: string
+  metadata: object
+```
+
+---
+
+## Summary
+
+This contract defines the runtime flow for Chapter 2 AI blocks through the AI Runtime Engine. All components are placeholders with TODO comments. No business logic is implemented—only scaffolding for future implementation.
+

@@ -15,9 +15,11 @@ dependencies = [
     "pydantic>=2.5.0,<3.0.0",
     "pydantic-settings>=2.1.0,<3.0.0",
     "python-dotenv>=1.0.0,<2.0.0",
-    # Placeholders for future features (optional imports)
+    # AI Runtime Dependencies
     "qdrant-client>=1.7.0,<2.0.0",
     "openai>=1.10.0,<2.0.0",
+    "google-generativeai>=0.3.0,<1.0.0",
+    # Database Dependencies
     "psycopg2-binary>=2.9.9,<3.0.0",
     "sqlalchemy>=2.0.25,<3.0.0",
 ]

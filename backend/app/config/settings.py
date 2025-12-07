@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     # === OpenAI Configuration ===
     openai_api_key: Optional[str] = None
 
+    # === Gemini Configuration ===
+    gemini_api_key: Optional[str] = None  # Google Gemini API key
+
     # === Qdrant Vector Database ===
     qdrant_url: Optional[str] = None
     qdrant_api_key: Optional[str] = None
@@ -49,9 +52,29 @@ class Settings(BaseSettings):
     default_ch2_embeddings: Optional[str] = None  # Default embedding model for Chapter 2 (e.g., "text-embedding-3-small")
     enable_chapter_2_runtime: bool = True  # Enable/disable Chapter 2 runtime engine
 
+    # === Chapter 3 Runtime Configuration ===
+    qdrant_collection_ch3: Optional[str] = None  # Qdrant collection name for Chapter 3 RAG operations
+    ch3_embedding_model: Optional[str] = None  # Embedding model for Chapter 3 (e.g., "text-embedding-3-small")
+    ch3_llm_model: Optional[str] = None  # LLM model for Chapter 3 (e.g., "gpt-4o-mini")
+    default_ch3_model: Optional[str] = None  # Default LLM model for Chapter 3 runtime (e.g., "gpt-4o-mini")
+    default_ch3_embeddings: Optional[str] = None  # Default embedding model for Chapter 3 (e.g., "text-embedding-3-small")
+    enable_chapter_3_runtime: bool = True  # Enable/disable Chapter 3 runtime engine
+
     # === Diagram Generation Configuration ===
     diagram_model: Optional[str] = None  # Diagram model identifier (e.g., "gpt-4o", "gemini-flash")
     diagram_provider: str = "openai"  # Diagram provider selection (openai, gemini)
+
+    # === System Integration Configuration ===
+    # Default runtime model settings
+    default_runtime_model: Optional[str] = None  # Default LLM model for runtime (e.g., "gpt-4o-mini")
+    default_runtime_provider: str = "openai"  # Default provider for runtime (e.g., "openai", "gemini")
+    
+    # Provider defaults (placeholder)
+    # TODO: Implement provider defaults dictionary
+    # PROVIDER_DEFAULTS = {
+    #     "openai": {"model": "gpt-4o-mini", "temperature": 0.7},
+    #     "gemini": {"model": "gemini-pro", "temperature": 0.7}
+    # }
 
     # === Application Configuration ===
     environment: str = "development"

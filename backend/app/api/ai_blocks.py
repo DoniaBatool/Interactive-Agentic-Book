@@ -21,6 +21,8 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List
 from app.ai.runtime.engine import run_ai_block
+# TODO: Import runtime router
+# from app.ai.runtime.router import route
 
 # Create router with prefix and tags
 router = APIRouter(prefix="/api/ai", tags=["ai-blocks"])
@@ -46,6 +48,7 @@ class QuizRequest(BaseModel):
     """Request model for quiz endpoint."""
     chapterId: int
     numQuestions: Optional[int] = 5
+    learningObjectives: Optional[List[str]] = None
 
 
 class DiagramRequest(BaseModel):
@@ -91,9 +94,16 @@ async def ask_question(request: AskQuestionRequest) -> AIBlockResponse:
     #     context = await build_context_for_ch2(request.question)
     #     # Pass context to runtime engine
     """
-    # Route to runtime engine
-    result = await run_ai_block("ask-question", request.model_dump())
+    # Route to runtime router (placeholder)
+    # TODO: Import runtime router
+    # from app.ai.runtime.router import route
+    # TODO: Call router.route() with chapter_id and block_type
+    # chapter_id = request.chapterId or 1
+    # result = await route(chapter_id, "ask-question", request.model_dump())
     # TODO: Update response model to match runtime engine output format
+    
+    # Placeholder: Route to runtime engine (existing functionality)
+    result = await run_ai_block("ask-question", request.model_dump())
     return AIBlockResponse(
         message="AI block placeholder",
         received=request.model_dump()
@@ -127,12 +137,31 @@ async def explain_like_10(request: ExplainLike10Request) -> AIBlockResponse:
     #     # Pass context to runtime engine
     """
     # Route to runtime engine
-    result = await run_ai_block("explain-like-10", request.model_dump())
-    # TODO: Update response model to match runtime engine output format
-    return AIBlockResponse(
-        message="AI block placeholder",
-        received=request.model_dump()
-    )
+    # TODO: Chapter 2 ELI10 routing
+    # if request.chapterId == 2:
+    #     from app.ai.explain.ch2_el10_runtime import run as ch2_el10_run
+    #     result = await ch2_el10_run(
+    #         concept=request.concept,
+    #         chapter_id=2,
+    #         context=None
+    #     )
+    #     return result
+      # Route Chapter 2 ELI10 requests to ch2_el10_runtime (placeholder routing)
+
+      # Route to runtime router (placeholder)
+      # TODO: Import runtime router
+      # from app.ai.runtime.router import route
+      # TODO: Call router.route() with chapter_id and block_type
+      # chapter_id = request.chapterId or 1
+      # result = await route(chapter_id, "explain-like-10", request.model_dump())
+      # TODO: Update response model to match runtime engine output format
+      
+      # Placeholder: Route to runtime engine (existing functionality)
+      result = await run_ai_block("explain-like-10", request.model_dump())
+      return AIBlockResponse(
+          message="AI block placeholder",
+          received=request.model_dump()
+      )
 
 
 @router.post("/quiz", response_model=AIBlockResponse)
@@ -164,13 +193,31 @@ async def quiz(request: QuizRequest) -> AIBlockResponse:
     #     # Pass context to runtime engine
     """
     # Route to quiz runtime
-    from app.ai.quiz.runtime import run_quiz
-    result = await run_quiz(request.chapterId, request.numQuestions or 5)
-    # TODO: Update response model to match quiz runtime output format
-    return AIBlockResponse(
-        message="AI block placeholder",
-        received=request.model_dump()
-    )
+    # TODO: Chapter 2 quiz routing
+    # if request.chapterId == 2:
+    #     from app.ai.quiz.ch2_quiz_runtime import run as ch2_quiz_run
+    #     result = await ch2_quiz_run(
+    #         chapter_id=2,
+    #         num_questions=request.numQuestions,
+    #         learning_objectives=request.learningObjectives
+    #     )
+    #     return result
+      # Route Chapter 2 quiz requests to ch2_quiz_runtime (placeholder routing)
+
+      # Route to runtime router (placeholder)
+      # TODO: Import runtime router
+      # from app.ai.runtime.router import route
+      # TODO: Call router.route() with chapter_id and block_type
+      # result = await route(request.chapterId, "quiz", request.model_dump())
+      # TODO: Update response model to match runtime engine output format
+      
+      # Placeholder: Route to runtime engine (existing functionality)
+      from app.ai.quiz.runtime import run_quiz
+      result = await run_quiz(request.chapterId, request.numQuestions or 5)
+      return AIBlockResponse(
+          message="AI block placeholder",
+          received=request.model_dump()
+      )
 
 
 @router.post("/diagram", response_model=AIBlockResponse)
@@ -203,13 +250,265 @@ async def diagram(request: DiagramRequest) -> AIBlockResponse:
     #     # Pass context to runtime engine
     """
     # Route to diagram runtime
+    # TODO: Chapter 2 diagram routing
+    # if request.chapterId == 2:
+    #     from app.ai.diagram.ch2_diagram_runtime import run as ch2_diagram_run
+    #     result = await ch2_diagram_run(
+    #         diagram_type=request.diagramType,
+    #         chapter_id=2,
+    #         concepts=request.concepts or []
+    #     )
+    #     return result
+    # Route Chapter 2 diagram requests to ch2_diagram_runtime (placeholder routing)
+    
+    # Route to runtime router (placeholder)
+    # TODO: Import runtime router
+    # from app.ai.runtime.router import route
+    # TODO: Call router.route() with chapter_id and block_type
+    # chapter_id = request.chapterId or 1
+    # result = await route(chapter_id, "diagram", request.model_dump())
+    # TODO: Update response model to match runtime engine output format
+    
+    # Placeholder: Route to runtime engine (existing functionality)
     from app.ai.diagram.runtime import run_diagram_generator
     result = await run_diagram_generator(
         request.diagramType,
         request.chapterId or 1,
         request.concepts or []
     )
-    # TODO: Update response model to match diagram runtime output format
+    return AIBlockResponse(
+        message="AI block placeholder",
+        received=request.model_dump()
+    )
+
+
+# ============================================================================
+# Chapter 2 API Endpoints
+# ============================================================================
+
+@router.post("/ch2/ask", response_model=AIBlockResponse)
+async def ch2_ask(request: AskQuestionRequest) -> AIBlockResponse:
+    """
+    Placeholder endpoint for asking questions about Chapter 2 content.
+    
+    This endpoint routes Chapter 2 ask-question requests to the runtime engine.
+    
+    Args:
+        request: AskQuestionRequest with question, chapterId=2, and sectionId (optional)
+    
+    Returns:
+        AIBlockResponse with placeholder message and received payload
+    
+    TODO: Chapter 2 ask-question routing
+    TODO: Call run_ai_block("ask-question", request_data) with chapterId=2
+    TODO: Update response model when real AI logic implemented
+    """
+    # Route to runtime engine
+    # TODO: Chapter 2 runtime call
+    request_data = request.model_dump()
+    request_data["chapterId"] = 2
+    result = await run_ai_block("ask-question", request_data)
+    # TODO: Update response model to match runtime engine output format
+    return AIBlockResponse(
+        message="AI block placeholder",
+        received=request_data
+    )
+
+
+@router.post("/ch2/explain", response_model=AIBlockResponse)
+async def ch2_explain(request: ExplainLike10Request) -> AIBlockResponse:
+    """
+    Placeholder endpoint for generating simplified explanations for Chapter 2 concepts.
+    
+    This endpoint routes Chapter 2 explain-like-i-am-10 requests to the runtime engine.
+    
+    Args:
+        request: ExplainLike10Request with concept and chapterId=2
+    
+    Returns:
+        AIBlockResponse with placeholder message and received payload
+    
+    TODO: Chapter 2 explain-like-i-am-10 routing
+    TODO: Call run_ai_block("explain-like-i-am-10", request_data) with chapterId=2
+    TODO: Update response model when real AI logic implemented
+    """
+    # Route to runtime engine
+    # TODO: Chapter 2 runtime call
+    request_data = request.model_dump()
+    request_data["chapterId"] = 2
+    result = await run_ai_block("explain-like-i-am-10", request_data)
+    # TODO: Update response model to match runtime engine output format
+    return AIBlockResponse(
+        message="AI block placeholder",
+        received=request_data
+    )
+
+
+@router.post("/ch2/quiz", response_model=AIBlockResponse)
+async def ch2_quiz(request: QuizRequest) -> AIBlockResponse:
+    """
+    Placeholder endpoint for generating interactive quizzes for Chapter 2 content.
+    
+    This endpoint routes Chapter 2 quiz requests to the runtime engine.
+    
+    Args:
+        request: QuizRequest with chapterId=2, numQuestions, and learningObjectives (optional)
+    
+    Returns:
+        AIBlockResponse with placeholder message and received payload
+    
+    TODO: Chapter 2 interactive-quiz routing
+    TODO: Call run_ai_block("interactive-quiz", request_data) with chapterId=2
+    TODO: Update response model when real AI logic implemented
+    """
+    # Route to runtime engine
+    # TODO: Chapter 2 runtime call
+    request_data = request.model_dump()
+    request_data["chapterId"] = 2
+    result = await run_ai_block("interactive-quiz", request_data)
+    # TODO: Update response model to match runtime engine output format
+    return AIBlockResponse(
+        message="AI block placeholder",
+        received=request_data
+    )
+
+
+@router.post("/ch2/diagram", response_model=AIBlockResponse)
+async def ch2_diagram(request: DiagramRequest) -> AIBlockResponse:
+    """
+    Placeholder endpoint for generating visual diagrams for Chapter 2 concepts.
+    
+    This endpoint routes Chapter 2 diagram requests to the runtime engine.
+    
+    Args:
+        request: DiagramRequest with diagramType, chapterId=2, and concepts
+    
+    Returns:
+        AIBlockResponse with placeholder message and received payload
+    
+    TODO: Chapter 2 generate-diagram routing
+    TODO: Call run_ai_block("generate-diagram", request_data) with chapterId=2
+    TODO: Update response model when real AI logic implemented
+    """
+    # Route to runtime engine
+    # TODO: Chapter 2 runtime call
+    request_data = request.model_dump()
+    request_data["chapterId"] = 2
+    result = await run_ai_block("generate-diagram", request_data)
+    # TODO: Update response model to match runtime engine output format
+    return AIBlockResponse(
+        message="AI block placeholder",
+        received=request_data
+    )
+
+
+# ============================================================================
+# Chapter 3 API Endpoints
+# ============================================================================
+
+@router.post("/ch3/ask-question", response_model=AIBlockResponse)
+async def ch3_ask_question(request: AskQuestionRequest) -> AIBlockResponse:
+    """
+    Placeholder endpoint for asking questions about Chapter 3 content.
+    
+    This endpoint routes Chapter 3 ask-question requests to the runtime engine.
+    
+    Args:
+        request: AskQuestionRequest with question, chapterId=3, and sectionId (optional)
+    
+    Returns:
+        AIBlockResponse with placeholder message and received payload
+    
+    TODO: Chapter 3 ask-question routing
+    TODO: Call run_ai_block("ask-question", request.model_dump()) with chapterId=3
+    TODO: Update response model when real AI logic implemented
+    """
+    # Route to runtime engine
+    # TODO: Chapter 3 runtime call
+    result = await run_ai_block("ask-question", request.model_dump())
+    # TODO: Update response model to match runtime engine output format
+    return AIBlockResponse(
+        message="AI block placeholder",
+        received=request.model_dump()
+    )
+
+
+@router.post("/ch3/explain-el10", response_model=AIBlockResponse)
+async def ch3_explain_el10(request: ExplainLike10Request) -> AIBlockResponse:
+    """
+    Placeholder endpoint for generating simplified explanations for Chapter 3 concepts.
+    
+    This endpoint routes Chapter 3 explain-el10 requests to the runtime engine.
+    
+    Args:
+        request: ExplainLike10Request with concept and chapterId=3
+    
+    Returns:
+        AIBlockResponse with placeholder message and received payload
+    
+    TODO: Chapter 3 explain-el10 routing
+    TODO: Call run_ai_block("explain-like-10", request.model_dump()) with chapterId=3
+    TODO: Update response model when real AI logic implemented
+    """
+    # Route to runtime engine
+    # TODO: Chapter 3 runtime call
+    result = await run_ai_block("explain-like-10", request.model_dump())
+    # TODO: Update response model to match runtime engine output format
+    return AIBlockResponse(
+        message="AI block placeholder",
+        received=request.model_dump()
+    )
+
+
+@router.post("/ch3/quiz", response_model=AIBlockResponse)
+async def ch3_quiz(request: QuizRequest) -> AIBlockResponse:
+    """
+    Placeholder endpoint for generating interactive quizzes for Chapter 3.
+    
+    This endpoint routes Chapter 3 quiz requests to the runtime engine.
+    
+    Args:
+        request: QuizRequest with chapterId=3, numQuestions, and learningObjectives (optional)
+    
+    Returns:
+        AIBlockResponse with placeholder message and received payload
+    
+    TODO: Chapter 3 quiz routing
+    TODO: Call run_ai_block("quiz", request.model_dump()) with chapterId=3
+    TODO: Update response model when real AI logic implemented
+    """
+    # Route to runtime engine
+    # TODO: Chapter 3 runtime call
+    result = await run_ai_block("quiz", request.model_dump())
+    # TODO: Update response model to match runtime engine output format
+    return AIBlockResponse(
+        message="AI block placeholder",
+        received=request.model_dump()
+    )
+
+
+@router.post("/ch3/diagram", response_model=AIBlockResponse)
+async def ch3_diagram(request: DiagramRequest) -> AIBlockResponse:
+    """
+    Placeholder endpoint for generating visual diagrams for Chapter 3 concepts.
+    
+    This endpoint routes Chapter 3 diagram requests to the runtime engine.
+    
+    Args:
+        request: DiagramRequest with diagramType, chapterId=3, and concepts
+    
+    Returns:
+        AIBlockResponse with placeholder message and received payload
+    
+    TODO: Chapter 3 diagram routing
+    TODO: Route Chapter 3 diagram requests to ch3_diagram_runtime via runtime engine
+    TODO: Update response model when real AI logic implemented
+    """
+    # Route to runtime engine
+    # Routes to ch3_diagram_runtime via run_ai_block() when chapterId=3
+    # TODO: Chapter 3 runtime call
+    result = await run_ai_block("diagram", request.model_dump())
+    # TODO: Update response model to match runtime engine output format
     return AIBlockResponse(
         message="AI block placeholder",
         received=request.model_dump()

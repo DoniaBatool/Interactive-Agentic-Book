@@ -1,0 +1,29 @@
+warning: in the working copy of '.env.example', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/app/config/settings.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/pyproject.toml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it
+.env.example
+DOCUMENTATION.md
+backend/app/ai/embeddings/embedding_client.py
+backend/app/ai/providers/base_llm.py
+backend/app/ai/providers/gemini_provider.py
+backend/app/ai/providers/openai_provider.py
+backend/app/ai/rag/pipeline.py
+backend/app/ai/rag/qdrant_store.py
+backend/app/ai/runtime/engine.py
+backend/app/ai/skills/formatting_skill.py
+backend/app/ai/skills/prompt_builder_skill.py
+backend/app/ai/skills/retrieval_skill.py
+backend/app/ai/subagents/ch2_diagram_agent.py
+backend/app/ai/subagents/ch2_quiz_agent.py
+backend/app/api/ai_blocks.py
+backend/app/config/settings.py
+backend/app/content/chapters/chapter_2.py
+backend/app/content/chapters/chapter_2_chunks.py
+backend/app/content/chapters/chapter_3.py
+backend/app/content/chapters/chapter_3_chunks.py
+backend/pyproject.toml
+frontend/docs/chapters/chapter-2.mdx
+frontend/docs/chapters/chapter-3.mdx
+frontend/src/mdx-components.ts
+package.json

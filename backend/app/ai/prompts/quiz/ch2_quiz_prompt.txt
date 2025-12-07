@@ -1,0 +1,22 @@
+# TODO: Engineer full quiz prompt template for Chapter 2
+
+# Template variables:
+# - {{chapter_id}} - Chapter identifier (should be 2)
+# - {{num_questions}} - Number of questions to generate
+# - {{learning_objectives}} - Learning objectives to cover (e.g., "topics", "nodes", "services", "actions")
+# - {{context}} - RAG context chunks for quiz generation
+
+# TODO: Add system instructions for quiz generation
+# TODO: Add context placeholders for RAG chunks
+# TODO: Add ROS 2-specific quiz question examples
+# TODO: Add structured output format instructions (questions, answers, learning_objectives)
+# TODO: Add difficulty-level tuning guidelines (beginner, intermediate, advanced)
+# TODO: Include ROS 2 examples (TurtleBot 3, navigation stack, robot arm control)
+# TODO: Add question type variety (multiple choice, true/false, short answer)
+
+# Placeholder template structure:
+# System: You are a quiz generation assistant for ROS 2 (Robot Operating System 2) concepts.
+# Task: Generate {{num_questions}} quiz questions for Chapter {{chapter_id}} covering the following learning objectives: {{learning_objectives}}
+# Context: {{context}}
+# TODO: Add detailed prompt engineering here for quiz generation, question types, and difficulty levels
+

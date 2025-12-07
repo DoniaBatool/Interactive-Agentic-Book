@@ -52,3 +52,31 @@ class BaseLLMProvider(ABC):
         """
         pass
 
+
+def get_provider(provider_name: str) -> Optional[BaseLLMProvider]:
+    """
+    Factory function for provider selection.
+
+    Args:
+        provider_name: Provider name ("openai", "gemini", "deepseek")
+
+    Returns:
+        Provider instance (OpenAIProvider or GeminiProvider)
+
+    Flow:
+    1. Check provider_name
+    2. Return appropriate provider instance
+    3. Fall back to default provider (OpenAI) if provider_name is invalid
+    """
+    from app.ai.providers.openai_provider import OpenAIProvider
+    from app.ai.providers.gemini_provider import GeminiProvider
+    from app.config.settings import settings
+    
+    if provider_name == "openai":
+        return OpenAIProvider()
+    elif provider_name == "gemini":
+        return GeminiProvider()
+    else:
+        # Fall back to default provider (OpenAI)
+        # TODO: Log warning for invalid provider name
+        return OpenAIProvider()

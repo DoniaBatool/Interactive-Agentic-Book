@@ -1,0 +1,21 @@
+{
+  "chapter_id": 3,
+  "version": "1.0.0",
+  "mdx_file": "frontend/docs/chapters/chapter-3.mdx",
+  "metadata_file": "backend/app/content/chapters/chapter_3.py",
+  "ai_blocks": [
+    "ask-question",
+    "explain-like-10",
+    "interactive-quiz",
+    "generate-diagram"
+  ],
+  "diagrams": [
+    "perception-overview",
+    "sensor-types",
+    "cv-depth-flow",
+    "feature-extraction-pipeline"
+  ],
+  "rag_enabled": false,
+  "generated_at": "2025-01-27T00:00:00Z"
+}
+

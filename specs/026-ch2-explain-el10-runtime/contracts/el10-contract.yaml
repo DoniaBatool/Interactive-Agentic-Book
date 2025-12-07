@@ -1,0 +1,237 @@
+# ELI10 Contract: Chapter 2 Explain-Like-I'm-10 Runtime
+
+**Feature**: 026-ch2-explain-el10-runtime
+**Date**: 2025-01-27
+**Purpose**: Define expected placeholders for Chapter 2 ELI10 explanation generation
+
+## Overview
+
+This contract defines the expected placeholders for Chapter 2 ELI10 explanation generation. All structures are placeholders with TODO comments—no real AI logic or explanation formats are implemented in this feature.
+
+---
+
+## Chapter 2 ELI10 Runtime Flow Contract
+
+### Runtime Module
+
+**File**: `backend/app/ai/explain/ch2_el10_runtime.py`
+
+**Function**: `async def run(concept: str, chapter_id: int, context: Dict[str, Any] = None) -> Dict[str, Any]`
+
+**Steps** (All TODO):
+1. **Validate input** (TODO)
+2. **Build prompt** (placeholder)
+3. **RAG retrieve** (placeholder)
+4. **Call LLM** (placeholder)
+5. **Format output** (placeholder)
+
+**Expected Flow**:
+```
+Request (concept, chapterId=2, context)
+    ↓
+Validate input (TODO)
+    ↓
+Build prompt (placeholder)
+    ↓
+RAG retrieve (placeholder)
+    ↓
+Call LLM (placeholder)
+    ↓
+Format output (placeholder)
+    ↓
+Response (explanation, examples, analogies)
+```
+
+---
+
+## Prompt Template Contract
+
+### Chapter 2 ELI10 Prompt Template
+
+**File**: `backend/app/ai/prompts/explain/ch2_el10_prompt.txt`
+
+**Template Variables**:
+- `{{concept}}` - ROS 2 concept to explain (e.g., "topics", "nodes", "services", "actions")
+- `{{chapter_id}}` - Chapter identifier (should be 2)
+- `{{context}}` - RAG context chunks for the concept
+
+**Format** (Placeholder):
+```
+TODO: Engineer full ELI10 prompt template for Chapter 2
+
+Template variables:
+- {{concept}} - ROS 2 concept to explain
+- {{chapter_id}} - Should be 2 for Chapter 2
+- {{context}} - RAG context chunks
+
+TODO: Add system instructions for ELI10 style (age-appropriate, simple language)
+TODO: Add context placeholders for RAG chunks
+TODO: Add ROS 2-specific analogies (post office, restaurant, phone calls, package delivery)
+TODO: Add structured output format instructions
+TODO: Add ELI10 style tuning guidelines
+TODO: Include ROS 2 examples (TurtleBot 3, navigation stack, robot arm control)
+```
+
+**Validation Rules**:
+- Template file MUST exist
+- Template MUST include all 3 variables
+- Template MUST have TODO comments for future ELI10 style tuning
+
+---
+
+## Runtime Engine Routing Contract
+
+### Chapter 2 ELI10 Routing
+
+**File**: `backend/app/ai/runtime/engine.py`
+
+**Routing Logic** (Comments Only):
+```python
+# TODO: Chapter 2 ELI10 routing
+# if block_type == "explain-like-i-am-10" AND chapterId == 2:
+#     from app.ai.explain.ch2_el10_runtime import run as ch2_el10_run
+#     result = await ch2_el10_run(
+#         concept=request_data.get("concept", ""),
+#         chapter_id=2,
+#         context=request_data.get("context")
+#     )
+#     return result
+```
+
+**Validation Rules**:
+- Routing MUST be comment-only (no logic)
+- Routing MUST check both `block_type == "explain-like-i-am-10"` AND `chapterId == 2`
+- Routing MUST call `ch2_el10_runtime.run()`
+
+---
+
+## API Layer Contract
+
+### ELI10 Endpoint
+
+**File**: `backend/app/api/ai_blocks.py`
+
+**Endpoint**: `POST /api/ai/explain-like-10`
+
+**Request** (Chapter 2):
+```json
+{
+  "concept": "string",
+  "chapterId": 2
+}
+```
+
+**Routing**:
+- Route to Chapter 2 ELI10 runtime when `chapterId=2`
+- Add comments documenting CH2 workflow
+- Ensure routing supports chapterId=2
+
+**Validation Rules**:
+- Endpoint MUST accept chapterId=2
+- Endpoint MUST route to Chapter 2 runtime when chapterId=2
+- TODO comments MUST be present
+
+---
+
+## Skills Extension Contract
+
+### Prompt Builder Skill
+
+**File**: `backend/app/ai/skills/prompt_builder_skill.py`
+
+**Function**: `build_el10_prompt_ch2(concept: str, chapter_id: int, context: Dict[str, Any] = None) -> str`
+
+**Structure** (Placeholder):
+```python
+def build_el10_prompt_ch2(
+    concept: str,
+    chapter_id: int,
+    context: Dict[str, Any] = None
+) -> str:
+    """
+    Build ELI10 prompt for Chapter 2.
+    
+    TODO: Implement prompt building for Chapter 2 ELI10 explanations
+    TODO: Load ch2_el10_prompt.txt template
+    TODO: Replace template variables ({{concept}}, {{chapter_id}}, {{context}})
+    TODO: Add ROS 2-specific context
+    TODO: Return constructed prompt string
+    """
+    # Placeholder return
+    return ""
+```
+
+---
+
+### Formatting Skill
+
+**File**: `backend/app/ai/skills/formatting_skill.py`
+
+**Function**: `format_el10_output_ch2(raw_response: Dict[str, Any]) -> Dict[str, Any]`
+
+**Structure** (Placeholder):
+```python
+def format_el10_output_ch2(
+    raw_response: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Format ELI10 output for Chapter 2.
+    
+    TODO: Implement formatting for Chapter 2 ELI10 output
+    TODO: Parse raw LLM response
+    TODO: Extract explanation, examples, analogies
+    TODO: Format ROS 2-specific metadata
+    TODO: Return formatted explanation structure
+    """
+    # Placeholder return
+    return {}
+```
+
+---
+
+## Validation Contract
+
+### Backend Startup
+
+**Requirement**: Backend must compile and run
+
+**Validation**:
+- No import errors when starting FastAPI server
+- All imports resolve correctly
+- No syntax errors in new files
+
+---
+
+### Module Importability
+
+**Requirement**: All new modules must import correctly
+
+**Validation**:
+- `ch2_el10_runtime.py` is importable: `from app.ai.explain.ch2_el10_runtime import run`
+- Prompt template file exists and is readable
+- Skills functions are importable
+
+---
+
+## Error Handling Contract
+
+### Missing Chapter 2 ELI10 Infrastructure
+
+**Scenario**: Chapter 2 ELI10 runtime called but infrastructure not ready
+
+**Expected Behavior**:
+- Runtime module should have placeholder routing with TODO comments
+- Skills functions should be callable but return placeholder responses
+- Prompt template should exist with TODO comments
+
+---
+
+## Notes
+
+- This contract documents expected placeholders—no real AI logic is implemented
+- All routing is placeholder-based with TODO comments
+- Explanation formats are placeholders for future implementation
+- Skills functions are placeholders for future implementation
+- Backend must start and all modules must import correctly
+- No structure for real outputs (placeholder only)
+

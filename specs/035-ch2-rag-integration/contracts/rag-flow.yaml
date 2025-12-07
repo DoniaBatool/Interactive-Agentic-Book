@@ -1,0 +1,152 @@
+# Chapter 2 RAG Flow Contract
+
+**Feature**: 035-ch2-rag-integration
+**Created**: 2025-01-27
+**Status**: Draft
+
+## Overview
+
+This contract defines the high-level RAG (Retrieval-Augmented Generation) flow for Chapter 2. The flow orchestrates chunking, embedding generation, Qdrant storage, similarity search, and context assembly for Mechanical Systems knowledge.
+
+## RAG Flow
+
+```
+Chapter 2 MDX Content
+    │
+    ▼
+Chapter 2 Chunking (chapter_2_chunks.py)
+    │ (TODO: Implement chunking)
+    ▼
+Chapter 2 Chunks (List[Dict])
+    │
+    ▼
+Embedding Generation (ch2_embedding_client.py)
+    │ (TODO: generate_embedding, batch_embed)
+    ▼
+Embedding Vectors (List[List[float]])
+    │
+    ▼
+Qdrant Storage (ch2_qdrant_store.py)
+    │ (TODO: create_collection, upsert_vectors)
+    ▼
+Qdrant Collection "chapter_2"
+    │
+    ▼
+User Query
+    │
+    ▼
+RAG Pipeline (ch2_pipeline.py)
+    │
+    ├─► Step 1: Load chapter chunks
+    │   └─► get_chapter_2_chunks()
+    │
+    ├─► Step 2: Embed query
+    │   └─► generate_embedding(query)
+    │
+    ├─► Step 3: Search Qdrant
+    │   └─► similarity_search(query, top_k=5)
+    │
+    ├─► Step 4: Prepare context
+    │   └─► Assemble retrieved chunks into context string
+    │
+    └─► Step 5: Pass into AI runtime
+        └─► Return context to runtime engine
+            │
+            ▼
+Runtime Engine (engine.py)
+    │ (chapter="2" → use ch2_pipeline)
+    ▼
+Subagents (ch2_*_agent.py)
+    │
+    ▼
+LLM Provider
+    │
+    ▼
+Response
+```
+
+## Step 1: Load Chapter Chunks
+
+**Function**: `get_chapter_2_chunks() -> List[str]`
+
+**Purpose**: Retrieve Chapter 2 content chunks for embedding and storage
+
+**Input**: None (reads from chapter_2_chunks.py)
+
+**Output**: List of chunk strings
+
+**TODO**: Implement chunking from Chapter 2 MDX content
+
+---
+
+## Step 2: Embed Query
+
+**Function**: `generate_embedding(text: str) -> List[float]`
+
+**Purpose**: Convert user query into embedding vector
+
+**Input**: Query text string
+
+**Output**: Embedding vector (List[float])
+
+**TODO**: Select model from ENV (EMBEDDING_MODEL_CH2)
+
+---
+
+## Step 3: Search Qdrant
+
+**Function**: `similarity_search(query: str, top_k: int = 5) -> List[Dict]`
+
+**Purpose**: Find most relevant chunks using semantic search
+
+**Input**: Query string, number of results
+
+**Output**: List of relevant chunks with metadata
+
+**TODO**: Perform similarity search in "chapter_2" collection
+
+---
+
+## Step 4: Prepare Context
+
+**Function**: Assemble retrieved chunks into context string
+
+**Purpose**: Format retrieved chunks for LLM context
+
+**Input**: Retrieved chunks from Qdrant
+
+**Output**: Context string
+
+**TODO**: Assemble chunks with metadata
+
+---
+
+## Step 5: Pass into AI Runtime
+
+**Function**: Return context to runtime engine
+
+**Purpose**: Provide context to subagents for LLM prompts
+
+**Input**: Context string
+
+**Output**: Context dictionary
+
+**TODO**: Integrate with runtime engine routing
+
+---
+
+## Runtime Integration
+
+**Location**: `backend/app/ai/runtime/engine.py`
+
+**Routing Logic**:
+- When `chapter="2"` → use `ch2_pipeline`
+- Call `run_ch2_rag_pipeline(query, top_k)`
+- Pass context to Chapter 2 subagents
+
+---
+
+## Summary
+
+This contract defines the high-level RAG flow for Chapter 2. All components are placeholders with TODO comments. No business logic is implemented—only scaffolding for future implementation.
+

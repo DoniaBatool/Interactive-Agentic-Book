@@ -1,0 +1,224 @@
+# Chapter 3 RAG Definition Contract
+
+**Feature**: 029-ch3-rag-prep
+**Created**: 2025-01-27
+**Status**: Draft
+
+## Overview
+
+This contract defines the RAG (Retrieval-Augmented Generation) pipeline structure for Chapter 3. The pipeline orchestrates chunk retrieval, query embedding, vector search, and context assembly for Physical AI Perception Systems knowledge retrieval.
+
+## Pipeline Flow
+
+```
+User Query (Physical AI perception question)
+    ↓
+[Step 1: Retrieve Chapter 3 Chunks]
+    ↓
+[Step 2: Embed Query]
+    ↓
+[Step 3: Perform Vector Search in Qdrant]
+    ↓
+[Step 4: Construct Retrieval Context]
+    ↓
+[Step 5: Return Placeholder Response]
+    ↓
+Future: Runtime Engine → Subagents → LLM Provider
+```
+
+## Step 1: Retrieve Chapter 3 Chunks
+
+**Function**: `get_chapter_chunks(chapter_id: int = 3) -> List[Dict[str, Any]]`
+
+**Input**:
+- `chapter_id`: Chapter identifier (default: 3)
+
+**Output**:
+```yaml
+chunks:
+  - id: str                    # Unique chunk ID (e.g., "ch3-s1-c0")
+    text: str                   # Chunk text content
+    chapter_id: int             # Chapter identifier (3)
+    section_id: str             # Section identifier (e.g., "what-is-perception-in-physical-ai")
+    position: int               # Position in chapter (0-based)
+    word_count: int             # Word count
+    metadata:
+      heading: str              # Section heading
+      type: str                 # "paragraph", "heading", "glossary", etc.
+      has_diagram: bool         # True if section has diagram placeholder
+      has_ai_block: bool        # True if section has AI block
+      chunk_markers: bool       # True if chunk has RAG-CHUNK markers
+      concepts: List[str]       # Physical AI concepts (e.g., ["perception", "sensors", "vision"])
+```
+
+**Error Handling**:
+- If chunks not yet implemented: Return empty list `[]`
+- If chapter_id invalid: Return empty list `[]`
+- Log warning if chunks unavailable
+
+## Step 2: Embed Query
+
+**Function**: `generate_embedding(text: str, chapter_id: int = 3) -> List[float]`
+
+**Input**:
+- `text`: User query text (e.g., "What is perception in Physical AI?")
+- `chapter_id`: Chapter identifier (default: 3)
+
+**Output**:
+```yaml
+embedding: List[float]          # Embedding vector (e.g., [0.123, -0.456, 0.789, ...])
+                                # Dimension: 1536 for text-embedding-3-small
+```
+
+**Error Handling**:
+- If embedding model not configured: Return empty list `[]`
+- If API call fails: Return empty list `[]` and log error
+- If text exceeds max token size: Truncate and log warning
+
+## Step 3: Perform Vector Search
+
+**Function**: `similarity_search_ch3(query: str, top_k: int = 5) -> List[Dict[str, Any]]`
+
+**Input**:
+- `query`: Query text (will be embedded internally)
+- `top_k`: Number of results to return (default: 5)
+
+**Output**:
+```yaml
+results:
+  - id: str                     # Document ID
+    score: float                 # Similarity score (0.0-1.0, highest first)
+    payload:
+      text: str                  # Original text chunk
+      chapter_id: int            # Chapter identifier (3)
+      section_id: str            # Section identifier
+      position: int              # Position in chapter
+      metadata:
+        heading: str
+        type: str
+        has_diagram: bool
+        has_ai_block: bool
+        concepts: List[str]
+```
+
+**Error Handling**:
+- If collection doesn't exist: Return empty list `[]` and log error
+- If search fails: Return empty list `[]` and log error
+- If no results found: Return empty list `[]`
+
+## Step 4: Construct Retrieval Context
+
+**Function**: `run_ch3_rag_pipeline(query: str, top_k: int = 5) -> Dict[str, Any]`
+
+**Input**:
+- `query`: User query text
+- `top_k`: Number of chunks to retrieve (default: 5)
+
+**Output**:
+```yaml
+context: str                    # Assembled context string from retrieved chunks
+chunks: List[Dict[str, Any]]   # Retrieved chunks with metadata
+query_embedding: List[float]   # Query embedding vector
+```
+
+**Error Handling**:
+- If pipeline fails: Return placeholder structure with empty values
+- If chunks unavailable: Return context with empty string
+- Log errors for debugging
+
+## Chapter 3 Chunk Structure
+
+**Source**: `backend/app/content/chapters/chapter_3_chunks.py`
+
+**Constant**: `CH3_CHUNKS = []` (placeholder)
+
+**Function**: `get_chapter_chunks(chapter_id: int = 3) -> List[Dict[str, Any]]`
+
+**Chunk Metadata**:
+- `id`: Unique chunk identifier (format: "ch3-s{section}-c{chunk}")
+- `text`: Chunk text content
+- `chapter_id`: Always 3
+- `section_id`: Section identifier from MDX (e.g., "what-is-perception-in-physical-ai")
+- `position`: Position in chapter (0-based)
+- `word_count`: Word count in chunk
+- `metadata.heading`: Section heading
+- `metadata.type`: Content type ("paragraph", "heading", "glossary", etc.)
+- `metadata.has_diagram`: True if section has diagram placeholder
+- `metadata.has_ai_block`: True if section has AI block
+- `metadata.chunk_markers`: True if chunk has RAG-CHUNK markers
+- `metadata.concepts`: Physical AI concepts (e.g., ["perception", "sensors", "vision", "signal-processing"])
+
+## Chapter 3 Embedding Structure
+
+**Source**: `backend/app/ai/embeddings/embedding_client.py`
+
+**Functions**:
+- `embed_chapter3_chunks(chunks: List[str]) -> List[List[float]]`
+- `normalize_chapter3_embeddings(embeddings: List[List[float]]) -> List[List[float]]`
+
+**Embedding Format**:
+- Dimension: 1536 (for text-embedding-3-small)
+- Type: List[float]
+- Normalization: Optional L2 normalization
+
+## Chapter 3 Qdrant Collection
+
+**Collection Name**: "chapter3" (from QDRANT_COLLECTION_CH3 env var)
+
+**Vector Schema**:
+- Dimension: 1536
+- Distance Metric: Cosine similarity
+- Index: HNSW (m, ef_construct parameters)
+
+**Metadata Schema**:
+```yaml
+payload:
+  text: str                     # Original text chunk
+  chapter_id: int               # Chapter identifier (3)
+  section_id: str               # Section identifier
+  position: int                 # Position in chapter
+  word_count: int               # Word count
+  metadata:
+    heading: str
+    type: str
+    has_diagram: bool
+    has_ai_block: bool
+    concepts: List[str]
+```
+
+## MDX RAG Markers
+
+**File**: `frontend/docs/chapters/chapter-3.mdx`
+
+**Markers**:
+- `<!-- RAG-CHUNK: start -->`: Start of RAG chunk boundary
+- `<!-- RAG-CHUNK: end -->`: End of RAG chunk boundary
+
+**Usage**:
+- Markers wrap section content including AI blocks and diagrams
+- Markers define future chunk boundaries for RAG pipeline
+- Markers complement existing `<!-- CHUNK: START -->` and `<!-- CHUNK: END -->` markers
+
+## Environment Variables
+
+**File**: `.env.example`
+
+**Variables**:
+- `QDRANT_COLLECTION_CH3="chapter3"`: Qdrant collection name for Chapter 3
+- `EMBEDDING_MODEL_CH3="text-embedding-3-small"`: Embedding model for Chapter 3
+
+## Configuration Settings
+
+**File**: `backend/app/config/settings.py`
+
+**Fields**:
+- `qdrant_collection_ch3: Optional[str] = None`: Qdrant collection name for Chapter 3
+- `ch3_embedding_model: Optional[str] = None`: Embedding model for Chapter 3
+
+## Notes
+
+- All functions are placeholders with TODO comments
+- No real RAG/LLM logic implemented
+- Structure only, no implementation details
+- Follows Chapter 2 RAG prep patterns (Feature 012 or 021)
+

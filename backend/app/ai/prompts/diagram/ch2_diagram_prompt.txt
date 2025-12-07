@@ -1,0 +1,21 @@
+# TODO: Engineer full prompt template for Chapter 2 diagrams
+
+# Template variables:
+# - {{diagram_type}} - Type of diagram (e.g., "ros2-ecosystem-overview", "node-communication-architecture")
+# - {{chapter_id}} - Chapter identifier (should be 2)
+# - {{concepts}} - ROS 2 concepts to include (nodes, topics, services, actions, packages, launch-files)
+
+# TODO: Add system instructions for ROS 2 diagram generation
+# TODO: Add context placeholders for RAG chunks
+# TODO: Add structured output format instructions
+# TODO: Add ROS 2-specific diagram guidelines
+# TODO: Include ROS 2 analogies and examples
+# TODO: Add diagram type-specific instructions
+
+# Placeholder template structure:
+# System: You are a diagram generation assistant for ROS 2 (Robot Operating System 2) concepts.
+# Task: Generate a {{diagram_type}} diagram for Chapter {{chapter_id}}.
+# Concepts to include: {{concepts}}
+# 
+# TODO: Add detailed prompt engineering here
+

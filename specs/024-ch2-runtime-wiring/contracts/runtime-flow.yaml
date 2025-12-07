@@ -1,0 +1,296 @@
+# Runtime Flow Contract: Chapter 2 Backend Runtime Wiring
+
+**Feature**: 024-ch2-runtime-wiring
+**Date**: 2025-01-27
+**Purpose**: Define expected runtime flow for Chapter 2 AI blocks through the backend runtime system
+
+## Overview
+
+This contract defines the expected runtime flow for Chapter 2 AI blocks from API endpoints through the runtime engine to subagents. All flows are documented as placeholders with TODO comments—no real AI logic is implemented in this feature.
+
+---
+
+## Runtime Flow Diagram
+
+```
+Frontend Component (Chapter 2)
+    ↓
+API Endpoint (ai_blocks.py)
+    ├─► POST /api/ai/ask-question (chapterId=2)
+    ├─► POST /api/ai/explain-like-10 (chapterId=2)
+    ├─► POST /api/ai/quiz (chapterId=2)
+    └─► POST /api/ai/diagram (chapterId=2)
+    ↓
+Runtime Engine (engine.py)
+    ├─► Detect chapterId=2
+    ├─► Route to Chapter 2 handling path (TODO)
+    └─► Call run_ai_block(block_type, request_data)
+    ↓
+Chapter 2 Subagent (ch2_*_agent.py)
+    ├─► ch2_ask_question_agent.py (TODO)
+    ├─► ch2_explain_el10_agent.py (TODO)
+    ├─► ch2_quiz_agent.py (TODO)
+    └─► ch2_diagram_agent.py (TODO)
+    ↓
+Skills Layer (skills/*.py)
+    ├─► retrieval_skill.py (Chapter 2 placeholder)
+    ├─► prompt_builder_skill.py (Chapter 2 placeholder)
+    └─► formatting_skill.py (Chapter 2 placeholder)
+    ↓
+Response → API → Frontend
+```
+
+---
+
+## API Layer Contract
+
+### Endpoint: POST /api/ai/ask-question
+
+**Request** (Chapter 2):
+```json
+{
+  "question": "string",
+  "chapterId": 2,
+  "sectionId": "string (optional)"
+}
+```
+
+**Routing**:
+- Route to: `run_ai_block("ask-question", request_data)`
+- Comment: `# TODO: Chapter 2 runtime call`
+- Expected: Request includes `chapterId=2`
+
+---
+
+### Endpoint: POST /api/ai/explain-like-10
+
+**Request** (Chapter 2):
+```json
+{
+  "concept": "string",
+  "chapterId": 2
+}
+```
+
+**Routing**:
+- Route to: `run_ai_block("explain-like-10", request_data)`
+- Comment: `# TODO: Chapter 2 runtime call`
+- Expected: Request includes `chapterId=2`
+
+---
+
+### Endpoint: POST /api/ai/quiz
+
+**Request** (Chapter 2):
+```json
+{
+  "chapterId": 2,
+  "numQuestions": 6
+}
+```
+
+**Routing**:
+- Route to: `run_ai_block("quiz", request_data)`
+- Comment: `# TODO: Chapter 2 runtime call`
+- Expected: Request includes `chapterId=2`
+
+---
+
+### Endpoint: POST /api/ai/diagram
+
+**Request** (Chapter 2):
+```json
+{
+  "diagramType": "string",
+  "chapterId": 2,
+  "concepts": ["string"]
+}
+```
+
+**Routing**:
+- Route to: `run_ai_block("diagram", request_data)`
+- Comment: `# TODO: Chapter 2 runtime call`
+- Expected: Request includes `chapterId=2`
+
+---
+
+## Runtime Engine Contract
+
+### Chapter 2 Routing
+
+**File**: `backend/app/ai/runtime/engine.py`
+
+**Function**: `run_ai_block(block_type: str, request_data: Dict[str, Any])`
+
+**Chapter 2 Detection**:
+```python
+chapter_id = request_data.get("chapterId", 1)
+if chapter_id == 2:
+    # TODO: Chapter 2 routing
+    # Placeholder routing with comments describing expected flows
+```
+
+**Expected Flow** (TODO):
+1. Detect chapterId=2
+2. Route to Chapter 2 subagent (ch2_*_agent.py)
+3. Load Chapter 2 RAG context (from chapter_2_chunks.py)
+4. Call Chapter 2 subagent with context
+5. Format response for frontend
+
+**Placeholder Comments**:
+- `# TODO: Check ENABLE_CHAPTER_2_RUNTIME flag`
+- `# TODO: Import Chapter 2 subagents`
+- `# TODO: Route to Chapter 2 subagent`
+- `# TODO: Load Chapter 2 RAG context`
+
+---
+
+## RAG Layer Contract
+
+### Chapter 2 Chunks File
+
+**File**: `backend/app/content/chapters/chapter_2_chunks.py`
+
+**Function**: `get_chapter_chunks(chapter_id: int = 2) -> List[Dict[str, Any]]`
+
+**Structure** (Parity with chapter_1_chunks):
+```python
+def get_chapter_chunks(chapter_id: int = 2) -> List[Dict[str, Any]]:
+    """
+    Return list of text chunks from Chapter 2 with metadata.
+    
+    TODO: Implement chunking from Chapter 2 MDX content
+    TODO: Load Chapter 2 content from frontend/docs/chapters/chapter-2.mdx
+    TODO: Implement chunking strategy (same as Chapter 1)
+    TODO: Extract metadata (section titles, positions, word counts)
+    TODO: Generate unique chunk IDs (format: "ch2-s{section}-c{chunk}")
+    TODO: Handle special content (glossary, diagrams, AI blocks)
+    TODO: Cache chunks for performance
+    TODO: Include ROS 2-specific metadata (concepts: nodes, topics, services, actions)
+    """
+    # Placeholder return - no real chunking implementation
+    return []
+```
+
+**Return Structure** (Placeholder):
+- Empty list `[]` or placeholder structure matching chapter_1_chunks format
+
+---
+
+## Subagent Contract
+
+### Chapter 2 Subagent Files
+
+**Files**:
+- `backend/app/ai/subagents/ch2_ask_question_agent.py`
+- `backend/app/ai/subagents/ch2_explain_el10_agent.py`
+- `backend/app/ai/subagents/ch2_quiz_agent.py`
+- `backend/app/ai/subagents/ch2_diagram_agent.py`
+
+**Structure** (Empty Scaffolds):
+```python
+"""
+Chapter 2 [Agent Type] Agent
+
+TODO: blueprint for Chapter 2 version of the agent
+"""
+
+# TODO: Import statements
+# TODO: Function definitions
+# TODO: ROS 2-specific logic
+```
+
+**Purpose**: Placeholders for future Chapter 2-specific agent logic
+
+---
+
+## Skills Layer Contract
+
+### Retrieval Skill
+
+**File**: `backend/app/ai/skills/retrieval_skill.py`
+
+**Chapter 2 Extension**:
+- Add placeholder routing comments for Chapter 2
+- Document expected Chapter 2 handling path
+- No logic implementation (only comments)
+
+---
+
+### Prompt Builder Skill
+
+**File**: `backend/app/ai/skills/prompt_builder_skill.py`
+
+**Chapter 2 Extension**:
+- Add placeholder routing comments for Chapter 2
+- Document expected Chapter 2 handling path
+- No logic implementation (only comments)
+
+---
+
+### Formatting Skill
+
+**File**: `backend/app/ai/skills/formatting_skill.py`
+
+**Chapter 2 Extension**:
+- Add placeholder routing comments for Chapter 2
+- Document expected Chapter 2 handling path
+- No logic implementation (only comments)
+
+---
+
+## Validation Contract
+
+### Backend Startup
+
+**Requirement**: Backend must start without errors
+
+**Validation**:
+- No import errors when starting FastAPI server
+- All imports resolve correctly
+- No syntax errors in new files
+
+---
+
+### Module Importability
+
+**Requirement**: All new modules must import correctly
+
+**Validation**:
+- `chapter_2_chunks.py` is importable: `from app.content.chapters.chapter_2_chunks import get_chapter_chunks`
+- All subagent files are importable: `from app.ai.subagents.ch2_ask_question_agent import *`
+- No circular import errors
+
+---
+
+## Error Handling Contract
+
+### Missing Chapter 2 Infrastructure
+
+**Scenario**: Chapter 2 runtime called but infrastructure not ready
+
+**Expected Behavior**:
+- Runtime engine should have placeholder routing with TODO comments
+- Subagents should be importable but contain only TODO placeholders
+- Skills should have placeholder routing comments
+
+---
+
+### Invalid Chapter ID
+
+**Scenario**: Request with invalid chapterId
+
+**Expected Behavior**:
+- Runtime engine should handle gracefully (default to chapterId=1 or return error)
+- API endpoints should validate chapterId parameter
+
+---
+
+## Notes
+
+- This contract documents expected flow—no real AI logic is implemented
+- All routing is placeholder-based with TODO comments
+- Chapter 2 subagents are empty scaffolds for future implementation
+- Skills layer extensions are comment-only (no logic)
+- Backend must start and all modules must import correctly
+

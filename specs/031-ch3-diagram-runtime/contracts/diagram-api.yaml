@@ -1,0 +1,385 @@
+# Diagram API Contract: Chapter 3 Diagram Generator Runtime Layer
+
+**Feature**: 031-ch3-diagram-runtime
+**Date**: 2025-01-27
+**Purpose**: Define expected placeholders, routing flow, and subagent responsibilities for Chapter 3 diagram generation
+
+## Overview
+
+This contract defines the expected placeholders for Chapter 3 diagram generation. All structures are placeholders with TODO comments—no real AI logic or diagram formats are implemented in this feature.
+
+---
+
+## Chapter 3 Diagram Types
+
+**Expected Diagram Types** (Placeholders):
+1. `perception-overview` - Physical AI perception system overview diagram
+2. `sensor-types` - Sensor type categorization diagram
+3. `cv-depth-flow` - Computer vision and depth perception flow diagram
+4. `feature-extraction-pipeline` - Feature extraction pipeline diagram
+
+**Validation Rules**:
+- Diagram types MUST be kebab-case (lowercase, hyphens only)
+- Diagram types MUST match placeholders from chapter-3.mdx
+- Diagram types are placeholders only (no actual diagram generation)
+
+---
+
+## Inputs to Diagram Block
+
+**Request Model**:
+```yaml
+diagramType: str              # Type of diagram (e.g., "perception-overview", "sensor-types")
+chapterId: 3                  # Chapter identifier (must be 3)
+concepts: List[str]            # Physical AI concepts to include (e.g., "sensors", "computer-vision", "signal-processing")
+```
+
+**Example Request**:
+```json
+{
+  "diagramType": "sensor-types",
+  "chapterId": 3,
+  "concepts": ["vision", "lidar", "motion"]
+}
+```
+
+---
+
+## Expected Output Schema (Placeholder)
+
+**Response Structure**:
+```yaml
+nodes: List[Dict]              # Diagram nodes (graph structure) - placeholder
+edges: List[Dict]              # Diagram edges (connections) - placeholder
+svg: str                       # SVG representation (optional) - placeholder
+metadata: Dict                 # Diagram metadata - placeholder
+```
+
+**Example Response** (Placeholder):
+```json
+{
+  "nodes": [],
+  "edges": [],
+  "svg": "",
+  "metadata": {}
+}
+```
+
+**Validation Rules**:
+- Response structure is placeholder only
+- No actual diagram data is generated
+- All fields are empty placeholders
+
+---
+
+## Routing Flow
+
+### API Endpoint → Runtime Engine → Diagram Runtime
+
+**Flow**:
+```
+POST /ai/ch3/diagram
+    ↓
+API Endpoint (ai_blocks.py)
+    ├─► Extract request data
+    ├─► Call run_ai_block(block_type="diagram", chapter=3, payload=request)
+    └─► Return AIBlockResponse (placeholder)
+    ↓
+Runtime Engine (engine.py)
+    ├─► Check: block_type == "diagram" AND chapterId == 3
+    ├─► Route to: ch3_diagram_runtime.run()
+    └─► Return diagram response (placeholder)
+    ↓
+Diagram Runtime (ch3_diagram_runtime.py)
+    ├─► Step 1: Validate diagram request (TODO)
+    ├─► Step 2: Build prompt (placeholder)
+    ├─► Step 3: Call RAG (placeholder)
+    ├─► Step 4: Call provider LLM (placeholder)
+    └─► Step 5: Format response (placeholder)
+    ↓
+Response (nodes, edges, svg, metadata)
+```
+
+**Routing Logic** (Comments Only):
+```python
+# TODO: Chapter 3 diagram routing
+# if block_type == "diagram" AND chapterId == 3:
+#     from app.ai.diagram.ch3_diagram_runtime import run as ch3_diagram_run
+#     result = await ch3_diagram_run(
+#         diagram_type=request_data.get("diagramType", ""),
+#         chapter_id=3,
+#         concepts=request_data.get("concepts", [])
+#     )
+#     return result
+```
+
+**Validation Rules**:
+- Routing MUST be comment-only (no logic)
+- Routing MUST check both `block_type == "diagram"` AND `chapterId == 3`
+- Routing MUST call `ch3_diagram_runtime.run()`
+
+---
+
+## Subagent Responsibilities
+
+### ch3_diagram_agent (from Feature 030)
+
+**File**: `backend/app/ai/subagents/ch3_diagram_agent.py`
+
+**Responsibilities** (Placeholder):
+- Process Physical AI diagram requests with Chapter 3 context
+- Use prompt_builder_skill for Physical AI diagram prompts
+- Call LLM provider with Physical AI context
+- Format response with Physical AI diagram structure
+
+**Integration**:
+- Called from ch3_diagram_runtime.py (Step 4: Call provider LLM)
+- Receives context from RAG pipeline
+- Returns formatted diagram structure
+
+**Note**: Subagent already exists from Feature 030. This feature creates the runtime module that orchestrates the flow.
+
+---
+
+## Diagram Runtime Flow Contract
+
+### Runtime Module
+
+**File**: `backend/app/ai/diagram/ch3_diagram_runtime.py`
+
+**Function**: `async def run(diagram_type: str, chapter_id: int, concepts: List[str]) -> Dict[str, Any]`
+
+**Steps** (All TODO):
+1. **Validate diagram request** (TODO)
+   - Check diagram_type is supported for Chapter 3
+   - Validate chapter_id is 3
+   - Validate concepts list
+2. **Build prompt** (placeholder)
+   - Load ch3_diagram_prompt.txt template
+   - Replace template variables
+   - Call build_diagram_prompt_ch3() from prompt_builder_skill
+3. **Call RAG** (placeholder)
+   - Retrieve Chapter 3 context chunks for diagram
+   - Use RAG pipeline to get relevant Physical AI content
+4. **Call provider LLM** (placeholder)
+   - Call LLM provider with prompt and context
+   - Generate diagram structure using LLM reasoning
+   - Call ch3_diagram_agent for diagram generation
+5. **Format response** (placeholder)
+   - Call format_diagram_output_ch3() from formatting_skill
+   - Format nodes, edges, SVG structure
+
+**Expected Flow**:
+```
+Request (diagramType, chapterId=3, concepts)
+    ↓
+Validate diagram request (TODO)
+    ↓
+Build prompt (placeholder)
+    ↓
+Call RAG (placeholder)
+    ↓
+Call provider LLM (placeholder)
+    ↓
+Format response (placeholder)
+    ↓
+Response (nodes, edges, svg, metadata)
+```
+
+---
+
+## Prompt Template Contract
+
+### Chapter 3 Diagram Prompt Template
+
+**File**: `backend/app/ai/prompts/diagram/ch3_diagram_prompt.txt`
+
+**Template Variables**:
+- `{{diagram_type}}` - Type of diagram to generate
+- `{{chapter_id}}` - Chapter identifier (should be 3)
+- `{{concepts}}` - List of Physical AI concepts to include
+
+**Format** (Placeholder):
+```
+TODO: Engineer full prompt template for Chapter 3 diagrams
+
+Template variables:
+- {{diagram_type}} - e.g., "perception-overview", "sensor-types", "cv-depth-flow", "feature-extraction-pipeline"
+- {{chapter_id}} - Should be 3 for Chapter 3
+- {{concepts}} - Physical AI concepts: perception, sensors, computer-vision, signal-processing, feature-extraction
+
+TODO: Add system instructions for Physical AI diagram generation
+TODO: Add context placeholders for RAG chunks
+TODO: Add structured output format instructions
+TODO: Add Physical AI-specific diagram guidelines
+```
+
+**Validation Rules**:
+- Template file MUST exist
+- Template MUST include all 3 variables
+- Template MUST have TODO comments for future engineering
+
+---
+
+## Skills Extension Contract
+
+### Prompt Builder Skill
+
+**File**: `backend/app/ai/skills/prompt_builder_skill.py`
+
+**Function**: `build_diagram_prompt_ch3(diagram_type: str, chapter_id: int, concepts: List[str]) -> str`
+
+**Structure** (Placeholder):
+```python
+def build_diagram_prompt_ch3(
+    diagram_type: str,
+    chapter_id: int,
+    concepts: List[str]
+) -> str:
+    """
+    Build diagram prompt for Chapter 3.
+    
+    TODO: Implement prompt building for Chapter 3 diagrams
+    TODO: Load ch3_diagram_prompt.txt template
+    TODO: Replace template variables ({{diagram_type}}, {{chapter_id}}, {{concepts}})
+    TODO: Add Physical AI-specific context
+    TODO: Return constructed prompt string
+    """
+    # Placeholder return
+    return ""
+```
+
+---
+
+### Formatting Skill
+
+**File**: `backend/app/ai/skills/formatting_skill.py`
+
+**Function**: `format_diagram_output_ch3(raw_response: Dict[str, Any]) -> Dict[str, Any]`
+
+**Structure** (Placeholder):
+```python
+def format_diagram_output_ch3(
+    raw_response: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Format diagram output for Chapter 3.
+    
+    TODO: Implement formatting for Chapter 3 diagram output
+    TODO: Parse raw LLM response
+    TODO: Extract nodes, edges, SVG
+    TODO: Format Physical AI-specific metadata
+    TODO: Return formatted diagram structure
+    """
+    # Placeholder return
+    return {
+        "nodes": [],
+        "edges": [],
+        "svg": "",
+        "metadata": {}
+    }
+```
+
+---
+
+## RAG Integration Contract
+
+### Diagram Context Retrieval
+
+**File**: `backend/app/ai/rag/ch3_pipeline.py`
+
+**Function**: Add TODO for retrieve diagram-related context
+
+**Structure** (Placeholder):
+```python
+# TODO: Retrieve diagram-related context
+# TODO: Filter chunks by diagram_type
+# TODO: Include Physical AI concepts in context
+# TODO: Return relevant chunks for diagram generation
+```
+
+**Validation Rules**:
+- RAG stub MUST be present in ch3_pipeline.py
+- Stub MUST have TODO comments
+- No real RAG operations implemented
+
+---
+
+## API Layer Contract
+
+### Diagram Endpoint
+
+**File**: `backend/app/api/ai_blocks.py`
+
+**Endpoint**: `POST /ai/ch3/diagram`
+
+**Request** (Chapter 3):
+```json
+{
+  "diagramType": "string",
+  "chapterId": 3,
+  "concepts": ["string"]
+}
+```
+
+**Routing**:
+- Route to Chapter 3 diagram runtime when `chapterId=3`
+- Call `run_ai_block(block_type="diagram", chapter=3, payload=request)`
+- Add TODO documentation tags
+- Ensure routing supports chapterId=3
+
+**Validation Rules**:
+- Endpoint MUST accept chapterId=3
+- Endpoint MUST route to Chapter 3 runtime when chapterId=3
+- TODO comments MUST be present
+
+---
+
+## Validation Contract
+
+### Backend Startup
+
+**Requirement**: Backend must compile and run
+
+**Validation**:
+- No import errors when starting FastAPI server
+- All imports resolve correctly
+- No syntax errors in new files
+
+---
+
+### Module Importability
+
+**Requirement**: All new modules must import correctly
+
+**Validation**:
+- `ch3_diagram_runtime.py` is importable: `from app.ai.diagram.ch3_diagram_runtime import run`
+- Prompt template file exists and is readable
+- Skills functions are importable
+
+---
+
+## Error Handling Contract
+
+### Missing Chapter 3 Diagram Infrastructure
+
+**Scenario**: Chapter 3 diagram runtime called but infrastructure not ready
+
+**Expected Behavior**:
+- Runtime module should have placeholder routing with TODO comments
+- Skills functions should be callable but return placeholder responses
+- Prompt template should exist with TODO comments
+
+---
+
+## Notes
+
+- This contract documents expected placeholders—no real AI logic is implemented
+- All routing is placeholder-based with TODO comments
+- Diagram types are placeholders matching chapter-3.mdx
+- Skills functions are placeholders for future implementation
+- Backend must start and all modules must import correctly
+- No schemas for actual diagram formats (placeholder only)
+- Subagent (ch3_diagram_agent) already exists from Feature 030
+- This feature creates the runtime module that orchestrates the diagram generation flow
+

@@ -1,0 +1,273 @@
+# Quiz Contract: Chapter 2 Interactive Quiz Runtime Engine
+
+**Feature**: 027-ch2-quiz-runtime
+**Date**: 2025-01-27
+**Purpose**: Define expected placeholders for Chapter 2 quiz generation
+
+## Overview
+
+This contract defines the expected placeholders for Chapter 2 quiz generation. All structures are placeholders with TODO comments—no real AI logic or question formats are implemented in this feature.
+
+---
+
+## Chapter 2 Quiz Runtime Flow Contract
+
+### Runtime Module
+
+**File**: `backend/app/ai/quiz/ch2_quiz_runtime.py`
+
+**Function**: `async def run(chapter_id: int, num_questions: int, learning_objectives: Optional[List[str]] = None) -> Dict[str, Any]`
+
+**Steps** (All TODO):
+1. **Validate request** (TODO)
+2. **Build prompt** (placeholder)
+3. **Retrieve chapter context** (placeholder)
+4. **Call RAG pipeline** (placeholder)
+5. **Call LLM provider** (placeholder)
+6. **Format output** (placeholder)
+
+**Expected Flow**:
+```
+Request (chapterId=2, numQuestions, learningObjectives)
+    ↓
+Validate request (TODO)
+    ↓
+Build prompt (placeholder)
+    ↓
+Retrieve chapter context (placeholder)
+    ↓
+Call RAG pipeline (placeholder)
+    ↓
+Call LLM provider (placeholder)
+    ↓
+Format output (placeholder)
+    ↓
+Response (questions, learning_objectives, metadata)
+```
+
+---
+
+## Prompt Template Contract
+
+### Chapter 2 Quiz Prompt Template
+
+**File**: `backend/app/ai/prompts/quiz/ch2_quiz_prompt.txt`
+
+**Template Variables**:
+- `{{chapter_id}}` - Chapter identifier (should be 2)
+- `{{num_questions}}` - Number of questions to generate
+- `{{learning_objectives}}` - List of learning objectives to cover
+- `{{context}}` - RAG context chunks from Chapter 2
+
+**Format** (Placeholder):
+```
+TODO: Engineer full quiz prompt template for Chapter 2
+
+Template variables:
+- {{chapter_id}} - Should be 2 for Chapter 2
+- {{num_questions}} - Number of questions to generate
+- {{learning_objectives}} - Learning objectives to cover
+- {{context}} - RAG context chunks
+
+TODO: Add system instructions for quiz generation
+TODO: Add context placeholders for RAG chunks
+TODO: Add structured output format instructions
+TODO: Add difficulty-level tuning guidelines
+TODO: Include ROS 2-specific question types
+TODO: Add question format requirements (multiple choice, true/false, short answer)
+```
+
+**Validation Rules**:
+- Template file MUST exist
+- Template MUST include all 4 variables
+- Template MUST have TODO comments for future difficulty-level tuning
+
+---
+
+## Runtime Engine Routing Contract
+
+### Chapter 2 Quiz Routing
+
+**File**: `backend/app/ai/runtime/engine.py`
+
+**Routing Logic** (Comments Only):
+```python
+# TODO: Chapter 2 quiz routing
+# if block_type == "interactive-quiz" AND chapterId == 2:
+#     from app.ai.quiz.ch2_quiz_runtime import run as ch2_quiz_run
+#     result = await ch2_quiz_run(
+#         chapter_id=2,
+#         num_questions=request_data.get("numQuestions", 5),
+#         learning_objectives=request_data.get("learningObjectives")
+#     )
+#     return result
+```
+
+**Validation Rules**:
+- Routing MUST be comment-only (no logic)
+- Routing MUST check both `block_type == "interactive-quiz"` AND `chapterId == 2`
+- Routing MUST call `ch2_quiz_runtime.run()`
+
+---
+
+## API Layer Contract
+
+### Quiz Endpoint
+
+**File**: `backend/app/api/ai_blocks.py`
+
+**Endpoint**: `POST /api/ai/quiz`
+
+**Request** (Chapter 2):
+```json
+{
+  "chapterId": 2,
+  "numQuestions": 5,
+  "learningObjectives": ["string"]
+}
+```
+
+**Routing**:
+- Route to Chapter 2 quiz runtime when `chapterId=2`
+- Add CH2-specific handling comments
+- Ensure request model supports chapterId=2
+- Must call runtime engine for CH2
+
+**Validation Rules**:
+- Endpoint MUST accept chapterId=2
+- Endpoint MUST route to Chapter 2 runtime when chapterId=2
+- TODO comments MUST be present
+
+---
+
+## Skills Extension Contract
+
+### Prompt Builder Skill
+
+**File**: `backend/app/ai/skills/prompt_builder_skill.py`
+
+**Function**: `build_quiz_prompt_ch2(chapter_id: int, num_questions: int, learning_objectives: Optional[List[str]] = None) -> str`
+
+**Structure** (Placeholder):
+```python
+def build_quiz_prompt_ch2(
+    chapter_id: int,
+    num_questions: int,
+    learning_objectives: Optional[List[str]] = None
+) -> str:
+    """
+    Build quiz prompt for Chapter 2.
+    
+    TODO: Implement prompt building for Chapter 2 quizzes
+    TODO: Load ch2_quiz_prompt.txt template
+    TODO: Replace template variables ({{chapter_id}}, {{num_questions}}, {{learning_objectives}}, {{context}})
+    TODO: Add ROS 2-specific context
+    TODO: Return constructed prompt string
+    """
+    # Placeholder return
+    return ""
+```
+
+---
+
+### Formatting Skill
+
+**File**: `backend/app/ai/skills/formatting_skill.py`
+
+**Function**: `format_quiz_output_ch2(raw_response: Dict[str, Any]) -> Dict[str, Any]`
+
+**Structure** (Placeholder):
+```python
+def format_quiz_output_ch2(
+    raw_response: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Format quiz output for Chapter 2.
+    
+    TODO: Implement formatting for Chapter 2 quiz output
+    TODO: Parse raw LLM response
+    TODO: Extract questions, answers, learning objectives
+    TODO: Format ROS 2-specific metadata
+    TODO: Return formatted quiz structure
+    """
+    # Placeholder return
+    return {}
+```
+
+---
+
+## Knowledge Source Contract
+
+### Chapter 2 Quiz Chunks
+
+**File**: `backend/app/content/chapters/chapter_2_chunks.py`
+
+**Function**: `get_chapter2_quiz_chunks(chapter_id: int = 2, learning_objectives: Optional[List[str]] = None) -> List[Dict[str, Any]]`
+
+**Structure** (Placeholder):
+```python
+def get_chapter2_quiz_chunks(
+    chapter_id: int = 2,
+    learning_objectives: Optional[List[str]] = None
+) -> List[Dict[str, Any]]:
+    """
+    Get Chapter 2 chunks for quiz generation.
+    
+    TODO: Implement quiz-specific chunk retrieval
+    TODO: Filter chunks by learning objectives if provided
+    TODO: Return chunks relevant for quiz generation
+    """
+    # Placeholder return
+    return []
+```
+
+---
+
+## Validation Contract
+
+### Backend Startup
+
+**Requirement**: Backend must compile and run
+
+**Validation**:
+- No import errors when starting FastAPI server
+- All imports resolve correctly
+- No syntax errors in new files
+
+---
+
+### Module Importability
+
+**Requirement**: All new modules must import correctly
+
+**Validation**:
+- `ch2_quiz_runtime.py` is importable: `from app.ai.quiz.ch2_quiz_runtime import run`
+- Prompt template file exists and is readable
+- Skills functions are importable
+- Quiz chunks function is importable
+
+---
+
+## Error Handling Contract
+
+### Missing Chapter 2 Quiz Infrastructure
+
+**Scenario**: Chapter 2 quiz runtime called but infrastructure not ready
+
+**Expected Behavior**:
+- Runtime module should have placeholder routing with TODO comments
+- Skills functions should be callable but return placeholder responses
+- Prompt template should exist with TODO comments
+- Quiz chunks function should return empty list
+
+---
+
+## Notes
+
+- This contract documents expected placeholders—no real AI logic is implemented
+- All routing is placeholder-based with TODO comments
+- Question formats are placeholders for future implementation
+- Skills functions are placeholders for future implementation
+- Backend must start and all modules must import correctly
+- No real question schema (placeholder only)
+

@@ -34,26 +34,33 @@ async def retrieve_content(
             ...
         ]
     
-    TODO: Implement content retrieval logic
-    TODO: Use RAG pipeline to retrieve relevant chunks
-    TODO: Call run_rag_pipeline(query, chapter_id, top_k)
-    TODO: Format results as list of chunk dictionaries
-    TODO: Add error handling for retrieval failures
-    TODO: Add caching for frequently retrieved queries
-    
-    TODO: Chapter-aware retrieval
-    TODO: support CH2 collection name
-    TODO: If chapter_id == 2:
-    TODO:     Use Chapter 2 RAG pipeline
-    TODO:     from app.ai.rag.collections.ch2_collection import CH2_COLLECTION_NAME
-    TODO:     Use CH2_COLLECTION_NAME for Chapter 2 collection
-    TODO:     from app.ai.rag.pipeline import run_rag_pipeline
-    TODO:     context = await run_rag_pipeline(query, chapter_id=2, top_k=top_k)
-    TODO:     Call RAG pipeline with Chapter 2 collection
-    TODO:     Return Chapter 2 chunks with ROS 2 context
-    TODO: Elif chapter_id == 1:
-    TODO:     Use Chapter 1 RAG pipeline (existing logic)
+    Real implementation: Use RAG pipeline to retrieve relevant chunks.
     """
-    # Placeholder return - no real retrieval logic
-    return []
+    from app.ai.rag.pipeline import run_rag_pipeline
+    
+    try:
+        # Call RAG pipeline
+        rag_result = await run_rag_pipeline(query, chapter_id, top_k)
+        
+        # Format results as list of chunk dictionaries
+        chunks = rag_result.get("chunks", [])
+        
+        # Format chunks for return
+        formatted_chunks = []
+        for chunk in chunks:
+            payload = chunk.get("payload", {})
+            formatted_chunks.append({
+                "text": payload.get("text", ""),
+                "chapter_id": chapter_id,
+                "section_id": payload.get("section_id", ""),
+                "position": payload.get("position", 0),
+                "score": chunk.get("score", 0.0)
+            })
+        
+        return formatted_chunks
+        
+    except Exception as e:
+        # TODO: Add proper error logging
+        # Return empty list on error
+        return []
 

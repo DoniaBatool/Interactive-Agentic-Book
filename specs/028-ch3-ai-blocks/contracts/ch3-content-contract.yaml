@@ -1,0 +1,348 @@
+# Chapter 3 Content Contract: AI Blocks Integration Layer
+
+**Feature**: 028-ch3-ai-blocks
+**Date**: 2025-01-27
+**Purpose**: Define MDX usage patterns and component interfaces for Chapter 3 AI blocks
+
+## Overview
+
+This contract defines the MDX integration patterns for Chapter 3 AI blocks. All components reuse existing patterns from Chapter 1 and Chapter 2 but are configured for Chapter 3 context (chapterId=3, Physical AI Perception concepts, section IDs).
+
+---
+
+## Block Names
+
+**AI Block Types** (4 total):
+1. `ask-question` - AskQuestionBlock component
+2. `explain-like-i-am-10` - ExplainLike10Block component
+3. `interactive-quiz` - InteractiveQuizBlock component
+4. `generate-diagram` - GenerateDiagramBlock component
+
+**Validation Rules**:
+- Block names MUST match exactly (kebab-case)
+- Block names MUST be used in HTML comment placeholders: `<!-- AI-BLOCK: {name} -->`
+- Block names MUST map to corresponding React component names (PascalCase)
+
+---
+
+## MDX Usage Patterns
+
+### Import Statements
+
+**Location**: Top of `frontend/docs/chapters/chapter-3.mdx` (after frontmatter)
+
+**Format**:
+```mdx
+import AskQuestionBlock from '@site/src/components/ai/AskQuestionBlock';
+import ExplainLike10Block from '@site/src/components/ai/ExplainLike10Block';
+import InteractiveQuizBlock from '@site/src/components/ai/InteractiveQuizBlock';
+import GenerateDiagramBlock from '@site/src/components/ai/GenerateDiagramBlock';
+```
+
+**Validation Rules**:
+- Import paths MUST use `@site/src/components/ai/` prefix
+- Component names MUST match exported component names exactly
+- Imports MUST be placed after frontmatter and before content
+
+---
+
+### Component Usage in MDX
+
+**Format**: React JSX component calls embedded in MDX content
+
+**Ask Question Block**:
+```mdx
+<AskQuestionBlock chapterId={3} sectionId="what-is-perception-in-physical-ai" />
+```
+
+**Explain Like 10 Block**:
+```mdx
+<ExplainLike10Block concept="computer-vision" chapterId={3} />
+```
+
+**Interactive Quiz Block**:
+```mdx
+<InteractiveQuizBlock chapterId={3} numQuestions={5} />
+```
+
+**Generate Diagram Block**:
+```mdx
+<GenerateDiagramBlock diagramType="sensor-types" chapterId={3} />
+```
+
+**Validation Rules**:
+- Components MUST be self-closing (`/>`) or properly closed
+- Props MUST use JSX syntax (curly braces for numbers, quotes for strings)
+- Components MUST be placed at pedagogically correct positions in chapter
+
+---
+
+## Component Interface
+
+### AskQuestionBlock Props
+
+**Props Interface**:
+```typescript
+interface AskQuestionBlockProps {
+  chapterId: number;    // Required: Chapter ID (must be 3 for Chapter 3)
+  sectionId?: string;   // Optional: Section ID (e.g., "what-is-perception-in-physical-ai")
+}
+```
+
+**Chapter 3 Usage**:
+- `chapterId={3}` - Required, fixed value for Chapter 3
+- `sectionId="what-is-perception-in-physical-ai"` - Optional, matches section anchor ID
+
+**Validation Rules**:
+- `chapterId` MUST be 3
+- `sectionId` MUST match section anchor IDs from chapter-3.mdx (kebab-case)
+
+---
+
+### ExplainLike10Block Props
+
+**Props Interface**:
+```typescript
+interface ExplainLike10BlockProps {
+  concept?: string;     // Optional: Concept name to explain (e.g., "computer-vision")
+  chapterId: number;    // Required: Chapter ID (must be 3 for Chapter 3)
+}
+```
+
+**Chapter 3 Usage**:
+- `concept="computer-vision"` - Optional, Physical AI Perception concept name
+- `chapterId={3}` - Required, fixed value for Chapter 3
+
+**Validation Rules**:
+- `chapterId` MUST be 3
+- `concept` MUST be valid Physical AI Perception concept (computer-vision, sensors, signal-processing, feature-extraction, perception, depth-perception, lidar)
+
+---
+
+### InteractiveQuizBlock Props
+
+**Props Interface**:
+```typescript
+interface InteractiveQuizBlockProps {
+  chapterId: number;    // Required: Chapter ID (must be 3 for Chapter 3)
+  numQuestions?: number; // Optional: Number of questions (default: 5)
+}
+```
+
+**Chapter 3 Usage**:
+- `chapterId={3}` - Required, fixed value for Chapter 3
+- `numQuestions={5}` - Optional, number of quiz questions
+
+**Validation Rules**:
+- `chapterId` MUST be 3
+- `numQuestions` MUST be positive integer (1-20 recommended)
+
+---
+
+### GenerateDiagramBlock Props
+
+**Props Interface**:
+```typescript
+interface GenerateDiagramBlockProps {
+  diagramType?: string; // Optional: Diagram type (e.g., "sensor-types")
+  chapterId: number;    // Required: Chapter ID (must be 3 for Chapter 3)
+}
+```
+
+**Chapter 3 Usage**:
+- `diagramType="sensor-types"` - Optional, matches diagram placeholder name
+- `chapterId={3}` - Required, fixed value for Chapter 3
+
+**Validation Rules**:
+- `chapterId` MUST be 3
+- `diagramType` MUST match diagram placeholder names from chapter-3.mdx (kebab-case)
+
+---
+
+## Component Mapping
+
+**File**: `frontend/src/mdx-components.ts`
+
+**Export Format**:
+```typescript
+import AskQuestionBlock from '@site/src/components/ai/AskQuestionBlock';
+import ExplainLike10Block from '@site/src/components/ai/ExplainLike10Block';
+import InteractiveQuizBlock from '@site/src/components/ai/InteractiveQuizBlock';
+import GenerateDiagramBlock from '@site/src/components/ai/GenerateDiagramBlock';
+
+export default {
+  AskQuestionBlock,
+  ExplainLike10Block,
+  InteractiveQuizBlock,
+  GenerateDiagramBlock,
+};
+```
+
+**Validation Rules**:
+- All 4 components MUST be exported
+- Export names MUST match component names exactly (PascalCase)
+- Components MUST be importable from `@site/src/components/ai/` paths
+
+---
+
+## Chapter 3 Placement
+
+**Pedagogical Positions**:
+
+1. **Ask Question Block**:
+   - Location: After "What Is Perception in Physical AI?" section
+   - Section ID: `what-is-perception-in-physical-ai`
+   - Purpose: Allow learners to ask questions about perception fundamentals
+
+2. **Generate Diagram Block**:
+   - Location: After "Types of Sensors in Robotics" section
+   - Diagram Type: `sensor-types`
+   - Purpose: Generate visual diagram of sensor categories
+
+3. **Explain Like 10 Block**:
+   - Location: Inside "Computer Vision & Depth Perception" section
+   - Concept: `computer-vision`
+   - Purpose: Provide simplified explanation of computer vision concept
+
+4. **Interactive Quiz Block**:
+   - Location: After "Signal Processing Basics for AI" section
+   - Num Questions: `5`
+   - Purpose: Test understanding of perception and signal processing concepts
+
+**Validation Rules**:
+- Components MUST be placed at designated pedagogical positions
+- Props MUST match section IDs, concepts, and diagram types from chapter content
+- Components MUST not break MDX document structure
+
+---
+
+## Frontmatter Schema
+
+**Required Fields**:
+```yaml
+---
+title: "Chapter 3 — Physical AI Perception Systems (Sensors & Signal Processing)"
+description: "Learn how Physical AI systems perceive the world through sensors, computer vision, signal processing, and feature extraction for autonomous decision-making"
+sidebar_position: 3
+sidebar_label: "Chapter 3: Physical AI Perception Systems"
+tags: ["physical-ai", "sensors", "perception", "signal-processing"]
+---
+```
+
+**Validation Rules**:
+- `title` MUST start with "Chapter 3 — "
+- `description` MUST be 150-160 characters (SEO-optimized)
+- `sidebar_position` MUST be 3
+- `sidebar_label` MUST match pattern "Chapter 3: {abbreviated title}"
+- `tags` MUST include relevant keywords
+
+---
+
+## RAG Chunking Markers
+
+**Format**: HTML comments marking chunk boundaries
+
+**Example**:
+```mdx
+<!-- CHUNK: START -->
+## Section Title
+
+[Content]
+
+<!-- AI-BLOCK: ask-question -->
+<!-- CHUNK: END -->
+```
+
+**Validation Rules**:
+- Chunk markers MUST be placed around each section
+- Markers MUST use exact format: `<!-- CHUNK: START -->` and `<!-- CHUNK: END -->`
+- Chunk markers MUST not interfere with MDX rendering
+
+---
+
+## Backend Metadata Contract
+
+**File**: `backend/app/content/chapters/chapter_3.py`
+
+**Structure**:
+```python
+CHAPTER_METADATA = {
+    "id": 3,
+    "title": "Chapter 3 — Physical AI Perception Systems (Sensors & Signal Processing)",
+    "sections": [
+        "What Is Perception in Physical AI?",
+        "Types of Sensors in Robotics",
+        "Computer Vision & Depth Perception",
+        "Signal Processing Basics for AI",
+        "Feature Extraction & Interpretation",
+        "Learning Objectives",
+        "Glossary"
+    ],
+    "ai_blocks": [
+        "ask-question",
+        "explain-like-i-am-10",
+        "interactive-quiz",
+        "generate-diagram"
+    ],
+    "diagram_placeholders": [
+        "perception-overview",
+        "sensor-types",
+        "cv-depth-flow",
+        "feature-extraction-pipeline"
+    ]
+}
+```
+
+**Validation Rules**:
+- Metadata MUST match MDX structure exactly
+- `ai_blocks` MUST list all 4 block types in order
+- `diagram_placeholders` MUST match diagram names in MDX
+
+---
+
+## Build Validation
+
+**Docusaurus Build Command**: `npm run build` (in frontend directory)
+
+**Expected Results**:
+- Build completes without errors
+- MDX file compiles successfully
+- All component imports resolve correctly
+- No TypeScript compilation errors
+- No missing component errors
+
+**Validation Checklist**:
+- [ ] Build succeeds without errors
+- [ ] All imports resolve
+- [ ] Components render in designated locations
+- [ ] No console errors in browser
+- [ ] Chapter 3 visible in sidebar at position 3
+
+---
+
+## Error Handling
+
+**Invalid Props**:
+- Components should handle missing or invalid props gracefully
+- Use default values where appropriate
+- Show error messages for critical missing props
+
+**Missing Imports**:
+- Docusaurus build should fail with clear error messages
+- Error messages should indicate missing component imports
+
+**Component Rendering Failures**:
+- MDX should still compile successfully
+- Failed components may not render (acceptable for scaffolding phase)
+- Browser console should show React errors for debugging
+
+---
+
+## Notes
+
+- This contract focuses on MDX integration only (no backend logic)
+- Component props values match Chapter 3 metadata from chapter_3.py
+- All components reuse existing implementations from Feature 004
+- Chapter 3 context (chapterId=3) is required for all components
+- RAG chunking markers are included for future embedding generation
+

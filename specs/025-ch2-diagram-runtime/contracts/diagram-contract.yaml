@@ -1,0 +1,251 @@
+# Diagram Contract: Chapter 2 Diagram Generator Runtime
+
+**Feature**: 025-ch2-diagram-runtime
+**Date**: 2025-01-27
+**Purpose**: Define expected placeholders for Chapter 2 diagram generation
+
+## Overview
+
+This contract defines the expected placeholders for Chapter 2 diagram generation. All structures are placeholders with TODO comments—no real AI logic or diagram formats are implemented in this feature.
+
+---
+
+## Chapter 2 Diagram Types
+
+**Expected Diagram Types** (Placeholders):
+1. `ros2-ecosystem-overview` - ROS 2 ecosystem overview diagram
+2. `node-communication-architecture` - Node communication architecture diagram
+3. `topic-pubsub-flow` - Topic publish/subscribe flow diagram
+4. `services-actions-comparison` - Services vs actions comparison diagram
+
+**Validation Rules**:
+- Diagram types MUST be kebab-case (lowercase, hyphens only)
+- Diagram types MUST match placeholders from chapter-2.mdx
+- Diagram types are placeholders only (no actual diagram generation)
+
+---
+
+## Diagram Runtime Flow Contract
+
+### Runtime Module
+
+**File**: `backend/app/ai/diagram/ch2_diagram_runtime.py`
+
+**Function**: `async def run(diagram_type: str, chapter_id: int, concepts: List[str]) -> Dict[str, Any]`
+
+**Steps** (All TODO):
+1. **Validate diagram request** (TODO)
+2. **Build prompt** (placeholder)
+3. **Call RAG** (placeholder)
+4. **Call provider LLM** (placeholder)
+5. **Format response** (placeholder)
+
+**Expected Flow**:
+```
+Request (diagramType, chapterId=2, concepts)
+    ↓
+Validate diagram request (TODO)
+    ↓
+Build prompt (placeholder)
+    ↓
+Call RAG (placeholder)
+    ↓
+Call provider LLM (placeholder)
+    ↓
+Format response (placeholder)
+    ↓
+Response (nodes, edges, svg, metadata)
+```
+
+---
+
+## Prompt Template Contract
+
+### Chapter 2 Diagram Prompt Template
+
+**File**: `backend/app/ai/prompts/diagram/ch2_diagram_prompt.txt`
+
+**Template Variables**:
+- `{{diagram_type}}` - Type of diagram to generate
+- `{{chapter_id}}` - Chapter identifier (should be 2)
+- `{{concepts}}` - List of ROS 2 concepts to include
+
+**Format** (Placeholder):
+```
+TODO: Engineer full prompt template for Chapter 2 diagrams
+
+Template variables:
+- {{diagram_type}} - e.g., "ros2-ecosystem-overview", "node-communication-architecture"
+- {{chapter_id}} - Should be 2 for Chapter 2
+- {{concepts}} - ROS 2 concepts: nodes, topics, services, actions, packages, launch-files
+
+TODO: Add system instructions for ROS 2 diagram generation
+TODO: Add context placeholders for RAG chunks
+TODO: Add structured output format instructions
+TODO: Add ROS 2-specific diagram guidelines
+```
+
+**Validation Rules**:
+- Template file MUST exist
+- Template MUST include all 3 variables
+- Template MUST have TODO comments for future engineering
+
+---
+
+## Runtime Engine Routing Contract
+
+### Chapter 2 Diagram Routing
+
+**File**: `backend/app/ai/runtime/engine.py`
+
+**Routing Logic** (Comments Only):
+```python
+# TODO: Chapter 2 diagram routing
+# if block_type == "diagram" AND chapterId == 2:
+#     from app.ai.diagram.ch2_diagram_runtime import run as ch2_diagram_run
+#     result = await ch2_diagram_run(
+#         diagram_type=request_data.get("diagramType", ""),
+#         chapter_id=2,
+#         concepts=request_data.get("concepts", [])
+#     )
+#     return result
+```
+
+**Validation Rules**:
+- Routing MUST be comment-only (no logic)
+- Routing MUST check both `block_type == "diagram"` AND `chapterId == 2`
+- Routing MUST call `ch2_diagram_runtime.run()`
+
+---
+
+## API Layer Contract
+
+### Diagram Endpoint
+
+**File**: `backend/app/api/ai_blocks.py`
+
+**Endpoint**: `POST /api/ai/diagram`
+
+**Request** (Chapter 2):
+```json
+{
+  "diagramType": "string",
+  "chapterId": 2,
+  "concepts": ["string"]
+}
+```
+
+**Routing**:
+- Route to Chapter 2 diagram runtime when `chapterId=2`
+- Add TODO documentation tags
+- Ensure routing supports chapterId=2
+
+**Validation Rules**:
+- Endpoint MUST accept chapterId=2
+- Endpoint MUST route to Chapter 2 runtime when chapterId=2
+- TODO comments MUST be present
+
+---
+
+## Skills Extension Contract
+
+### Prompt Builder Skill
+
+**File**: `backend/app/ai/skills/prompt_builder_skill.py`
+
+**Function**: `build_diagram_prompt_ch2(diagram_type: str, chapter_id: int, concepts: List[str]) -> str`
+
+**Structure** (Placeholder):
+```python
+def build_diagram_prompt_ch2(
+    diagram_type: str,
+    chapter_id: int,
+    concepts: List[str]
+) -> str:
+    """
+    Build diagram prompt for Chapter 2.
+    
+    TODO: Implement prompt building for Chapter 2 diagrams
+    TODO: Load ch2_diagram_prompt.txt template
+    TODO: Replace template variables ({{diagram_type}}, {{chapter_id}}, {{concepts}})
+    TODO: Add ROS 2-specific context
+    TODO: Return constructed prompt string
+    """
+    # Placeholder return
+    return ""
+```
+
+---
+
+### Formatting Skill
+
+**File**: `backend/app/ai/skills/formatting_skill.py`
+
+**Function**: `format_diagram_output_ch2(raw_response: Dict[str, Any]) -> Dict[str, Any]`
+
+**Structure** (Placeholder):
+```python
+def format_diagram_output_ch2(
+    raw_response: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Format diagram output for Chapter 2.
+    
+    TODO: Implement formatting for Chapter 2 diagram output
+    TODO: Parse raw LLM response
+    TODO: Extract nodes, edges, SVG
+    TODO: Format ROS 2-specific metadata
+    TODO: Return formatted diagram structure
+    """
+    # Placeholder return
+    return {}
+```
+
+---
+
+## Validation Contract
+
+### Backend Startup
+
+**Requirement**: Backend must compile and run
+
+**Validation**:
+- No import errors when starting FastAPI server
+- All imports resolve correctly
+- No syntax errors in new files
+
+---
+
+### Module Importability
+
+**Requirement**: All new modules must import correctly
+
+**Validation**:
+- `ch2_diagram_runtime.py` is importable: `from app.ai.diagram.ch2_diagram_runtime import run`
+- Prompt template file exists and is readable
+- Skills functions are importable
+
+---
+
+## Error Handling Contract
+
+### Missing Chapter 2 Diagram Infrastructure
+
+**Scenario**: Chapter 2 diagram runtime called but infrastructure not ready
+
+**Expected Behavior**:
+- Runtime module should have placeholder routing with TODO comments
+- Skills functions should be callable but return placeholder responses
+- Prompt template should exist with TODO comments
+
+---
+
+## Notes
+
+- This contract documents expected placeholders—no real AI logic is implemented
+- All routing is placeholder-based with TODO comments
+- Diagram types are placeholders matching chapter-2.mdx
+- Skills functions are placeholders for future implementation
+- Backend must start and all modules must import correctly
+- No schemas for actual diagram formats (placeholder only)
+

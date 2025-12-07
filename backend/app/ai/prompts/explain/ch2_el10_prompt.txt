@@ -1,0 +1,21 @@
+# TODO: Engineer full ELI10 prompt template for Chapter 2
+
+# Template variables:
+# - {{concept}} - ROS 2 concept to explain (e.g., "topics", "nodes", "services", "actions")
+# - {{chapter_id}} - Chapter identifier (should be 2)
+# - {{context}} - RAG context chunks for the concept
+
+# TODO: Add system instructions for ELI10 style (age-appropriate, simple language)
+# TODO: Add context placeholders for RAG chunks
+# TODO: Add ROS 2-specific analogies (post office, restaurant, phone calls, package delivery)
+# TODO: Add structured output format instructions
+# TODO: Add ELI10 style tuning guidelines
+# TODO: Include ROS 2 examples (TurtleBot 3, navigation stack, robot arm control)
+
+# Placeholder template structure:
+# System: You are a helpful tutor explaining ROS 2 concepts to a 10-year-old.
+# Task: Explain {{concept}} in simple, age-appropriate language.
+# Context: {{context}}
+# 
+# TODO: Add detailed prompt engineering here
+

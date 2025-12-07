@@ -1,0 +1,262 @@
+# AI Block MDX Contract: Chapter 2 AI Block Rendering + MDX Integration
+
+**Feature**: 023-ch2-ai-blocks
+**Date**: 2025-01-27
+**Purpose**: Define MDX usage patterns and component interfaces for Chapter 2 AI blocks
+
+## Overview
+
+This contract defines the MDX integration patterns for Chapter 2 AI blocks. All components reuse existing patterns from Chapter 1 but are configured for Chapter 2 context (chapterId=2, ROS 2 concepts, section IDs).
+
+---
+
+## Block Names
+
+**AI Block Types** (4 total):
+1. `ask-question` - AskQuestionBlock component
+2. `explain-like-i-am-10` - ExplainLike10Block component
+3. `interactive-quiz` - InteractiveQuizBlock component
+4. `generate-diagram` - GenerateDiagramBlock component
+
+**Validation Rules**:
+- Block names MUST match exactly (kebab-case)
+- Block names MUST be used in HTML comment placeholders: `<!-- AI-BLOCK: {name} -->`
+- Block names MUST map to corresponding React component names (PascalCase)
+
+---
+
+## MDX Usage Patterns
+
+### Import Statements
+
+**Location**: Top of `frontend/docs/chapters/chapter-2.mdx` (after frontmatter)
+
+**Format**:
+```mdx
+import AskQuestionBlock from '@site/src/components/ai/AskQuestionBlock';
+import ExplainLike10Block from '@site/src/components/ai/ExplainLike10Block';
+import InteractiveQuizBlock from '@site/src/components/ai/InteractiveQuizBlock';
+import GenerateDiagramBlock from '@site/src/components/ai/GenerateDiagramBlock';
+```
+
+**Validation Rules**:
+- Import paths MUST use `@site/src/components/ai/` prefix
+- Component names MUST match exported component names exactly
+- Imports MUST be placed after frontmatter and before content
+
+---
+
+### Component Usage in MDX
+
+**Format**: React JSX component calls embedded in MDX content
+
+**Ask Question Block**:
+```mdx
+<AskQuestionBlock chapterId={2} sectionId="introduction-to-ros2" />
+```
+
+**Explain Like 10 Block**:
+```mdx
+<ExplainLike10Block concept="topics" chapterId={2} />
+```
+
+**Interactive Quiz Block**:
+```mdx
+<InteractiveQuizBlock chapterId={2} numQuestions={6} />
+```
+
+**Generate Diagram Block**:
+```mdx
+<GenerateDiagramBlock diagramType="node-communication-architecture" chapterId={2} />
+```
+
+**Validation Rules**:
+- Components MUST be self-closing (`/>`) or properly closed
+- Props MUST use JSX syntax (curly braces for numbers, quotes for strings)
+- Components MUST be placed at pedagogically correct positions in chapter
+
+---
+
+## Component Interface
+
+### AskQuestionBlock Props
+
+**Props Interface**:
+```typescript
+interface AskQuestionBlockProps {
+  chapterId: number;    // Required: Chapter ID (must be 2 for Chapter 2)
+  sectionId?: string;   // Optional: Section ID (e.g., "introduction-to-ros2")
+}
+```
+
+**Chapter 2 Usage**:
+- `chapterId={2}` - Required, fixed value for Chapter 2
+- `sectionId="introduction-to-ros2"` - Optional, matches section anchor ID
+
+**Validation Rules**:
+- `chapterId` MUST be 2
+- `sectionId` MUST match section anchor IDs from chapter-2.mdx (kebab-case)
+
+---
+
+### ExplainLike10Block Props
+
+**Props Interface**:
+```typescript
+interface ExplainLike10BlockProps {
+  concept?: string;     // Optional: Concept name to explain (e.g., "topics")
+  chapterId: number;    // Required: Chapter ID (must be 2 for Chapter 2)
+}
+```
+
+**Chapter 2 Usage**:
+- `concept="topics"` - Optional, ROS 2 concept name
+- `chapterId={2}` - Required, fixed value for Chapter 2
+
+**Validation Rules**:
+- `chapterId` MUST be 2
+- `concept` MUST be valid ROS 2 concept (topics, nodes, services, actions, packages, launch-files)
+
+---
+
+### InteractiveQuizBlock Props
+
+**Props Interface**:
+```typescript
+interface InteractiveQuizBlockProps {
+  chapterId: number;    // Required: Chapter ID (must be 2 for Chapter 2)
+  numQuestions?: number; // Optional: Number of questions (default: 5, recommended: 6)
+}
+```
+
+**Chapter 2 Usage**:
+- `chapterId={2}` - Required, fixed value for Chapter 2
+- `numQuestions={6}` - Optional, number of quiz questions
+
+**Validation Rules**:
+- `chapterId` MUST be 2
+- `numQuestions` MUST be positive integer (1-20 recommended)
+
+---
+
+### GenerateDiagramBlock Props
+
+**Props Interface**:
+```typescript
+interface GenerateDiagramBlockProps {
+  diagramType?: string; // Optional: Diagram type (e.g., "node-communication-architecture")
+  chapterId: number;    // Required: Chapter ID (must be 2 for Chapter 2)
+}
+```
+
+**Chapter 2 Usage**:
+- `diagramType="node-communication-architecture"` - Optional, matches diagram placeholder name
+- `chapterId={2}` - Required, fixed value for Chapter 2
+
+**Validation Rules**:
+- `chapterId` MUST be 2
+- `diagramType` MUST match diagram placeholder names from chapter-2.mdx (kebab-case)
+
+---
+
+## Component Mapping
+
+**File**: `frontend/src/mdx-components.ts`
+
+**Export Format**:
+```typescript
+import AskQuestionBlock from '@site/src/components/ai/AskQuestionBlock';
+import ExplainLike10Block from '@site/src/components/ai/ExplainLike10Block';
+import InteractiveQuizBlock from '@site/src/components/ai/InteractiveQuizBlock';
+import GenerateDiagramBlock from '@site/src/components/ai/GenerateDiagramBlock';
+
+export default {
+  AskQuestionBlock,
+  ExplainLike10Block,
+  InteractiveQuizBlock,
+  GenerateDiagramBlock,
+};
+```
+
+**Validation Rules**:
+- All 4 components MUST be exported
+- Export names MUST match component names exactly (PascalCase)
+- Components MUST be importable from `@site/src/components/ai/` paths
+
+---
+
+## Chapter 2 Placement
+
+**Pedagogical Positions**:
+
+1. **Ask Question Block**:
+   - Location: After "Introduction to ROS 2" section
+   - Section ID: `introduction-to-ros2`
+   - Purpose: Allow learners to ask questions about ROS 2 fundamentals
+
+2. **Generate Diagram Block**:
+   - Location: After "Nodes and Node Communication" section
+   - Diagram Type: `node-communication-architecture`
+   - Purpose: Generate visual diagram of node communication
+
+3. **Explain Like 10 Block**:
+   - Location: Inside "Topics and Messages" section
+   - Concept: `topics`
+   - Purpose: Provide simplified explanation of topics concept
+
+4. **Interactive Quiz Block**:
+   - Location: After "Services and Actions" section
+   - Num Questions: `6`
+   - Purpose: Test understanding of ROS 2 concepts
+
+**Validation Rules**:
+- Components MUST be placed at designated pedagogical positions
+- Props MUST match section IDs, concepts, and diagram types from chapter content
+- Components MUST not break MDX document structure
+
+---
+
+## Build Validation
+
+**Docusaurus Build Command**: `npm run build` (in frontend directory)
+
+**Expected Results**:
+- Build completes without errors
+- MDX file compiles successfully
+- All component imports resolve correctly
+- No TypeScript compilation errors
+- No missing component errors
+
+**Validation Checklist**:
+- [ ] Build succeeds without errors
+- [ ] All imports resolve
+- [ ] Components render in designated locations
+- [ ] No console errors in browser
+
+---
+
+## Error Handling
+
+**Invalid Props**:
+- Components should handle missing or invalid props gracefully
+- Use default values where appropriate
+- Show error messages for critical missing props
+
+**Missing Imports**:
+- Docusaurus build should fail with clear error messages
+- Error messages should indicate missing component imports
+
+**Component Rendering Failures**:
+- MDX should still compile successfully
+- Failed components may not render (acceptable for scaffolding phase)
+- Browser console should show React errors for debugging
+
+---
+
+## Notes
+
+- This contract focuses on MDX integration only (no backend logic)
+- Component props values may use TODO placeholders if exact values not yet determined
+- All components reuse existing implementations from Feature 004
+- Chapter 2 context (chapterId=2) is required for all components
+
