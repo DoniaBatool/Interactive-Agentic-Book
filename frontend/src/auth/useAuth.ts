@@ -56,17 +56,25 @@ export async function login(email: string, password: string): Promise<LoginRespo
 }
 
 /**
- * Signup with email, password, and optional name.
+ * Signup with email, password, optional name, and user profile for personalization.
  * 
  * @param email User's email address
  * @param password User's password
  * @param name User's full name (optional)
+ * @param userProfile User background/profile for personalization (optional)
  * @returns Promise with user and message
  */
 export async function signup(
   email: string,
   password: string,
-  name?: string
+  name?: string,
+  userProfile?: {
+    technicalBackground?: string;
+    experienceLevel?: string;
+    learningGoal?: string;
+    preferredDepth?: string;
+    domainInterests?: string[];
+  }
 ): Promise<SignupResponse> {
   // TODO: Replace with actual API endpoint
   const response = await fetch('/api/auth/signup', {
@@ -74,7 +82,12 @@ export async function signup(
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ email, password, name }),
+    body: JSON.stringify({ 
+      email, 
+      password, 
+      name,
+      user_profile: userProfile, // Include user background for personalization
+    }),
   });
 
   if (!response.ok) {
