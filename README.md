@@ -28,7 +28,7 @@ Before you begin, ensure you have the following installed:
 Verify installations:
 ```bash
 node --version  # Should be v18.0.0+
-python3 --version  # Should be 3.11.0+
+python3 --version  # Should be 3.12.0+
 git --version  # Any recent version
 ```
 
