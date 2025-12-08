@@ -5,9 +5,10 @@ This module provides REST API endpoints for retrieving chapter information,
 including metadata, content summaries, and section lists.
 """
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Request
 from app.models.chapter import ChapterMetadata
 from app.services.chapter_service import ChapterService
+from app.auth.decorators import require_chapter_access
 
 router = APIRouter(
     prefix="/chapters",
@@ -51,7 +52,8 @@ chapter_service = ChapterService()
         }
     }
 )
-async def get_chapter(chapter_id: int):
+@require_chapter_access()  # Placeholder: chapter_id will be extracted from route parameter
+async def get_chapter(request: Request, chapter_id: int):
     """
     Get metadata for a specific chapter.
     

@@ -1,0 +1,262 @@
+# Learner Support System (LSS) API Contract
+
+**Feature**: 058-learner-support-system
+**Created**: 2025-01-27
+**Status**: Draft
+
+## Overview
+
+This contract defines the API schema for Learner Support System endpoints (hints, summaries, progress). All implementations are placeholders—no real AI logic.
+
+---
+
+## API Endpoints
+
+### POST /api/lss/hint
+
+**Description**: Get context-aware hint for a section (placeholder).
+
+**Request Body**:
+```yaml
+chapter_id:
+  type: integer
+  required: true
+  minimum: 1
+  maximum: 999
+  description: Chapter number
+
+section_id:
+  type: string
+  required: true
+  description: Section identifier
+
+user_state:
+  type: object
+  required: false
+  description: User's current learning state (optional)
+  properties:
+    current_section:
+      type: string
+    difficulty_level:
+      type: string
+      enum: ["easy", "medium", "hard"]
+    previous_hints:
+      type: array
+      items:
+        type: string
+```
+
+**Response (Success)**:
+```yaml
+hint:
+  type: string
+  description: Hint text (placeholder)
+  example: "This section introduces the concept of Physical AI..."
+
+hint_type:
+  type: string
+  description: Type of hint
+  enum: ["concept", "example", "definition"]
+  example: "concept"
+
+chapter_id:
+  type: integer
+  example: 1
+
+section_id:
+  type: string
+  example: "what-is-physical-ai"
+```
+
+---
+
+### POST /api/lss/summary
+
+**Description**: Get auto-generated summary for a section (placeholder).
+
+**Request Body**:
+```yaml
+chapter_id:
+  type: integer
+  required: true
+  minimum: 1
+  maximum: 999
+  description: Chapter number
+
+section_id:
+  type: string
+  required: true
+  description: Section identifier
+```
+
+**Response (Success)**:
+```yaml
+summary:
+  type: string
+  description: Section summary (placeholder, 2-3 sentences)
+  example: "This section introduces Physical AI, which combines artificial intelligence with robotics..."
+
+chapter_id:
+  type: integer
+  example: 1
+
+section_id:
+  type: string
+  example: "what-is-physical-ai"
+
+summary_length:
+  type: integer
+  description: Summary length in characters
+  example: 150
+```
+
+---
+
+### POST /api/lss/progress/update
+
+**Description**: Mark a section as complete for a user (placeholder).
+
+**Request Body**:
+```yaml
+user_id:
+  type: string
+  required: true
+  description: User identifier
+
+chapter_id:
+  type: integer
+  required: true
+  minimum: 1
+  maximum: 999
+  description: Chapter number
+
+section_id:
+  type: string
+  required: true
+  description: Section identifier
+```
+
+**Response (Success)**:
+```yaml
+message:
+  type: string
+  description: Success message
+  example: "Section marked as complete (placeholder)"
+
+user_id:
+  type: string
+  example: "user_123"
+
+chapter_id:
+  type: integer
+  example: 1
+
+section_id:
+  type: string
+  example: "what-is-physical-ai"
+```
+
+---
+
+### GET /api/lss/progress/{user_id}/{chapter_id}
+
+**Description**: Get section status for a user and chapter (placeholder).
+
+**Path Parameters**:
+```yaml
+user_id:
+  type: string
+  required: true
+  description: User identifier
+
+chapter_id:
+  type: integer
+  required: true
+  minimum: 1
+  maximum: 999
+  description: Chapter number
+```
+
+**Response (Success)**:
+```yaml
+user_id:
+  type: string
+  example: "user_123"
+
+chapter_id:
+  type: integer
+  example: 1
+
+sections:
+  type: array
+  description: List of section statuses
+  items:
+    type: object
+    properties:
+      section_id:
+        type: string
+        example: "what-is-physical-ai"
+      status:
+        type: string
+        enum: ["not_started", "in_progress", "completed"]
+        example: "completed"
+      completed_at:
+        type: string
+        format: date-time
+        example: "2025-01-27T00:00:00Z"
+```
+
+---
+
+## Hint Types
+
+```yaml
+hint_types:
+  concept:
+    description: Explains a concept or idea
+    example: "Physical AI combines AI with robotics..."
+  
+  example:
+    description: Provides a concrete example
+    example: "For example, a robot that uses AI to navigate..."
+  
+  definition:
+    description: Provides a definition
+    example: "Physical AI is defined as..."
+```
+
+---
+
+## Summary Requirements
+
+```yaml
+summary_requirements:
+  length:
+    min: 50
+    max: 300
+    unit: characters
+  
+  content:
+    - Should cover main points of section
+    - Should be 2-3 sentences
+    - Should use section metadata (title, content preview)
+```
+
+---
+
+## Constraints
+
+- **No Real AI**: All responses are placeholders
+- **No Database**: Progress is not persisted
+- **Scaffolding Only**: Structure for future implementation
+
+---
+
+## Future Extensions
+
+- Real AI-generated hints
+- Real AI-generated summaries
+- Database-backed progress tracking
+- Context-aware hint generation
+- Personalized summaries
+- Progress analytics

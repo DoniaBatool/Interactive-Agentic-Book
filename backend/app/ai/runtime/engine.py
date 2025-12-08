@@ -6,7 +6,12 @@ Routes requests to appropriate subagents, coordinates RAG pipeline,
 selects LLM provider, and formats responses.
 """
 
-from typing import Dict, Any
+from typing import Dict, Any, Optional
+from app.ai.subagents.registry import get_subagent
+from app.ai.runtime.output_formatter import format_ai_block_response
+from app.ai.rag.pipeline import run_rag_pipeline
+from app.ai.guardrails.engine import process_input_safely, enforce_output_rules, inject_safety_prefix, inject_safety_suffix
+from app.ai.guardrails.hallucination_filter import detect_low_confidence, require_citation_for_facts, fallback_to_neutral_explanation
 
 # Knowledge source mapping
 knowledge_sources = {
@@ -329,4 +334,165 @@ async def handle_ch2_diagram(
     TODO: Format response for frontend
     """
     return {"diagram": "TODO: Implement Chapter 2 diagram handler"}
+
+
+def load_chapter_overrides(chapter_id: int) -> Optional[Dict[str, Any]]:
+    """
+    Load chapter-specific overrides if file exists.
+    
+    Args:
+        chapter_id: Chapter ID
+    
+    Returns:
+        CHAPTER_OVERRIDES dict if file exists, None otherwise
+    """
+    try:
+        # Dynamic import of override module
+        override_module_name = f"app.content.overrides.chapter_{chapter_id}"
+        override_module = __import__(override_module_name, fromlist=["CHAPTER_OVERRIDES"])
+        overrides = getattr(override_module, "CHAPTER_OVERRIDES", None)
+        if overrides and isinstance(overrides, dict):
+            return overrides
+    except (ImportError, AttributeError):
+        # Override file doesn't exist or doesn't have CHAPTER_OVERRIDES
+        pass
+    return None
+
+
+async def ai_block_router(
+    block_type: str,
+    chapter_id: int,
+    user_input: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Global AI block router - unified routing for all chapters.
+    
+    Args:
+        block_type: Type of AI block ("ask-question", "explain-like-el10", "interactive-quiz", "diagram-generator")
+        chapter_id: Chapter ID (1, 2, 3, ...)
+        user_input: Block-specific input data
+    
+    Returns:
+        Standardized response structure based on block_type
+    
+    Flow:
+        1. Process input safely (guardrails)
+        2. Extract query from user_input based on block_type
+        3. Call unified RAG pipeline (with hallucination-check placeholder)
+        4. Load chapter overrides (if exists)
+        5. Get subagent from registry
+        6. Call subagent with standardized request (subagent uses safety prefix/suffix)
+        7. Enforce output rules (guardrails)
+        8. Check hallucination
+        9. Format response using unified formatter
+    """
+    try:
+        # Step 1: Process input safely (guardrails)
+        # TODO: Extract input text from user_input for safety check
+        input_text = str(user_input)  # Placeholder: convert to string for safety check
+        input_result = process_input_safely(input_text, block_type, chapter_id)
+        if not input_result["is_safe"]:
+            return {
+                "error": input_result.get("fallback_message", "Input blocked by safety rules"),
+                "code": "CONTENT_BLOCKED",
+                "details": input_result.get("details", {})
+            }
+        
+        # Step 2: Extract query from user_input based on block_type
+        query = ""
+        if block_type == "ask-question":
+            query = user_input.get("question", "")
+        elif block_type == "explain-like-el10":
+            query = user_input.get("concept", "")
+        elif block_type == "interactive-quiz":
+            query = "quiz questions"  # General query for quiz
+        elif block_type == "diagram-generator":
+            diagram_type = user_input.get("diagramType", "")
+            concepts = user_input.get("concepts", [])
+            query = f"{diagram_type} diagram about {', '.join(concepts) if concepts else 'chapter content'}"
+        else:
+            return {
+                "error": f"Unknown block type: {block_type}",
+                "code": "INVALID_INPUT",
+                "details": {"block_type": block_type}
+            }
+        
+        # Step 3: Call unified RAG pipeline (with hallucination-check placeholder)
+        section_id = user_input.get("sectionId")
+        context = await run_rag_pipeline(
+            query=query,
+            chapter_id=chapter_id,
+            top_k=5,
+            section_id=section_id
+        )
+        # TODO: Pass context through hallucination-check placeholder
+        # context = check_context_for_hallucination(context)  # Placeholder
+        
+        # Step 4: Load chapter overrides (if exists)
+        overrides = load_chapter_overrides(chapter_id)
+        
+        # Step 5: Get subagent from registry
+        subagent_class = get_subagent(block_type, chapter_id)
+        if not subagent_class:
+            return {
+                "error": f"No subagent registered for block type '{block_type}' and chapter {chapter_id}",
+                "code": "SUBAGENT_NOT_FOUND",
+                "details": {"block_type": block_type, "chapter_id": chapter_id}
+            }
+        
+        # Step 6: Call subagent with standardized request
+        # Note: Subagent should use safety prefix/suffix via prompt_builder_skill
+        request_data = {
+            "block_type": block_type,
+            "chapterId": chapter_id,
+            **user_input
+        }
+        subagent = subagent_class()
+        result = await subagent.run(request_data, context)
+        
+        # Step 7: Enforce output rules (guardrails)
+        # Extract text from result for safety check
+        result_text = result.get("text", result.get("answer", result.get("explanation", str(result))))
+        output_result = enforce_output_rules(result_text, block_type, chapter_id)
+        if not output_result["is_safe"]:
+            # Return fallback message
+            return {
+                "error": output_result.get("fallback_message", "Output blocked by safety rules"),
+                "code": "CONTENT_BLOCKED",
+                "details": output_result.get("details", {})
+            }
+        
+        # Step 8: Check hallucination
+        hallucination_result = detect_low_confidence(result, context)
+        if hallucination_result["is_low_confidence"] or hallucination_result["requires_citations"]:
+            # TODO: Require citations or use fallback
+            if hallucination_result["recommended_action"] == "fallback":
+                fallback_text = fallback_to_neutral_explanation(result_text)
+                result["text"] = fallback_text
+                result["answer"] = fallback_text  # Update result with fallback
+        
+        # Step 9: Format response using unified formatter
+        formatted = format_ai_block_response(block_type, result, chapter_id, overrides)
+        
+        # Step 10: Translation hook (if needed)
+        # TODO: If translation needed, call translation pipeline before response
+        # TODO: Check if target_language is provided in user_input
+        # TODO: If target_language != "en", call translate_snippet() or translate_chapter()
+        # TODO: Return translated response
+        
+        # Step 11: Streaming hook (if enabled)
+        # TODO: If streaming mode enabled, yield tokens instead of returning complete response
+        # TODO: Check settings.ai_streaming_enabled
+        # TODO: If enabled, yield tokens as AsyncGenerator
+        # TODO: Format tokens as streaming chunks
+        
+        return formatted
+        
+    except Exception as e:
+        # TODO: Add proper error logging
+        return {
+            "error": f"Error processing AI block: {str(e)}",
+            "code": "PROCESSING_ERROR",
+            "details": {"block_type": block_type, "chapter_id": chapter_id}
+        }
 

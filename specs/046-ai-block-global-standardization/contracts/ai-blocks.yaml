@@ -1,0 +1,272 @@
+# Global AI Block Contract
+# Feature: 046-ai-block-global-standardization
+# Purpose: Define unified input/output schemas for all AI blocks across all chapters
+
+version: "1.0.0"
+last_updated: "2025-01-27"
+
+# Global Contract Rules
+rules:
+  - All chapters MUST use identical input/output structures
+  - All chapters MUST handle errors identically
+  - All chapters MUST use unified RAG context format
+  - Chapter-specific overrides MUST not break base contract structure
+
+# AI Block Types
+blocks:
+  ask-question:
+    description: "Answer questions about chapter content using RAG context"
+    inputs:
+      required:
+        - name: question
+          type: string
+          constraints:
+            - min_length: 5
+            - max_length: 500
+        - name: chapterId
+          type: integer
+          constraints:
+            - min: 1
+            - max: 999
+      optional:
+        - name: sectionId
+          type: string
+          constraints:
+            - pattern: "^[a-z0-9-]+$"
+    outputs:
+      structure:
+        answer: string
+        sources: array[string]
+        confidence: float
+      constraints:
+        answer:
+          - min_length: 10
+          - max_length: 2000
+        sources:
+          - min_items: 0
+          - max_items: 10
+        confidence:
+          - min: 0.0
+          - max: 1.0
+    error_format:
+      structure:
+        error: string
+        code: string
+        details: object
+      example:
+        error: "Question processing failed"
+        code: "ASK_QUESTION_ERROR"
+        details:
+          reason: "RAG context retrieval failed"
+          chapterId: 1
+    rag_context_usage:
+      - Context MUST be retrieved using unified RAG pipeline
+      - Context MUST be passed to subagent as standardized structure
+      - Context MUST include: {context: string, chunks: array, query_embedding: array}
+      - Context MUST be filtered by sectionId if provided
+
+  explain-like-el10:
+    description: "Explain concepts in simple terms suitable for 10-year-olds"
+    inputs:
+      required:
+        - name: concept
+          type: string
+          constraints:
+            - min_length: 2
+            - max_length: 100
+        - name: chapterId
+          type: integer
+          constraints:
+            - min: 1
+            - max: 999
+      optional:
+        - name: sectionId
+          type: string
+          constraints:
+            - pattern: "^[a-z0-9-]+$"
+    outputs:
+      structure:
+        explanation: string
+        analogies: array[string]
+        examples: array[string]
+      constraints:
+        explanation:
+          - min_length: 50
+          - max_length: 1500
+        analogies:
+          - min_items: 0
+          - max_items: 5
+        examples:
+          - min_items: 0
+          - max_items: 5
+    error_format:
+      structure:
+        error: string
+        code: string
+        details: object
+      example:
+        error: "Concept explanation failed"
+        code: "EXPLAIN_EL10_ERROR"
+        details:
+          reason: "Concept not found in chapter content"
+          chapterId: 2
+    rag_context_usage:
+      - Context MUST be retrieved using unified RAG pipeline
+      - Context MUST focus on concept-related chunks
+      - Context MUST be simplified for age-appropriate explanation
+
+  interactive-quiz:
+    description: "Generate quiz questions based on chapter learning objectives"
+    inputs:
+      required:
+        - name: chapterId
+          type: integer
+          constraints:
+            - min: 1
+            - max: 999
+      optional:
+        - name: numQuestions
+          type: integer
+          default: 5
+          constraints:
+            - min: 1
+            - max: 20
+        - name: learningObjectives
+          type: array[string]
+          constraints:
+            - min_items: 0
+            - max_items: 10
+    outputs:
+      structure:
+        quiz_title: string
+        questions: array[Question]
+      Question:
+        id: string
+        question_text: string
+        type: string  # "multiple-choice" | "true-false" | "short-answer"
+        options: array[string]  # Required for multiple-choice
+        correct_answer: string
+        explanation: string
+      constraints:
+        quiz_title:
+          - min_length: 5
+          - max_length: 100
+        questions:
+          - min_items: 1
+          - max_items: 20
+    error_format:
+      structure:
+        error: string
+        code: string
+        details: object
+      example:
+        error: "Quiz generation failed"
+        code: "QUIZ_GENERATION_ERROR"
+        details:
+          reason: "Insufficient chapter content for quiz"
+          chapterId: 3
+    rag_context_usage:
+      - Context MUST be retrieved using unified RAG pipeline
+      - Context SHOULD cover all sections if learningObjectives not specified
+      - Context MUST be filtered by learningObjectives if provided
+
+  diagram-generator:
+    description: "Generate diagram descriptions and prompts for visual representation"
+    inputs:
+      required:
+        - name: diagramType
+          type: string
+          constraints:
+            - enum: ["flowchart", "concept-map", "system-diagram", "process-flow", "architecture"]
+        - name: chapterId
+          type: integer
+          constraints:
+            - min: 1
+            - max: 999
+      optional:
+        - name: concepts
+          type: array[string]
+          constraints:
+            - min_items: 0
+            - max_items: 10
+    outputs:
+      structure:
+        diagram_prompt: string  # Mermaid.js or structured description
+        diagram_type: string
+        description: string
+      constraints:
+        diagram_prompt:
+          - min_length: 20
+          - max_length: 2000
+        diagram_type:
+          - must_match_input: true
+        description:
+          - min_length: 10
+          - max_length: 500
+    error_format:
+      structure:
+        error: string
+        code: string
+        details: object
+      example:
+        error: "Diagram generation failed"
+        code: "DIAGRAM_GENERATION_ERROR"
+        details:
+          reason: "Invalid diagram type"
+          chapterId: 1
+    rag_context_usage:
+      - Context MUST be retrieved using unified RAG pipeline
+      - Context MUST focus on concepts if provided
+      - Context SHOULD include relevant section content for diagram context
+
+# Shared Context Window Rules
+rag_context_rules:
+  max_chunks: 5
+  max_context_length: 2000  # characters
+  chunk_selection_strategy: "similarity"
+  context_assembly: "sequential"  # or "hierarchical"
+  
+# Error Handling Standards
+error_handling:
+  standard_errors:
+    - code: "INVALID_INPUT"
+      message: "Input validation failed"
+      http_status: 400
+    - code: "RAG_CONTEXT_ERROR"
+      message: "Failed to retrieve RAG context"
+      http_status: 500
+    - code: "SUBAGENT_NOT_FOUND"
+      message: "No subagent registered for block type and chapter"
+      http_status: 404
+    - code: "LLM_PROVIDER_ERROR"
+      message: "LLM provider request failed"
+      http_status: 500
+    - code: "FORMATTING_ERROR"
+      message: "Response formatting failed"
+      http_status: 500
+  
+  fallback_behavior:
+    - If RAG context fails: Return empty context, proceed with LLM call
+    - If subagent not found: Return error with code SUBAGENT_NOT_FOUND
+    - If LLM provider fails: Return error with code LLM_PROVIDER_ERROR
+    - If formatting fails: Return raw LLM response with warning
+
+# Chapter Override Rules
+override_rules:
+  allowed_overrides:
+    - tone
+    - difficulty
+    - formatting_style
+    - prompt_modifications
+  
+  disallowed_overrides:
+    - input_structure
+    - output_structure
+    - error_format
+    - rag_context_structure
+  
+  override_precedence:
+    - Chapter override takes precedence over global default
+    - Override MUST still conform to base contract structure
+    - Override MUST not break input/output schemas
+

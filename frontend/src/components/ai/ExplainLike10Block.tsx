@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+// TODO: Import streaming hooks when implementing real streaming
+// import { useAIBlockStreaming } from '@site/src/ai/streamHooks';
 
 /**
  * ExplainLike10Block Component
@@ -28,6 +30,12 @@ export default function ExplainLike10Block({
   chapterId 
 }: ExplainLike10BlockProps) {
   const [explanation, setExplanation] = useState<string | null>(null);
+  // TODO: Add streaming support
+  // const { chunks, isStreaming, startStream, stopStream } = useAIBlockStreaming(
+  //   "explain-like-el10",
+  //   chapterId || 1,
+  //   { concept }
+  // );
 
   const handleExplain = () => {
     console.log('ExplainLike10Block: Explanation requested', { 
@@ -73,6 +81,13 @@ export default function ExplainLike10Block({
       >
         Explain in Simple Terms
       </button>
+      {/* TODO: Add streaming output display */}
+      {/* {isStreaming && (
+        <div style={{ marginTop: '12px' }}>
+          <p>Streaming explanation:</p>
+          <div>{chunks.join('')}</div>
+        </div>
+      )} */}
       {explanation && (
         <div style={{
           padding: '12px',

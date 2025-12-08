@@ -1,0 +1,152 @@
+# Analytics & Telemetry API Contract
+
+**Feature**: 059-analytics-telemetry
+**Created**: 2025-01-27
+**Status**: Draft
+
+## Overview
+
+This contract defines the API schema for analytics and telemetry endpoints. All implementations are placeholders—no real tracking or storage.
+
+---
+
+## API Endpoints
+
+### POST /api/telemetry/log
+
+**Description**: Log an analytics event (placeholder).
+
+**Request Body**:
+```yaml
+event_type:
+  type: string
+  required: true
+  description: Type of event
+  enum: ["ai_block_used", "chapter_visit", "error_event"]
+  example: "ai_block_used"
+
+payload:
+  type: object
+  required: true
+  description: Event payload data
+  properties:
+    user_id:
+      type: string
+      example: "user_123"
+    chapter_id:
+      type: integer
+      example: 1
+    section_id:
+      type: string
+      example: "what-is-physical-ai"
+    block_type:
+      type: string
+      example: "ask-question"
+    error_message:
+      type: string
+      example: "Error message (for error_event)"
+```
+
+**Response (Success)**:
+```yaml
+message:
+  type: string
+  description: Success message
+  example: "Event logged successfully (placeholder)"
+
+event_type:
+  type: string
+  example: "ai_block_used"
+
+timestamp:
+  type: string
+  format: date-time
+  example: "2025-01-27T00:00:00Z"
+```
+
+---
+
+### GET /api/telemetry/health
+
+**Description**: Get telemetry system health status (placeholder).
+
+**Response (Success)**:
+```yaml
+status:
+  type: string
+  description: Health status
+  example: "healthy"
+
+message:
+  type: string
+  description: Health message
+  example: "Telemetry system is operational (placeholder)"
+
+events_logged:
+  type: integer
+  description: Number of events logged (placeholder)
+  example: 0
+```
+
+---
+
+## Event Types
+
+```yaml
+event_types:
+  ai_block_used:
+    description: AI block was used by a user
+    payload:
+      - user_id
+      - chapter_id
+      - section_id
+      - block_type
+      - query (optional)
+  
+  chapter_visit:
+    description: User visited a chapter
+    payload:
+      - user_id
+      - chapter_id
+      - timestamp
+  
+  error_event:
+    description: An error occurred
+    payload:
+      - error_type
+      - error_message
+      - chapter_id (optional)
+      - section_id (optional)
+```
+
+---
+
+## Analytics Event Model
+
+```yaml
+AnalyticsEvent:
+  event_type: string
+  payload: object
+  timestamp: string (ISO format)
+```
+
+---
+
+## Constraints
+
+- **No Real Tracking**: All logging is placeholder
+- **No Database**: Events are not persisted
+- **No External Services**: No real external API calls
+- **Scaffolding Only**: Structure for future implementation
+
+---
+
+## Future Extensions
+
+- Real event tracking
+- Database-backed storage
+- External service integration
+- Analytics processing
+- Telemetry aggregation
+- Real-time dashboards
+- Event analytics

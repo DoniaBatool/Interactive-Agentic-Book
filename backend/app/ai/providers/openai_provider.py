@@ -34,6 +34,11 @@ class OpenAIProvider(BaseLLMProvider):
     
     This class implements the BaseLLMProvider interface for OpenAI models
     (GPT-4o, GPT-4o-mini, etc.).
+    
+    TODO: Add native safety settings integration
+    - OpenAI Moderation API for content filtering
+    - Content filtering presets
+    - Safety settings configuration
     """
     
     async def generate(

@@ -54,6 +54,9 @@ async def generate_embedding(text: str, chapter_id: int = 1) -> List[float]:
     """
     Generate embedding vector for text.
     
+    TODO: For search queries, use this function to fetch embedding for search query.
+    TODO: Support search-specific embedding models if needed.
+    
     Args:
         text: Input text to embed (non-empty string)
         chapter_id: Chapter identifier (default: 1 for Chapter 1)

@@ -1,0 +1,157 @@
+# Global Search API Contract
+
+**Feature**: 057-global-search-engine
+**Created**: 2025-01-27
+**Status**: Draft
+
+## Overview
+
+This contract defines the API schema for global search across all chapters. All implementations are placeholders—no real search logic.
+
+---
+
+## API Endpoint
+
+### GET /api/search
+
+**Description**: Search across all chapters (placeholder).
+
+**Query Parameters**:
+```yaml
+q:
+  type: string
+  required: true
+  description: Search query text
+  example: "physical AI"
+```
+
+**Response (Success)**:
+```yaml
+results:
+  type: array
+  description: List of search results
+  items:
+    type: object
+    properties:
+      chapter_id:
+        type: integer
+        description: Chapter number
+        example: 1
+      chapter_title:
+        type: string
+        description: Chapter title
+        example: "Introduction to Physical AI & Robotics"
+      snippet:
+        type: string
+        description: Text snippet from chapter
+        example: "Physical AI combines artificial intelligence with robotics..."
+      score:
+        type: number
+        description: Relevance score (0.0 to 1.0)
+        example: 0.85
+      section_id:
+        type: string
+        description: Section identifier
+        example: "what-is-physical-ai"
+```
+
+**Example Response**:
+```json
+{
+  "results": [
+    {
+      "chapter_id": 1,
+      "chapter_title": "Introduction to Physical AI & Robotics",
+      "snippet": "Physical AI combines artificial intelligence with robotics...",
+      "score": 0.85,
+      "section_id": "what-is-physical-ai"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_title": "ROS 2 & Robot Programming",
+      "snippet": "ROS 2 provides a framework for robot programming...",
+      "score": 0.72,
+      "section_id": "ros-2-basics"
+    }
+  ],
+  "query": "physical AI",
+  "total_results": 2
+}
+```
+
+---
+
+## Search Flow
+
+### Multi-Chapter Retrieval
+
+```yaml
+search_flow:
+  1. Receive query
+  2. Generate query embedding
+  3. Search all chapter collections
+  4. Score results by relevance
+  5. Rank results
+  6. Format results
+  7. Return formatted results
+```
+
+---
+
+## Ranking Strategy
+
+### Scoring Methods
+
+```yaml
+scoring:
+  embedding_similarity:
+    - Cosine similarity between query and chunk embeddings
+    - Score range: 0.0 to 1.0
+  
+  bm25_style:
+    - Term frequency-based scoring
+    - Score range: 0.0 to 1.0
+  
+  combined_score:
+    - Weighted combination of embedding and BM25 scores
+    - Default weights: 0.7 embedding, 0.3 BM25
+```
+
+---
+
+## Result Formatting
+
+### Normalization Rules
+
+```yaml
+formatting:
+  score_normalization:
+    - Normalize scores to 0.0-1.0 range
+    - Apply min-max scaling
+  
+  snippet_extraction:
+    - Extract relevant text snippet
+    - Include context around match
+    - Max snippet length: 200 characters
+```
+
+---
+
+## Constraints
+
+- **No Real Search**: All search logic is placeholder
+- **No Real Ranking**: All ranking logic is placeholder
+- **Scaffolding Only**: Structure for future implementation
+
+---
+
+## Future Extensions
+
+- Real search algorithm
+- Real ranking algorithm
+- Real multi-chapter retrieval
+- Search result caching
+- Search analytics
+- Advanced filtering
+- Search suggestions
+

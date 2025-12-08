@@ -31,6 +31,10 @@ class Settings(BaseSettings):
 
     # === Authentication ===
     betterauth_secret: Optional[str] = None
+    betterauth_public_key: Optional[str] = None  # BetterAuth public key
+    betterauth_secret_key: Optional[str] = None  # BetterAuth secret key
+    betterauth_issuer: str = "interactive-agentic-book"  # BetterAuth issuer identifier
+    default_user_role: str = "student"  # Default user role for RBAC
 
     # === Email Configuration ===
     smtp_host: Optional[str] = None
@@ -68,6 +72,14 @@ class Settings(BaseSettings):
     # Default runtime model settings
     default_runtime_model: Optional[str] = None  # Default LLM model for runtime (e.g., "gpt-4o-mini")
     default_runtime_provider: str = "openai"  # Default provider for runtime (e.g., "openai", "gemini")
+    
+    # === Translation Configuration ===
+    translation_provider: Optional[str] = None  # Translation provider ("openai" or "gemini")
+    translation_model: Optional[str] = None  # Translation model (e.g., "gpt-4o-mini")
+    
+    # === Streaming Configuration ===
+    ai_streaming_enabled: bool = False  # Enable AI streaming mode
+    streaming_backend: str = "sse"  # Streaming backend ("sse" or "websocket")
     
     # Provider defaults (placeholder)
     # TODO: Implement provider defaults dictionary

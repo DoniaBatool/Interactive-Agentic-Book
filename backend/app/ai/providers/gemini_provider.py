@@ -36,6 +36,11 @@ class GeminiProvider(BaseLLMProvider):
     
     This class implements the BaseLLMProvider interface for Google Gemini models
     (gemini-pro, gemini-2.0-flash, etc.).
+    
+    TODO: Add native safety settings integration
+    - Gemini safety settings (HARM_CATEGORY_*)
+    - Block threshold configuration
+    - Content filtering settings
     """
     
     async def generate(

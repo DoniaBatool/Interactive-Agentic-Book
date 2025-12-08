@@ -12,392 +12,7 @@ Interactive glossary agent
 
 Voice AI block
 ==========================================
-41
-==========================================
-auto-run 4 phases (/sp.specify , /sp.plan, /sp.tasks, /sp.implement)
-sab kuch FAST kerna but in small batches not all at once
-auto-create contracts
-
-auto-create checklist
-
-auto-create quickstart + research + data-model
-
-auto-validate folder structure
-
-auto-normalize feature IDs
-
-auto-generate PHR
-
-auto-recursively analyze previous features to ensure consistency
-
-/sp.specify
-feature-id: 041-ch3-subagents-skills
-title: "Chapter 3 — Subagents + Skills Routing Integration"
-type: backend-ai-architecture
-
-goal:
-  Add the subagent + skills scaffolding for Chapter 3 so that all four
-  AI-interactive blocks (ask-question, explain-like-I-am-10, quiz, diagram)
-  route through placeholder subagents and skills. No business logic.
-
-requirements:
-
-  # 1 — Subagents Folder for Chapter 3
-  - Create backend/app/ai/subagents/ch3/
-       ask_question_agent.py
-       explain_el10_agent.py
-       quiz_agent.py
-       diagram_agent.py
-  - Each file includes:
-      - class <AgentName>
-      - def run(request): pass
-      - TODO describing expected behavior
-
-  # 2 — Skills Folder for Chapter 3
-  - Create backend/app/ai/skills/ch3/
-       retrieval_skill.py
-       prompt_builder_skill.py
-       formatting_skill.py
-  - Each file includes:
-      - class <SkillName>
-      - method stubs
-      - TODO comments for future logic
-
-  # 3 — Runtime Engine Routing
-  - Update backend/app/ai/runtime/engine.py
-      - Add:
-           if chapterId == 3:
-               route to ch3 subagents
-      - Add high-level flow comments:
-           retrieval → prompt-building → formatting → LLM response
-
-  # 4 — Shared Interface Contracts
-  - Add backend/app/ai/subagents/base_agent.py
-      - define abstract method run()
-      - add TODO notes for future polymorphism
-
-  - Add backend/app/ai/skills/base_skill.py
-      - define basic placeholder interface
-
-  # 5 — API Integration Layer
-  - ai_blocks.py should pass chapterId=3 to engine correctly.
-  - No new endpoints; only routing support.
-
-  # 6 — Documentation
-  - Create specs/041-ch3-subagents-skills/contracts/subagent-skill-contract.md
-      - Define:
-          - Expected inputs for each agent
-          - Expected outputs placeholder format
-          - Flow diagram (comment-only)
-      - Include TODO markers
-
-acceptance_criteria:
-  - All subagent + skill scaffolding exists in correct paths.
-  - Runtime engine successfully imports and routes to chapter 3 placeholder classes.
-  - ai_blocks endpoints work with chapterId=3 without errors.
-  - No AI logic implemented (strictly scaffolding).
-  - Backend server starts cleanly.
-
-success_message: |
-  Chapter 3 Subagent and Skills scaffolding successfully created.
-  Routing layer now recognizes Chapter 3 AI blocks.
-
-
-/sp.plan
-feature-id: 041-ch3-subagents-skills
-title: "Chapter 3 — Subagents + Skills Routing Integration"
-
-Generate a detailed architecture plan including:
-
-1. Folder Structure Layout
-   - Exact file tree for ch3 subagents and skills
-   - Placement of base_agent.py and base_skill.py
-
-2. Subagent Responsibilities
-   - Outline expected responsibilities of:
-        • Ask Question Agent
-        • Explain ELI5/ELI10 Agent
-        • Quiz Agent
-        • Diagram Agent
-   - Only describe WHAT they do, not HOW.
-
-3. Skills Breakdown
-   - retrieval_skill: placeholder for RAG context pulling
-   - prompt_builder_skill: placeholder for LLM prompts
-   - formatting_skill: placeholder for structured response formatting
-
-4. Runtime Routing Design
-   - Show routing map:
-        chapterId → blockType → subagent class
-   - Include commented pseudocode but no logic.
-
-5. Contract Document Planning
-   - Define schema for subagent-skill-contract.md
-   - Include interface diagrams (ASCII OK)
-   - NO actual implementation
-
-6. Validation Plan
-   - Ensure:
-        • backend boots cleanly
-        • import paths correct
-        • no circular imports
-        • chapter 3 agent classes load
-
-Output MUST be a step-by-step execution blueprint for /sp.tasks.
-
-
-/sp.tasks
-feature-id: 041-ch3-subagents-skills
-title: "Chapter 3 — Subagents + Skills Routing Integration"
-
-Generate a complete checklist:
-
-## FOLDER CREATION
-- [ ] Create folder: backend/app/ai/subagents/ch3/
-- [ ] Create folder: backend/app/ai/skills/ch3/
-
-## BASE CONTRACTS
-- [ ] Add backend/app/ai/subagents/base_agent.py
-- [ ] Add backend/app/ai/skills/base_skill.py
-
-## SUBAGENTS (CH3)
-- [ ] ask_question_agent.py (class + run() stub + TODO)
-- [ ] explain_el10_agent.py
-- [ ] quiz_agent.py
-- [ ] diagram_agent.py
-
-## SKILLS (CH3)
-- [ ] retrieval_skill.py (skeleton + TODO)
-- [ ] prompt_builder_skill.py
-- [ ] formatting_skill.py
-
-## RUNTIME ROUTING
-- [ ] Update backend/app/ai/runtime/engine.py
-      - add chapterId==3 branch
-      - add mapping to correct subagent classes
-      - insert TODO-based flow
-
-## API COMPATIBILITY
-- [ ] Update ai_blocks.py to ensure chapterId=3 is properly passed
-- [ ] No endpoint changes
-
-## CONTRACT DOCUMENT
-- [ ] Create specs/041-ch3-subagents-skills/contracts/subagent-skill-contract.md
-      - Document expected agent inputs/outputs
-      - Document skills responsibilities
-      - Add TODO placeholders
-
-## VALIDATION
-- [ ] Run backend server to confirm no import errors
-- [ ] Validate file paths exist and are auto-wired correctly
-
-Output:
-  A final ready-to-apply task list for /sp.implement.
-
-
-/sp.implement
-feature-id: 041-ch3-subagents-skills
-title: "Chapter 3 — Subagents + Skills Routing Integration"
-
-Implement all tasks from tasks.md:
-
-- Create all Chapter 3 subagent files
-- Create all skills files
-- Add base interfaces
-- Update runtime engine routing
-- Update ai_blocks chapterId handling
-- Add contract documentation file
-- Ensure backend starts
-
-STRICT RULES:
-- Do NOT implement real logic
-- Only scaffolding + TODO
-- Maintain exact file paths
-- Add import-safe class stubs
-
-Output:
-  List of all created/modified files + success confirmation.
-
-
-
-==========================================
-42
-==========================================
-auto-run 4 phases (/sp.specify , /sp.plan, /sp.tasks, /sp.implement)
-sab kuch FAST kerna but in small batches not all at once
-auto-create contracts
-
-auto-create checklist
-
-auto-create quickstart + research + data-model
-
-auto-validate folder structure
-
-auto-normalize feature IDs
-
-auto-generate PHR
-
-auto-recursively analyze previous features to ensure consistency
-
-/sp.specify
-feature-id: 042-ch3-validation
-title: "Chapter 3 Validation, Testing & Stability Layer"
-type: validation-layer
-
-goal:
-  Provide full validation coverage for Chapter 3, ensuring frontend MDX, backend
-  AI runtime, subagents, skills, and RAG integration work as a unified system.
-  No business logic is added — only stability checks, structure validation,
-  build verification, and import correctness.
-
-requirements:
-  # 1 — Frontend MDX Validation
-  - Validate chapter-3.mdx renders without errors.
-  - Ensure all AI-BLOCK components compile and mount.
-  - Check all diagram & AI placeholders follow schema.
-  - Ensure MDX frontmatter follows Chapter 3 contract.
-
-  # 2 — Backend Runtime Validation
-  - Ensure all imports resolve in:
-        app/ai/runtime/engine.py
-        app/ai/rag/pipeline.py
-        app/ai/embeddings/*
-        app/ai/providers/*
-        app/ai/subagents/*
-        app/ai/skills/*
-  - Ensure ai_blocks.py routes correctly to runtime engine.
-  - Ensure chapter_3_chunks.py returns placeholder chunks.
-
-  # 3 — RAG Infrastructure Validation
-  - Validate placeholder embedding client loads.
-  - Validate qdrant_store.py functions exist.
-  - Validate similarity_search() placeholder returns shape.
-
-  # 4 — Subagent & Skill Layer Validation
-  - Each agent and skill module loads without errors.
-  - Confirm correct function signatures & TODO placeholders.
-  - Ensure no circular imports.
-
-  # 5 — Backend Startup Validation
-  - Backend must start with:
-        uvicorn app.main:app --reload
-  - No missing imports, no unresolved symbols.
-
-  # 6 — Test Scripts
-  - Create test scripts in tests/ch3/ to validate:
-        - MDX build
-        - Backend startup
-        - AI-block API endpoints
-        - Subagent/skill imports
-
-  # 7 — Documentation
-  - Create CH3_VALIDATION.md containing:
-        - Test matrix
-        - Validation steps
-        - Known issues
-        - Ready-for-release checklist
-
-acceptance_criteria:
-  - Frontend builds successfully.
-  - Backend starts without errors.
-  - All AI-block endpoints return placeholder responses.
-  - All Chapter 3 modules import correctly.
-  - CH3_VALIDATION.md generated with complete matrix.
-
-success_message: |
-  Chapter 3 validation completed. All runtime layers stable and ready for release packaging.
-
-
-/sp.plan
-feature-id: 042-ch3-validation
-title: "Chapter 3 Validation & Testing Architecture Plan"
-
-Write a complete validation architecture plan including:
-
-1. Frontend validation pipeline:
-   - Build checks
-   - MDX structure validation
-   - Placeholder scanning
-   - AI block mount tests
-
-2. Backend validation pipeline:
-   - Module import graph
-   - AI runtime bootstrap test
-   - RAG pipeline smoke test
-   - Subagent/skill wiring check
-
-3. Test scripts structure:
-   - tests/ch3/frontend/
-   - tests/ch3/backend/
-   - tests/ch3/rag/
-   - tests/ch3/runtime/
-
-4. Validation matrix:
-   - Categories: Frontend, Backend, RAG, Runtime, Subagents, Skills
-   - Pass/Fail criteria
-   - Manual vs automated checks
-
-5. Documentation plan:
-   - CH3_VALIDATION.md contents
-   - Required screenshots/debug-output format
-
-Output should be a step-by-step technical plan, no code.
-
-
-/sp.tasks
-feature-id: 042-ch3-validation
-title: "Chapter 3 Validation and Testing Tasks"
-
-Generate full task list grouped by:
-
-1. Frontend Tasks
-2. Backend Tasks
-3. RAG Pipeline Tasks
-4. Subagent/Skills Validation Tasks
-5. API Endpoint Validation Tasks
-6. Test Scripts Tasks
-7. Documentation Tasks
-
-Each task must include:
-- [ ] checkbox
-- TaskID (T001…)
-- Priority (P1/P2)
-- File path
-- Exact description (scaffolding only)
-- Expected output
-
-No implementation, no logic. Pure tasks.
-
-
-/sp.implement
-feature-id: 042-ch3-validation
-title: "Chapter 3 Validation & Testing Layer Implementation"
-
-Implement the validation scaffolding only:
-
-✔ Create test folder: tests/ch3/
-✔ Add placeholder test files (no logic):
-    tests/ch3/test_frontend_build.py
-    tests/ch3/test_backend_startup.py
-    tests/ch3/test_ai_blocks_api.py
-    tests/ch3/test_rag_pipeline.py
-    tests/ch3/test_subagent_imports.py
-✔ Add placeholders for validation utilities:
-    backend/app/utils/validation/*
-✔ Update README or CH3_VALIDATION.md
-✔ Add TODOs where real logic will go.
-
-❌ Do NOT:
-- Add AI logic
-- Add embeddings
-- Add real RAG execution
-- Call external APIs
-
-Scaffolding + placeholders only.
-
-
-==========================================
-43
+46
 ==========================================
 auto-run 4 phases (/sp.specify , /sp.plan, /sp.tasks, /sp.implement)
 sab kuch FAST kerna but in small batches not all at once
@@ -417,547 +32,846 @@ auto-recursively analyze previous features to ensure consistency
 
 
 /sp.specify
-feature-id: 043-ch3-release-package
-title: "Chapter 3 Release Packaging Layer"
-type: release-layer
+feature-id: 046-ai-block-global-standardization
+title: "Global AI Block Standardization Across All Chapters"
+type: runtime-consolidation
 
 goal:
-  Produce a clean, validated, packaged release of Chapter 3 including MDX,
-  metadata, diagrams placeholders, AI blocks integration, runtime scaffolding,
-  and validation reports. Output must match hackathon deliverable standards.
+  Ensure all Chapters (1, 2, 3) use a single unified AI Block Runtime.
+  Standardize AI block inputs, outputs, schemas, subagents, skills, and
+  pipeline behavior across the entire project.
+  Guarantee identical performance, formatting, and RAG-context delivery.
 
 requirements:
-  # 1 — Release Build
-  - Generate final Docusaurus static build for Chapter 3.
-  - Ensure no warnings for MDX, placeholders, or unresolved imports.
-  - Produce optimized frontend assets.
 
-  # 2 — Runtime Snapshot
-  - Export backend runtime structure tree:
-        ai/providers/*
-        ai/rag/*
-        ai/subagents/*
-        ai/skills/*
-        content/chapters/*
-  - Generate RUNTIME_OVERVIEW.md documenting module responsibilities.
-
-  # 3 — Validation Artifacts
-  - Include CH3_VALIDATION.md from Feature 042.
-  - Generate BUILD_REPORT.md containing:
-        - build time
-        - any warnings
-        - bundle size summary
-        - MDX validation summary
-
-  # 4 — Packaging Output Folder
-  - Create folder: releases/chapter-3/
+  # 1 — Global AI Block Contract
+  - Create specs/046-ai-block-global-standardization/contracts/ai-blocks.yaml
+  - Define global contract for:
+        ask-question
+        explain-like-el10
+        interactive-quiz
+        diagram-generator
   - Include:
-        - chapter-3.mdx
-        - chapter_3.py metadata
-        - all diagram placeholders
-        - AI block integration points
-        - validation artifacts
-        - runtime overview
-        - build artifacts (ignored actual large files, only manifest)
-
-  # 5 — Release Manifest
-  - Create: releases/chapter-3/manifest.json
-  - Manifest must include:
-        chapter_id: 3
-        version: "1.0.0"
-        mdx_file: "chapter-3.mdx"
-        metadata_file: "chapter_3.py"
-        ai_blocks: list
-        diagrams: list
-        rag_enabled: true|false (placeholder)
-        generated_at: timestamp
-
-  # 6 — Docs for Hackathon Submission
-  - Generate SUBMISSION_NOTES.md containing:
-        - Overview
-        - Feature summary
-        - Implementation status
-        - What’s included / not included
-
-acceptance_criteria:
-  - releases/chapter-3/ folder exists with all required artifacts.
-  - manifest.json valid JSON.
-  - No MDX or build warnings.
-  - Backend imports validated.
-  - Documentation complete.
-
-success_message: |
-  Chapter 3 Release successfully packaged. All artifacts ready for submission.
-
-/sp.plan
-feature-id: 043-ch3-release-package
-title: "Chapter 3 Release Packaging Architecture Plan"
-
-Write a full release packaging architecture including:
-
-1. Packaging folder structure:
-   - releases/chapter-3/
-   - manifests
-   - validation reports
-   - runtime documentation
-
-2. Build pipeline steps:
-   - frontend build
-   - backend runtime scan
-   - artifact extraction
-   - manifest generation
-
-3. Documentation generation plan:
-   - RUNTIME_OVERVIEW.md
-   - BUILD_REPORT.md
-   - SUBMISSION_NOTES.md
-
-4. Steps to extract:
-   - MDX file
-   - metadata Python file
-   - AI-block map
-   - placeholder lists
-
-5. Final acceptance checklist.
-
-Output must be a detailed step-by-step plan, no code.
-
-
-/sp.tasks
-feature-id: 043-ch3-release-package
-title: "Chapter 3 Release Packaging Tasks"
-
-Generate full task list grouped by:
-
-1. Folder Initialization Tasks
-2. Build Tasks
-3. Artifact Extraction Tasks
-4. Documentation Tasks
-5. Manifest Generation Tasks
-6. Validation Tasks
-7. Final Packaging Tasks
-
-Each task must include:
-- [ ] checkbox
-- TaskID (T001…)
-- P1/P2 priority
-- File path
-- Exact description (scaffolding only)
-- Expected output
-
-No implementation logic. Only scaffolding tasks.
-
-
-/sp.implement
-feature-id: 043-ch3-release-package
-title: "Chapter 3 Release Packaging Layer Implementation"
-
-Implement scaffolding only:
-
-✔ Create folder: releases/chapter-3/
-✔ Create placeholder files:
-      releases/chapter-3/manifest.json
-      releases/chapter-3/RUNTIME_OVERVIEW.md
-      releases/chapter-3/BUILD_REPORT.md
-      releases/chapter-3/SUBMISSION_NOTES.md
-✔ Copy or reference chapter-3.mdx path (placeholder only)
-✔ Copy or reference chapter_3.py metadata path
-✔ Generate lists of AI blocks & diagram placeholders (placeholder arrays)
-✔ Add TODO comments for:
-      - Build pipeline integration
-      - Artifact extraction
-      - Automatic bundling
-
-❌ DO NOT:
-- Add real build logic
-- Add real file copying logic
-- Minify assets
-- Generate actual diagrams or embeddings
-
-
-==========================================
-44
-==========================================
-
-auto-run 4 phases (/sp.specify , /sp.plan, /sp.tasks, /sp.implement)
-sab kuch FAST kerna but in small batches not all at once
-auto-create contracts
-
-auto-create checklist
-
-auto-create quickstart + research + data-model
-
-auto-validate folder structure
-
-auto-normalize feature IDs
-
-auto-generate PHR
-
-auto-recursively analyze previous features to ensure consistency
-
-
-/sp.specify
-feature-id: 044-system-integration-phase-1
-title: "System Integration Layer — Phase 1 (Chapters 1–3 Unified Runtime)"
-type: integration-layer
-
-goal:
-  Establish the first full-system integration layer. This connects all chapters,
-  AI blocks, RAG interfaces, providers, metadata, and runtime engine into a
-  unified scaffolded architecture. No real AI logic will run — the purpose is
-  to ensure imports, routing, and module communication flow correctly.
-
-requirements:
-
-  # 1 — Unified AI Runtime Router
-  - Create backend/app/ai/runtime/router.py
-      - Defines route for selecting which chapter runtime to use.
-      - Placeholder switch logic for chapters 1, 2, 3.
-      - TODO: Move to dynamic registry later.
-
-  # 2 — Chapter Runtime Registry
-  - Create backend/app/ai/runtime/registry.py
-      - Dictionary-like structure:
-          CHAPTER_RUNTIMES = {
-              1: "engine for Chapter 1",
-              2: "engine for Chapter 2",
-              3: "engine for Chapter 3"
-          }
-      - TODO: runtime objects will be added in Phase 2.
-
-  # 3 — AI Block → Runtime Routing
-  - Update backend/app/api/ai_blocks.py:
-      - route requests to central runtime router
-      - placeholder flow only
-
-  # 4 — Unified Embedding + RAG Access Layer
-  - Create backend/app/ai/rag/unified_rag.py
-      - scaffold functions:
-            get_embeddings_for_chapter(chapter_id)
-            retrieve_context(chapter_id, query)
-      - TODO: connect to Qdrant pipelines later.
-
-  # 5 — Unified Provider Selector
-  - Update backend/app/ai/providers/base_llm.py:
-      - add get_provider(provider_name) factory placeholder
-
-  # 6 — System-Wide Settings Layer
-  - Update backend/app/config/settings.py:
-      - Add default runtime model settings
-      - Add PROVIDER_DEFAULTS {}
-      - Ensure env variables fallback works
-
-  # 7 — Chapter Metadata Unification
-  - Create backend/app/content/chapters/registry.py
-      - register metadata modules for chapters 1, 2, 3
-      - provide get_chapter_metadata(id) function
-
-  # 8 — Frontend Integration Stub
-  - Create frontend/src/integration/runtime-client.ts
-      - placeholder functions:
-            callAIBlock(type, payload)
-            callChapterRuntime(id, data)
-      - TODO: Connect to backend API later.
-
-  # 9 — System Dependency Report
-  - Create specs/044-system-integration-phase-1/contracts/dependency-map.md
-      - Document:
-          - chapter metadata dependencies
-          - runtime dependencies
-          - subagent/skills dependencies
-          - RAG dependencies
-
-acceptance_criteria:
-  - Backend starts without import errors.
-  - All integration modules exist.
-  - No real logic is implemented.
-  - All routing placeholders connect without breaking existing features.
-  - Runtime registry properly references chapters 1–3.
-
-success_message: |
-  System Integration Layer (Phase 1) scaffolding completed. All chapters,
-  RAG interfaces, runtime routers, and provider selectors now unified.
-
-
-/sp.plan
-feature-id: 044-system-integration-phase-1
-title: "System Integration Layer — Architecture Plan"
-
-Write a complete architecture plan including:
-
-1. Multi-layer integration diagram:
-   - API → Runtime Router → Chapter Runtime → RAG → Provider
-
-2. File-level connection map:
-   - All imports between ai_blocks, runtime, rag, provider, content metadata
-
-3. Chapter Runtime Registry Plan:
-   - Scalable approach for adding chapters automatically later
-
-4. Provider selection flow:
-   - How default provider resolves from settings/env
-
-5. Unified client approach:
-   - How frontend runtime-client.ts interacts with backend
-
-6. Risk analysis:
-   - Circular imports
-   - Namespace overlaps
-   - Incomplete TODO placeholders
-
-Do not write code. Only a deep architectural plan.
-
-
-/sp.tasks
-feature-id: 044-system-integration-phase-1
-title: "System Integration Layer Tasks"
-
-Generate full task list in categories:
-
-1. Runtime Router Tasks
-2. Registry Tasks
-3. Provider Selector Tasks
-4. RAG Integration Tasks
-5. Metadata Integration Tasks
-6. Frontend Runtime Client Tasks
-7. Validation Tasks
-8. Documentation Tasks
-
-Each task must include:
-- [ ] checkbox
-- TaskID T001...
-- Priority P1/P2
-- File path
-- Exact placeholder to add
-
-NO real logic. Only scaffolding + TODO comments.
-
-
-/sp.implement
-feature-id: 044-system-integration-phase-1
-title: "System Integration Layer Implementation"
-
-Implement scaffolding only:
-
-✔ Create all runtime integration files
-✔ Add placeholder switch statements
-✔ Add registry dictionaries
-✔ Update ai_blocks router to call runtime router
-✔ Add empty unified RAG functions
-✔ Update provider base to include factory TODO
-✔ Create frontend runtime-client.ts with placeholder functions
-✔ Create dependency-map.md scaffold
-
-❌ Do NOT:
-- Implement LLM logic
-- Implement RAG search logic
-- Call Qdrant
-- Call Gemini/OpenAI
-- Add business logic
-
-Only create structure exactly per plan/tasks.
-
-
-
-==========================================
-45
-==========================================
-auto-run 4 phases (/sp.specify , /sp.plan, /sp.tasks, /sp.implement)
-sab kuch FAST kerna but in small batches not all at once
-auto-create contracts
-
-auto-create checklist
-
-auto-create quickstart + research + data-model
-
-auto-validate folder structure
-
-auto-normalize feature IDs
-
-auto-generate PHR
-
-auto-recursively analyze previous features to ensure consistency
-
-
-/sp.specify
-feature-id: 045-system-integration-phase-2
-title: "System Integration Layer — Phase 2 (Real AI Logic Activation)"
-type: ai-logic-activation
-
-goal:
-  Enable the FIRST working version of the full AI runtime:
-  - Real LLM calls (OpenAI, Gemini, DeepSeek)
-  - Real text-embedding generation
-  - Real Qdrant similarity search
-  - Real chapter-specific RAG context building
-  - Real output generation for AI Blocks
-  This is the activation of ACTUAL intelligence across Chapters 1–3.
-
-requirements:
-
-  # 1 — Activate Providers (LLM)
-  - Update backend/app/ai/providers/openai_provider.py:
-        Implement real call() using OpenAI SDK
-  - Update backend/app/ai/providers/gemini_provider.py:
-        Implement real call() using Gemini SDK
-  - Add minimal error handling + TODO logging
-
-  # 2 — Activate Embeddings
-  - Update backend/app/ai/embeddings/embedding_client.py:
-        Implement:
-          generate_embedding(text)
-          batch_embed(list_of_chunks)
-        using provider-specific embeddings
-
-  # 3 — Qdrant Real Search Integration
-  - Update backend/app/ai/rag/qdrant_store.py:
-        Implement:
-          create_collection()
-          upsert_vectors()
-          similarity_search(query_vector, top_k)
-        using Qdrant client SDK
-
-  # 4 — Real RAG Pipeline
-  - Update backend/app/ai/rag/pipeline.py:
-        Steps:
-          1. Load chapter metadata + chunks
-          2. Embed user query
-          3. Perform Qdrant search
-          4. Build context window
-          5. Prepare final prompt
-        Implement minimal, safe logic (no advanced ranking)
-
-  # 5 — AI Block Real Logic Activation
+      - required inputs
+      - required outputs
+      - error format
+      - RAG context usage rules
+
+  # 2 — Global Runtime Router
   - Update backend/app/ai/runtime/engine.py:
-        Implement real flow for:
-          ask-question
-          el10 explanation
-          quiz
-          diagram
-        Connect to:
-          - RAG pipeline
-          - LLM provider call
-          - output formatters
+      - Implement ai_block_router(block_type, chapter_id, user_input)
+      - Standardize:
+          - RAG invocation order
+          - Subagent selection
+          - Prompt formatting
+          - Provider selection
 
-  # 6 — Skill-Based Real Implementations
-  - Update backend/app/ai/skills/retrieval_skill.py
-  - Update backend/app/ai/skills/formatting_skill.py
-  - Update backend/app/ai/skills/prompt_builder_skill.py
-        Add minimal real logic
+  # 3 — Global Subagent Registry
+  - Create backend/app/ai/subagents/registry.py
+      - Map AI block → subagent class
+      - Ensure future chapters auto-register
 
-  # 7 — Subagent Activation
-  - Activate real logic in:
-        ask_question_agent.py
-        explain_el10_agent.py
-        quiz_agent.py
-        diagram_agent.py
-      using:
-        - retrieval_skill
-        - prompt_builder_skill
-        - formatting_skill
+  # 4 — Shared Skills Upgrade
+  - Update skills:
+        retrieval_skill.py
+        formatting_skill.py
+        prompt_builder_skill.py
+    to support multiple chapters using same logic
 
-  # 8 — Chapter RAG Indexing Command
-  - Create:
-        backend/app/cli/index_chapter.py
-        Function: index_chapter(chapter_id)
-        - reads chapter chunks
-        - generates embeddings
-        - upserts into Qdrant
+  # 5 — Unified Output Formatting
+  - Add backend/app/ai/runtime/output_formatter.py
+      - Standardize:
+          - answer blocks
+          - diagrams
+          - quizzes (MCQ, open-ended, true/false)
+      - Guarantee all chapters look identical
+
+  # 6 — Chapter Overrides (optional)
+  - Add optional override path:
+        backend/app/content/overrides/chapter_{id}.py
+    Each chapter can override:
+        - tone
+        - difficulty
+        - formatting style
+
+  # 7 — API Layer Update
+  - Update backend/app/api/ai_blocks.py:
+        All endpoints must call the new global router
+
+  # 8 — Documentation
+  - Create specs/046-ai-block-global-standardization/README.md
+        - Explain architecture
+        - Explain override system
+        - Explain global contract
 
 acceptance_criteria:
-  - Real LLM responses returned through runtime engine
-  - Real embeddings and Qdrant search working
-  - Real AI Block results produced
-  - CLI script indexes all chapters successfully
-  - No broken imports, no missing modules
+  - All chapters use the SAME AI block interfaces
+  - All AI block endpoints produce identical formatting styles
+  - Subagents follow a single registry
+  - Skills do not need chapter-specific forks
+  - No chapter breaks the flow when switching inputs
 
 success_message: |
-  System Integration Phase 2 successfully activated. AI Blocks now produce real
-  intelligent responses using LLM + Embeddings + Qdrant RAG pipelines.
+  AI Block Global Standardization complete. All chapters now share a unified,
+  predictable, scalable AI runtime architecture.
 
 
 /sp.plan
-feature-id: 045-system-integration-phase-2
-title: "System Integration Phase 2 — Real AI Logic Plan"
+feature-id: 046-ai-block-global-standardization
+title: "Global AI Block Standardization — Architecture Plan"
 
-Write a detailed execution plan including:
+Write a detailed architecture plan covering:
 
-1. Provider activation architecture
-   - How each provider (OpenAI, Gemini, DeepSeek) is selected
-   - Input/Output contract formats
+1. Global Contract Design:
+   - Inputs/outputs
+   - Error handling
+   - Shared context window rules
 
-2. Embedding Strategy
-   - How embedding_client chooses model
-   - Batch vs single embedding logic
+2. Runtime Routing:
+   - How ai_block_router routes between agents
+   - Cross-chapter RAG selection
 
-3. RAG pipeline architecture
-   - Query embedding
-   - Similarity search
-   - Context window building
-   - Future improvement hooks
+3. Subagent Registry:
+   - Design pattern for registering and extending subagents
 
-4. Subagents Activation Flow
-   - How each subagent calls skills
-   - How skills call RAG and providers
+4. Skills Enhancements:
+   - How skills adapt to multi-chapter context
+   - How formatting becomes universal
 
-5. Error Handling Plan
-   - Provider failure fallback
-   - Empty context fallback
-   - Rate limit behavior
+5. Override System:
+   - Tiered fallback model (chapter override → global default)
 
-6. CLI Indexer Plan
-   - End-to-end embedding + upsert flow
-   - Logging & durability
-
-Do NOT write code. Only architecture.
+6. Migration Strategy:
+   - How to refactor Chapter 1/2/3 AI blocks into unified system
 
 
 /sp.tasks
-feature-id: 045-system-integration-phase-2
-title: "System Integration Phase 2 — Implementation Tasks"
+feature-id: 046-ai-block-global-standardization
+title: "Global AI Block Standardization — Tasks"
 
-Generate tasks in categories:
+Organize tasks under:
 
-1. Provider Activation Tasks
-2. Embedding Tasks
-3. Qdrant Integration Tasks
-4. RAG Pipeline Tasks
-5. Subagent Logic Tasks
-6. Skills Real Logic Tasks
-7. Runtime Engine Logic Tasks
-8. CLI Indexer Tasks
-9. Testing + Validation Tasks
+1. Contract Tasks
+2. Runtime Tasks
+3. Subagent Tasks
+4. Skills Tasks
+5. Formatter Tasks
+6. API Integration Tasks
+7. Documentation Tasks
+8. Validation Tasks
 
-Each task must include:
-- [ ] checkbox
-- Txxx ID
-- Priority P1/P2
-- File path
-- Exact TODO logic required
+Use:
+- checkboxes
+- Txxx numbering
+- P1 / P2 prioritization
+- Exact file paths
+- Clear scaffolding instructions
 
 
 /sp.implement
-feature-id: 045-system-integration-phase-2
-title: "System Integration Phase 2 — Implementation"
+feature-id: 046-ai-block-global-standardization
+title: "Global AI Block Standardization — Implementation"
 
-Implement ONLY:
+Implement ONLY scaffolding:
 
-✔ Real provider call() logic
-✔ Real embedding logic
-✔ Real Qdrant connection + search
-✔ Real RAG pipeline steps
-✔ Real skill logic
-✔ Real subagent logic
-✔ Real runtime engine logic
-✔ CLI indexer (full working)
+✔ ai-blocks.yaml contract  
+✔ ai_block_router() skeleton  
+✔ Subagent registry file  
+✔ Updated skill function placeholders  
+✔ output_formatter.py with TODO sections  
+✔ Updated API endpoints routing  
+✔ Override folder + sample override file  
 
-❌ Do NOT:
-- Implement complex ranking
-- Implement caching
-- Implement parallelization
-- Implement diagram generation logic
-- Implement advanced quiz logic
-- Add any business-critical optimization
+DO NOT:
+- write real AI logic
+- change existing runtime logic
+- modify RAG logic
+- modify diagram or quiz engines
 
-The goal is a **minimal but fully functional AI runtime**.
+Goal:
+Create a unified architecture ready for real logic.
 
+
+
+==========================================
+47
+==========================================
+auto-run 4 phases (/sp.specify , /sp.plan, /sp.tasks, /sp.implement)
+sab kuch FAST kerna but in small batches not all at once
+auto-create contracts
+
+auto-create checklist
+
+auto-create quickstart + research + data-model
+
+auto-validate folder structure
+
+auto-normalize feature IDs
+
+auto-generate PHR
+
+auto-recursively analyze previous features to ensure consistency
+
+/sp.specify
+feature-id: 047-global-llm-guardrails
+title: "Global LLM Safety, Guardrails & Prompt Governance Layer"
+type: ai-governance
+
+goal:
+  Introduce a unified, global safety middleware for all LLM calls across
+  Chapters 1, 2, and 3. Standardize tone, age-appropriate content,
+  hallucination prevention, fact-checking placeholders, and prompt governance.
+  Ensure all AI Blocks route through a shared compliance layer before LLM output.
+
+requirements:
+
+  # 1 — Global Guardrail Contract
+  - Create specs/047-global-llm-guardrails/contracts/llm-guardrails.yaml
+  - Must define:
+        allowed_content
+        disallowed_content
+        age-appropriate rules (12+)
+        tone rules (educational, safe, non-political)
+        complexity rules
+        hallucination rules
+        fallback strategies
+
+  # 2 — Guardrail Engine
+  - Create backend/app/ai/guardrails/engine.py
+      - process_input_safely()
+      - enforce_output_rules()
+      - strip_disallowed_content()
+      - inject_safety_prefix()
+      - inject_safety_suffix()
+
+  # 3 — Prompt Governance Layer
+  - Add backend/app/ai/prompt/policy.py
+      - define_prompt_policy(block_type, chapter_id)
+      - include:
+          tone rules
+          explanation style
+          scaffolded learning
+          error messages
+          safety reminders
+
+  # 4 — Integration with Runtime Engine
+  - Update backend/app/ai/runtime/engine.py:
+        - run_ai_block() MUST call guardrail engine before LLM provider
+        - RAG context must pass through hallucination-check placeholder
+
+  # 5 — Global Hallucination Prevention
+  - Create backend/app/ai/guardrails/hallucination_filter.py
+      - TODO functions:
+          detect_low-confidence()
+          require_citation_for_facts()
+          fallback_to_neutral_explanation()
+
+  # 6 — Safety Logging
+  - Add backend/app/ai/logging/safety_logger.py
+      - record_triggered_rules()
+      - record_blocking_events()
+      - record_override_events()
+
+  # 7 — Provider-Level Safety Hooks
+  - Update all providers:
+        openai_provider.py
+        gemini_provider.py
+        deepseek_provider.py (optional)
+      - Add placeholder for native safety settings
+
+  # 8 — Documentation
+  - Create specs/047-global-llm-guardrails/README.md
+        - describe safety architecture
+        - diagram of LLM → RAG → Guardrails → Output
+        - best practices
+
+acceptance_criteria:
+  - Runtime engine passes ALL LLM inputs & outputs through guardrails
+  - All AI blocks obey global prompt governance rules
+  - Hallucination filter integrated (placeholder logic only)
+  - Safety logging works (stub only)
+  - Spec + plan + tasks + contracts generated correctly
+
+success_message: |
+  Global LLM Guardrails + Prompt Governance Layer successfully scaffolded.
+  All chapters and AI blocks now share a unified educational-safe AI model.
+
+
+/sp.plan
+feature-id: 047-global-llm-guardrails
+title: "Global LLM Guardrails — Architecture Plan"
+
+Write a full architecture plan covering:
+
+1. Guardrail Engine Architecture
+   - flow diagram: input → guardrails → RAG → LLM → guardrails → output
+   - rules engine structure
+
+2. Prompt Governance Policy
+   - chapter-level overrides
+   - block-level rules
+   - tone / complexity guidance
+
+3. Hallucination Filter
+   - placeholder strategy
+   - citation requirement rules
+   - fallback behavior
+
+4. Integration with Runtime
+   - how engine.py calls guardrails
+   - middleware structure
+
+5. Safety Logging
+   - what gets logged
+   - how logs will be used later
+
+6. Extensibility
+   - how future chapters or AI blocks plug into the same guardrail layer
+
+
+/sp.tasks
+feature-id: 047-global-llm-guardrails
+title: "Global LLM Safety Layer — Tasks"
+
+GROUPS:
+  - Contract Tasks
+  - Guardrail Engine Tasks
+  - Prompt Governance Tasks
+  - Hallucination Filter Tasks
+  - Runtime Integration Tasks
+  - Provider Update Tasks
+  - Safety Logging Tasks
+  - Documentation Tasks
+
+Create:
+  - checkbox tasks
+  - T000 numbering
+  - P1/P2 priority markers
+  - exact file paths
+  - TODO placeholders only
+
+
+/sp.implement
+feature-id: 047-global-llm-guardrails
+title: "Implement Global LLM Safety + Prompt Governance"
+
+Implement ONLY scaffolding:
+
+✔ engine.py structure  
+✔ hallucination_filter.py  
+✔ prompt policy file  
+✔ safety logger file  
+✔ updated runtime engine imports & calls  
+✔ provider files updated with TODO for safety options  
+✔ contract + docs folder created  
+
+Do NOT:
+- implement real safety logic
+- write filtering rules
+- write validation logic
+- add real guardrail algorithms
+- modify model behavior
+
+Goal:
+Ship a full skeleton that enforces safety architecture.
+
+
+==========================================
+48
+==========================================
+auto-run 4 phases (/sp.specify , /sp.plan, /sp.tasks, /sp.implement)
+sab kuch FAST kerna but in small batches not all at once
+auto-create contracts
+
+auto-create checklist
+
+auto-create quickstart + research + data-model
+
+auto-validate folder structure
+
+auto-normalize feature IDs
+
+auto-generate PHR
+
+auto-recursively analyze previous features to ensure consistency
+
+/sp.specify
+feature-id: 048-e2e-system-test-harness
+title: "End-to-End System Test Harness for All Chapters"
+type: testing-architecture
+
+goal:
+  Build a unified automated test harness that validates the entire AI Textbook System
+  (Chapters 1, 2, and 3). Tests must cover MDX compilation, AI Blocks routing, RAG
+  retrieval pipelines, runtime engine stability, metadata correctness, build integrity,
+  and end-to-end flow validation.
+
+requirements:
+
+  # 1 — Test Infrastructure Setup
+  - Create backend/tests/e2e/ folder
+  - Add conftest.py with shared fixtures (placeholder only)
+  - Add TestClient setup for FastAPI (placeholder)
+
+  # 2 — Chapter Content Validation Tests
+  - Create tests for:
+      backend/tests/e2e/test_chapter_1_content.py
+      backend/tests/e2e/test_chapter_2_content.py
+      backend/tests/e2e/test_chapter_3_content.py
+  - Validate:
+      MDX file exists
+      Metadata file exists
+      Section count correct
+      Placeholder count correct (AI-BLOCK, DIAGRAM)
+      Metadata field rules (ID, title match, glossary count)
+
+  # 3 — RAG Pipeline E2E Tests
+  - Create backend/tests/e2e/test_rag_pipeline.py
+  - Validate placeholder flow:
+      chunk loader → embed → search → return context
+  - Ensure no crash when embeddings provider or Qdrant is mocked
+
+  # 4 — AI Block Runtime Tests
+  - Create backend/tests/e2e/test_ai_blocks.py
+  - Test 4 block types:
+      ask-question
+      explain-like-i-am-10
+      interactive-quiz
+      generate-diagram
+  - Validate correct routing to runtime engine (structure only)
+
+  # 5 — Guardrail Layer Tests
+  - Add backend/tests/e2e/test_guardrails.py
+  - Validate:
+      guardrails receive input/output
+      prohibited content returns fallback
+      hallucination filter invoked (placeholder)
+
+  # 6 — Build Stability Tests
+  - Create scripts/build_test.sh (placeholder)
+      - run: npm run build
+      - run: backend server startup check
+
+  # 7 — Test Reports
+  - Create specs/048-e2e-system-test-harness/contracts/test-report-format.md
+      - Define report structure for judges
+      - No real logic
+
+acceptance_criteria:
+  - All required test files created
+  - All tests run without logic (placeholders OK)
+  - Entire project builds cleanly under test harness
+  - No import/runtime error in RAG, runtime engine, metadata modules
+  - All chapters validated as per specification
+
+success_message: |
+  End-to-End System Test Harness scaffolding completed successfully.
+  All chapters, AI blocks, RAG runtime, and guardrail layers now have
+  unified system-level validation.
+
+
+/sp.plan
+feature-id: 048-e2e-system-test-harness
+title: "System-Level Test Harness Architecture Plan"
+
+Write a complete test architecture plan including:
+
+1. Overview of testing goals  
+2. Folder & file structure for test harness  
+3. Fixtures needed for backend AI engine, RAG pipeline, and guardrails  
+4. Mocking strategy (LLM providers, embeddings client, Qdrant)  
+5. Validation rules for all three chapters  
+6. E2E flow diagrams:
+      request → guardrails → runtime → provider → output
+7. Build stability pipeline plan  
+8. Test report output plan (for hackathon judges)
+
+
+/sp.tasks
+feature-id: 048-e2e-system-test-harness
+title: "End-to-End Test Harness — Task List"
+
+GROUP: TEST INFRASTRUCTURE
+  - [ ] T048-001 – Create backend/tests/e2e folder
+  - [ ] T048-002 – Add conftest.py with shared fixtures
+  - [ ] T048-003 – Add FastAPI TestClient placeholder
+
+GROUP: CHAPTER VALIDATION TESTS
+  - [ ] T048-010 – test_chapter_1_content.py
+  - [ ] T048-011 – test_chapter_2_content.py
+  - [ ] T048-012 – test_chapter_3_content.py
+
+GROUP: RAG PIPELINE TESTS
+  - [ ] T048-020 – test_rag_pipeline.py (mocked search + embeddings)
+
+GROUP: AI BLOCK RUNTIME TESTS
+  - [ ] T048-030 – test_ai_blocks.py (routing validation)
+
+GROUP: GUARDRAIL TESTS
+  - [ ] T048-040 – test_guardrails.py
+
+GROUP: BUILD & STABILITY TESTS
+  - [ ] T048-050 – Create scripts/build_test.sh
+
+GROUP: REPORT CONTRACT
+  - [ ] T048-060 – Create test-report-format.md in contracts/
+
+All tasks must create scaffolding only — no real logic.
+
+
+/sp.implement
+feature-id: 048-e2e-system-test-harness
+title: "Implement End-to-End Test Harness"
+
+Implement the full scaffolding:
+
+✔ Create all test files  
+✔ Add placeholder assertions  
+✔ Create build_test.sh  
+✔ Add imports that match project structure  
+✔ Add contracts/test-report-format.md  
+✔ Ensure backend launches without test errors  
+
+Do NOT:
+- implement real tests
+- mock real LLM providers
+- generate embeddings or run Qdrant
+
+Goal: full test harness structure only, ready for future test implementation.
+
+
+
+
+
+
+
+==========================================
+49
+==========================================
+auto-run 4 phases (/sp.specify , /sp.plan, /sp.tasks, /sp.implement)
+sab kuch FAST kerna but in small batches not all at once
+auto-create contracts
+
+auto-create checklist
+
+auto-create quickstart + research + data-model
+
+auto-validate folder structure
+
+auto-normalize feature IDs
+
+auto-generate PHR
+
+auto-recursively analyze previous features to ensure consistency
+
+
+/sp.specify
+feature-id: 049-translation-engine
+title: "Multilingual Translation Engine — Urdu, Arabic, English, Roman Urdu"
+type: backend-ai-translation-architecture
+
+goal:
+  Add a translation engine that enables all chapter content (MDX sections,
+  glossary terms, explanations, quizzes, diagrams descriptions) to be translated
+  into:
+    - English (default)
+    - Urdu
+    - Roman Urdu
+    - Arabic
+
+  Create translation APIs, provider abstraction, translation pipeline,
+  translation glossary scaffolding, and runtime integration for future
+  frontend UI usage.
+
+requirements:
+
+  # 1 — Provider Architecture
+  - Create backend/app/translation/providers/base_translation.py
+  - Create backend/app/translation/providers/openai_translation.py (placeholder)
+  - Create backend/app/translation/providers/gemini_translation.py (placeholder)
+  - Interface must support:
+      translate_text(text, target_language)
+      translate_batch(list_of_texts, target_language)
+      supported_languages()
+
+  # 2 — Translation Pipeline
+  - Create backend/app/translation/pipeline.py
+      - TODO steps:
+          1. Normalize chapter content
+          2. Chunk paragraphs for translation
+          3. Route to provider
+          4. Reconstruct translated chapter
+          5. Return structured dict
+
+  # 3 — Translation Contracts
+  - Create specs/049-translation-engine/contracts/translation-schema.yaml
+      - Define allowed language codes: en, ur, ru, ar
+      - Define shape for translation output:
+          {
+            "source": "...",
+            "translated": "...",
+            "language": "ur"
+          }
+
+  # 4 — Glossary Translation Support
+  - Create backend/app/translation/glossary_mapper.py
+      - TODO map glossary terms to translated definitions
+      - Create placeholder dictionary structure
+
+  # 5 — API Endpoints
+  - Create backend/app/api/translation.py
+      - POST /api/translate/chapter/{chapter_id}
+      - POST /api/translate/snippet
+      - GET /api/translation/languages
+
+  # 6 — Environment Variables
+  - Update backend/app/config/settings.py:
+        TRANSLATION_PROVIDER
+        TRANSLATION_MODEL
+  - Update .env.example
+
+  # 7 — Runtime Integration Stub
+  - Update backend/app/ai/runtime/engine.py:
+        - Add TODO: "If translation needed, call translation pipeline before response"
+
+acceptance_criteria:
+  - All required modules exist
+  - No real translation logic is implemented (placeholders only)
+  - All imports resolve
+  - API endpoints respond successfully with mocked data
+  - Contracts/spec folder includes translation-schema.yaml
+
+success_message: |
+  Translation Engine scaffolding completed. Urdu, Arabic, English, and Roman Urdu
+  translation pipelines, providers, contracts, glossary scaffolding, and API
+  endpoints created successfully.
+
+
+/sp.plan
+feature-id: 049-translation-engine
+title: "Translation Engine Architecture Plan"
+
+Write a complete detailed plan including:
+
+1. Multi-provider architecture (OpenAI / Gemini)
+2. Language code rules (en, ur, ru, ar)
+3. Pipeline flow: MDX → chunker → provider → merge → output
+4. Translation storage strategy (none yet — placeholder only)
+5. Glossary translation process
+6. API architecture design
+7. Runtime integration with AI Engine
+8. Future UI usage (Language switcher)
+9. Error-handling strategies for provider failure
+10. Testability plan for Feature 049
+
+
+/sp.tasks
+feature-id: 049-translation-engine
+title: "Multilingual Translation Engine – Task List"
+
+GROUP: PROVIDERS
+  - [ ] T049-001 – Create base_translation.py
+  - [ ] T049-002 – Create openai_translation.py
+  - [ ] T049-003 – Create gemini_translation.py
+
+GROUP: PIPELINE
+  - [ ] T049-010 – Create translation/pipeline.py
+
+GROUP: GLOSSARY SUPPORT
+  - [ ] T049-020 – Create glossary_mapper.py
+
+GROUP: API ENDPOINTS
+  - [ ] T049-030 – Create translation.py API file
+  - [ ] T049-031 – Add routes to main FastAPI router
+
+GROUP: CONFIG
+  - [ ] T049-040 – Add env variables
+  - [ ] T049-041 – Update .env.example
+
+GROUP: CONTRACTS
+  - [ ] T049-050 – Create translation-schema.yaml
+
+GROUP: RUNTIME INTEGRATION
+  - [ ] T049-060 – Add TODO in ai/runtime/engine.py for translation hook
+
+
+/sp.implement
+feature-id: 049-translation-engine
+title: "Implement Translation Engine Scaffolding"
+
+Implement all placeholder modules:
+  - Providers
+  - Pipeline
+  - Glossary mapper
+  - API endpoints
+  - Config updates
+  - Contracts folder
+
+Rules:
+  - No real translation logic
+  - Only scaffolding + TODO comments
+  - Ensure backend runs without translation errors
+  - Keep structure clean and future-ready
+
+
+
+==========================================
+50
+==========================================
+auto-run 4 phases (/sp.specify , /sp.plan, /sp.tasks, /sp.implement)
+sab kuch FAST kerna but in small batches not all at once
+auto-create contracts
+
+auto-create checklist
+
+auto-create quickstart + research + data-model
+
+auto-validate folder structure
+
+auto-normalize feature IDs
+
+auto-generate PHR
+
+auto-recursively analyze previous features to ensure consistency
+
+/sp.specify
+feature-id: 050-live-ai-interaction
+title: "Real-Time AI Interaction Layer — Streaming + Live AI Blocks"
+type: backend-frontend-ai-interaction
+
+goal:
+  Implement a real-time AI interaction framework so that all AI Blocks
+  (ask-question, explain-like-I-am-10, diagram generator, quiz engine, etc.)
+  respond with STREAMING updates instead of static responses.
+  
+  Add streaming APIs, frontend event consumers, and runtime hooks.
+  No business logic implemented — only scaffolding.
+
+requirements:
+
+  # 1 — Streaming Backend Infrastructure
+  - Create backend/app/ai/streaming/stream_manager.py
+      - TODO: manage Server-Sent Events (SSE) or WebSockets
+      - TODO: attach to runtime engine pipeline
+  - Update runtime engine (engine.py):
+      - Add TODO: "If streaming mode enabled, yield tokens"
+
+  # 2 — Streaming API Endpoints
+  - Create backend/app/api/streaming.py
+      - GET /api/stream/ai-block/{block_type}
+      - Should return mocked streaming chunks
+  - Add router integration in main FastAPI router
+
+  # 3 — Frontend Streaming Client (Docusaurus)
+  - Create frontend/src/ai/streamClient.ts
+      - TODO: SSE/WebSocket connector
+      - TODO: event handlers for chunk, error, complete
+  - Create frontend/src/ai/streamHooks.ts
+      - React hooks for:
+          useAIStreaming()
+          useAIBlockStreaming(blockType)
+
+  # 4 — Frontend Component Integration
+  - Update AI Block components:
+      - AskQuestionBlock.tsx
+      - ExplainELI10Block.tsx
+      - QuizBlock.tsx
+      - DiagramBlock.tsx
+    Add:
+      - Placeholder streaming UI
+      - TODO comments for streaming output
+
+  # 5 — Config
+  - Update backend/app/config/settings.py:
+        AI_STREAMING_ENABLED=true|false
+        STREAMING_BACKEND=sse|websocket
+  - Update .env.example
+
+  # 6 — Contracts
+  - Create specs/050-live-ai-interaction/contracts/stream-schema.yaml
+      - Define streaming chunk schema:
+          { "token": "...", "seq": 0 }
+      - Define SSE/WebSocket compatibility expectations
+
+  # 7 — Acceptance
+  - Project must start without errors
+  - Streaming endpoints must return mocked chunked responses
+  - Frontend components must compile and contain streaming hooks
+  - No actual LLM streaming logic (placeholders only)
+
+success_message: |
+  Live AI Interaction Layer scaffolding created. Backend streaming modules,
+  streaming API endpoints, frontend streaming hooks, and AI block integrations
+  are ready for future real-time AI output.
+
+
+/sp.plan
+feature-id: 050-live-ai-interaction
+title: "Streaming Interaction Architecture Plan"
+
+Generate a highly detailed plan explaining:
+
+1. Why streaming mode is essential for responsive AI Blocks
+2. Architecture choice: SSE vs WebSockets (placeholder)
+3. Streaming manager responsibilities
+4. Required FastAPI changes
+5. Frontend streaming flow:
+     component → hook → streamClient → event listener → UI updates
+6. Compatibility with existing AI Runtime Engine
+7. Token-by-token output planning
+8. How future LLM providers will enable real streaming
+9. Testing strategy:
+     - Mock streaming provider
+     - Frontend fake stream simulator
+10. Integration path into final release for bonus marks
+
+
+
+/sp.tasks
+feature-id: 050-live-ai-interaction
+title: "Real-Time Streaming Layer — Task List"
+
+BACKEND — STREAMING CORE
+  - [ ] T050-001 Create stream_manager.py
+  - [ ] T050-002 Add SSE/WebSocket TODO logic
+  - [ ] T050-003 Update runtime engine with streaming hook
+
+BACKEND — API
+  - [ ] T050-010 Create streaming.py
+  - [ ] T050-011 Add streaming endpoints
+  - [ ] T050-012 Integrate into backend router
+
+FRONTEND — STREAM CLIENT
+  - [ ] T050-020 Create streamClient.ts
+  - [ ] T050-021 Create streamHooks.ts
+
+FRONTEND — COMPONENT UPDATES
+  - [ ] T050-030 Update all AI Block components to support streaming
+  - [ ] T050-031 Add placeholder loaders + token UI
+
+CONFIG + ENV
+  - [ ] T050-040 Add streaming config vars
+  - [ ] T050-041 Update .env.example
+
+CONTRACTS
+  - [ ] T050-050 Create stream-schema.yaml
+
+
+/sp.implement
+feature-id: 050-live-ai-interaction
+title: "Implement Streaming Interaction Scaffolding"
+
+Implement:
+
+- stream_manager.py (placeholder)
+- streaming.py API with mocked chunk output
+- runtime engine streaming TODO hook
+- frontend streamClient + streamHooks
+- updates to AI Block components
+- environment variable updates
+- streaming schema in contracts folder
+
+NO business logic.
+Only scaffolding, placeholders, and mocked streaming.
+
+Ensure the whole project still compiles.

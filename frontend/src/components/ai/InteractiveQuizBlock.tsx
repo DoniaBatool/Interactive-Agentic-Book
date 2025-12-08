@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+// TODO: Import streaming hooks when implementing real streaming
+// import { useAIBlockStreaming } from '@site/src/ai/streamHooks';
 
 /**
  * InteractiveQuizBlock Component
@@ -28,6 +30,12 @@ export default function InteractiveQuizBlock({
   numQuestions = 5 
 }: InteractiveQuizBlockProps) {
   const [quizStarted, setQuizStarted] = useState(false);
+  // TODO: Add streaming support
+  // const { chunks, isStreaming, startStream, stopStream } = useAIBlockStreaming(
+  //   "interactive-quiz",
+  //   chapterId || 1,
+  //   { numQuestions }
+  // );
 
   const handleStartQuiz = () => {
     console.log('InteractiveQuizBlock: Quiz started', { 
@@ -79,6 +87,13 @@ export default function InteractiveQuizBlock({
           }}>
             Quiz questions will appear here. This is a placeholder.
           </p>
+          {/* TODO: Add streaming output display */}
+          {/* {isStreaming && (
+            <div style={{ marginTop: '12px' }}>
+              <p>Streaming quiz questions:</p>
+              <div>{chunks.join('')}</div>
+            </div>
+          )} */}
           <div style={{
             padding: '12px',
             backgroundColor: 'white',
@@ -92,6 +107,7 @@ export default function InteractiveQuizBlock({
               textAlign: 'center'
             }}>
               Quiz questions will be generated here in future features.
+              {/* TODO: Enable streaming mode when AI_STREAMING_ENABLED is true */}
             </p>
           </div>
         </div>

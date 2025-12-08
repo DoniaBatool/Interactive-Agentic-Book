@@ -9,8 +9,9 @@ Orchestrates the Retrieval-Augmented Generation pipeline:
 5. Pass into provider LLM
 """
 
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from app.config.settings import settings
+from app.ai.rag.collections import ALL_COLLECTIONS, get_collection_for_chapter
 
 # Chapter 2 collection name constant
 # Option 1: Import from ch2_collection.py
@@ -347,4 +348,110 @@ async def build_context_for_ch2(query: str) -> Dict[str, Any]:
         "chunks": [],
         "query_embedding": []
     }
+
+
+# ============================================================================
+# Multi-Chapter Semantic Router (Placeholder for Global Stabilization)
+# ============================================================================
+
+async def score_chapters_for_query(query_embedding: List[float]) -> List[Dict[str, Any]]:
+    """
+    Score all chapters for a query (placeholder for multi-chapter routing).
+    
+    Args:
+        query_embedding: Query embedding vector
+        
+    Returns:
+        List of chapter scores with structure:
+        [
+            {"chapter_id": 1, "score": 0.9, "relevance": 0.9},
+            {"chapter_id": 2, "score": 0.7, "relevance": 0.7},
+            {"chapter_id": 3, "score": 0.8, "relevance": 0.8}
+        ]
+        
+    TODO: Real scoring logic:
+    1. Search all chapter collections
+    2. Score each chapter by relevance
+    3. Return sorted scores
+    
+    Placeholder: Return placeholder scores
+    """
+    # TODO: Real scoring logic
+    # from app.ai.rag.qdrant_store import similarity_search
+    # scores = []
+    # for collection in ALL_COLLECTIONS:
+    #     results = await similarity_search(collection, query_embedding, top_k=1)
+    #     if results:
+    #         score = results[0].get("score", 0.0)
+    #         chapter_id = int(collection.split("_")[1])  # Extract chapter ID
+    #         scores.append({"chapter_id": chapter_id, "score": score, "relevance": score})
+    # return sorted(scores, key=lambda x: x["score"], reverse=True)
+    
+    # Placeholder: Return placeholder scores
+    return [
+        {"chapter_id": 1, "score": 0.9, "relevance": 0.9},
+        {"chapter_id": 2, "score": 0.7, "relevance": 0.7},
+        {"chapter_id": 3, "score": 0.8, "relevance": 0.8}
+    ]
+
+
+async def route_to_best_chapter(query: str) -> int:
+    """
+    Route query to best matching chapter (placeholder for affinity routing).
+    
+    Args:
+        query: User query text
+        
+    Returns:
+        Chapter ID of best matching chapter
+        
+    TODO: Real routing logic:
+    1. Generate query embedding
+    2. Score all chapters
+    3. Select chapter with highest score
+    4. Return chapter ID
+    
+    Placeholder: Return placeholder chapter ID
+    """
+    # TODO: Real routing logic
+    # from app.ai.embeddings.embedding_client import generate_embedding
+    # query_embedding = await generate_embedding(query)
+    # scores = await score_chapters_for_query(query_embedding)
+    # if scores:
+    #     return scores[0]["chapter_id"]
+    # return 1  # Default fallback
+    
+    # Placeholder: Return placeholder chapter ID
+    return 1
+
+
+async def fallback_retrieval(query: str) -> List[Dict[str, Any]]:
+    """
+    Fallback retrieval if primary routing fails (placeholder).
+    
+    Args:
+        query: User query text
+        
+    Returns:
+        List of retrieved chunks from all chapters
+        
+    TODO: Real fallback logic:
+    1. Try all chapters
+    2. Return best matches across all chapters
+    3. Handle errors gracefully
+    
+    Placeholder: Return placeholder results
+    """
+    # TODO: Real fallback logic
+    # from app.ai.embeddings.embedding_client import generate_embedding
+    # from app.ai.rag.qdrant_store import similarity_search
+    # query_embedding = await generate_embedding(query)
+    # all_results = []
+    # for collection in ALL_COLLECTIONS:
+    #     results = await similarity_search(collection, query_embedding, top_k=3)
+    #     all_results.extend(results)
+    # return sorted(all_results, key=lambda x: x.get("score", 0.0), reverse=True)[:5]
+    
+    # Placeholder: Return placeholder results
+    return []
 

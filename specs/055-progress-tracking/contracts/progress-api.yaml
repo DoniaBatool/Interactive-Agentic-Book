@@ -1,0 +1,193 @@
+# Progress Tracking API Contract
+
+**Feature**: 055-progress-tracking
+**Created**: 2025-01-27
+**Status**: Draft
+
+## Overview
+
+This contract defines the API schema for chapter progress tracking endpoints. All implementations are placeholders—no real persistence logic.
+
+---
+
+## API Endpoints
+
+### POST /progress/{chapter_id}/start
+
+**Description**: Mark a chapter as started for the current user (placeholder).
+
+**Path Parameters**:
+```yaml
+chapter_id:
+  type: integer
+  required: true
+  minimum: 1
+  description: Chapter number to mark as started
+```
+
+**Response (Success)**:
+```yaml
+user_id:
+  type: string
+  description: User ID (placeholder)
+  example: "user_123"
+
+chapter_id:
+  type: integer
+  description: Chapter number
+  example: 1
+
+state:
+  type: string
+  description: Progress state
+  example: "in_progress"
+
+updated_at:
+  type: string
+  format: date-time
+  description: Last update timestamp
+  example: "2025-01-27T00:00:00Z"
+
+message:
+  type: string
+  description: Success message
+  example: "Chapter marked as started (placeholder)"
+```
+
+---
+
+### POST /progress/{chapter_id}/complete
+
+**Description**: Mark a chapter as completed for the current user (placeholder).
+
+**Path Parameters**:
+```yaml
+chapter_id:
+  type: integer
+  required: true
+  minimum: 1
+  description: Chapter number to mark as completed
+```
+
+**Response (Success)**:
+```yaml
+user_id:
+  type: string
+  description: User ID (placeholder)
+  example: "user_123"
+
+chapter_id:
+  type: integer
+  description: Chapter number
+  example: 1
+
+state:
+  type: string
+  description: Progress state
+  example: "completed"
+
+updated_at:
+  type: string
+  format: date-time
+  description: Last update timestamp
+  example: "2025-01-27T00:00:00Z"
+
+message:
+  type: string
+  description: Success message
+  example: "Chapter marked as completed (placeholder)"
+```
+
+---
+
+### GET /progress/
+
+**Description**: Get all progress records for the current user (placeholder).
+
+**Response (Success)**:
+```yaml
+progress:
+  type: array
+  description: List of progress records
+  items:
+    type: object
+    properties:
+      user_id:
+        type: string
+        example: "user_123"
+      chapter_id:
+        type: integer
+        example: 1
+      state:
+        type: string
+        example: "in_progress"
+      updated_at:
+        type: string
+        format: date-time
+        example: "2025-01-27T00:00:00Z"
+```
+
+**Example Response**:
+```json
+{
+  "progress": [
+    {
+      "user_id": "user_123",
+      "chapter_id": 1,
+      "state": "completed",
+      "updated_at": "2025-01-27T00:00:00Z"
+    },
+    {
+      "user_id": "user_123",
+      "chapter_id": 2,
+      "state": "in_progress",
+      "updated_at": "2025-01-27T01:00:00Z"
+    }
+  ]
+}
+```
+
+---
+
+## Progress State Values
+
+```yaml
+ProgressState:
+  - not_started: Chapter not yet started
+  - in_progress: Chapter currently being read
+  - completed: Chapter fully completed
+```
+
+---
+
+## Validation Rules
+
+### Chapter ID Validation
+- Must be a valid integer >= 1
+- Must correspond to an existing chapter
+
+### State Validation
+- Must be one of: "not_started", "in_progress", "completed"
+- Case-sensitive
+
+---
+
+## Error Codes
+
+- `INVALID_CHAPTER`: Chapter ID is invalid
+- `INVALID_STATE`: Progress state is invalid
+- `USER_NOT_FOUND`: User ID not found (future)
+- `SERVER_ERROR`: Internal server error
+
+---
+
+## Future Extensions
+
+- Real database persistence
+- Real authentication integration
+- Progress history
+- Progress statistics
+- Progress sharing
+- Progress analytics
+- Progress dashboard
+

@@ -11,6 +11,15 @@ from app.api.health import router as health_router
 from app.api.chapters import router as chapters_router
 from app.api import ai_blocks
 from app.api import diagram_generation
+from app.api import streaming
+from app.api import translation
+from app.api import rag
+from app.auth.routes import router as auth_router
+from app.api.progress import router as progress_router
+from app.api.search import router as search_router
+from app.api.lss import router as lss_router
+from app.analytics.telemetry_router import router as telemetry_router
+from app.api.lss import router as lss_router
 
 # Create FastAPI application instance
 app = FastAPI(
@@ -35,6 +44,15 @@ app.include_router(health_router, tags=["health"])
 app.include_router(chapters_router, tags=["chapters"])
 app.include_router(ai_blocks.router)
 app.include_router(diagram_generation.router)
+app.include_router(streaming.router)
+app.include_router(translation.router)
+app.include_router(rag.router)
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
+app.include_router(progress_router, tags=["progress"])
+app.include_router(search_router, tags=["search"])
+app.include_router(lss_router, tags=["lss"])
+app.include_router(telemetry_router, tags=["telemetry"])
+app.include_router(lss_router, tags=["lss"])
 
 
 @app.on_event("startup")

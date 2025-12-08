@@ -1,0 +1,146 @@
+# Chapter Access Control Contract
+
+**Feature**: 054-chapter-access-control
+**Created**: 2025-01-27
+**Status**: Draft
+
+## Overview
+
+This contract defines the chapter access control structure for RBAC-based chapter permissions. All implementations are placeholders—no real access enforcement logic.
+
+---
+
+## Chapter Access Map Structure
+
+### Access Map Format
+
+```yaml
+chapter_access_map:
+  1:  # Chapter 1
+    allowed_roles:
+      - admin
+      - educator
+      - student
+  
+  2:  # Chapter 2
+    allowed_roles:
+      - admin
+      - educator
+      - student
+  
+  3:  # Chapter 3
+    allowed_roles:
+      - admin
+      - educator
+      - student
+```
+
+### Default Behavior
+
+- **Default**: All roles allowed for all chapters (placeholder)
+- **Future**: Can be configured per chapter
+- **Future**: Can be overridden per user
+
+---
+
+## Access Checking Function
+
+### can_access_chapter(user_role, chapter_number)
+
+**Purpose**: Check if user role can access specific chapter
+
+**Parameters**:
+- `user_role`: User's role (admin, educator, student)
+- `chapter_number`: Chapter number (1, 2, 3, ...)
+
+**Returns**:
+- `bool`: True if access allowed, False otherwise
+
+**Placeholder Behavior**: Returns True for all (or based on access map)
+
+---
+
+## Decorator Usage
+
+### require_chapter_access(chapter_number)
+
+**Purpose**: Require chapter access for route
+
+**Usage**:
+```python
+@require_chapter_access(1)
+async def get_chapter_1(request: Request):
+    # Only users with access to chapter 1 can access (placeholder)
+    pass
+```
+
+**Placeholder Behavior**: Logs message, allows access
+
+---
+
+## API Integration
+
+### GET /chapter/{id}
+
+**Endpoint**: Wrapped with `require_chapter_access(id)` decorator
+
+**Placeholder Behavior**: 
+- Decorator logs message
+- Endpoint returns chapter data (no real enforcement)
+
+**Future Behavior**:
+- Check user role
+- Check chapter access map
+- Return 403 if access denied
+
+---
+
+## Frontend Helpers
+
+### canViewChapter(role, chapterNumber)
+
+**Purpose**: Check if role can view chapter
+
+**Parameters**:
+- `role`: User's role (admin, educator, student)
+- `chapterNumber`: Chapter number
+
+**Returns**:
+- `boolean`: True if can view, False otherwise
+
+**Placeholder**: Returns True for all
+
+---
+
+### chaptersAllowed(role)
+
+**Purpose**: Get list of chapters allowed for role
+
+**Parameters**:
+- `role`: User's role (admin, educator, student)
+
+**Returns**:
+- `number[]`: List of allowed chapter numbers
+
+**Placeholder**: Returns [1, 2, 3] for all roles
+
+---
+
+## Constraints
+
+- **No Real Enforcement**: All access checks are placeholders
+- **No Database**: Access map is static, not persisted
+- **No Validation**: No real access validation logic
+- **Scaffolding Only**: Structure for future implementation
+
+---
+
+## Future Extensions
+
+- Real access enforcement
+- Database-backed access control
+- Dynamic access assignment
+- Time-based access
+- Chapter subscription model
+- User-specific overrides
+

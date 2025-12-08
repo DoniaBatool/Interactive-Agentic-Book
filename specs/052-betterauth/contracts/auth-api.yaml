@@ -1,0 +1,249 @@
+# BetterAuth API Contract
+
+**Feature**: 052-betterauth
+**Created**: 2025-01-27
+**Status**: Draft
+
+## Overview
+
+This contract defines the API schema for BetterAuth-based authentication endpoints. All endpoints return placeholder responses—no real authentication logic is implemented.
+
+---
+
+## API Endpoints
+
+### POST /auth/signup
+
+**Description**: Register a new user account (placeholder).
+
+**Request Body**:
+```yaml
+email:
+  type: string
+  required: true
+  format: email
+  description: User's email address
+
+password:
+  type: string
+  required: true
+  min_length: 8
+  max_length: 128
+  description: User's password (placeholder validation)
+
+name:
+  type: string
+  required: false
+  max_length: 100
+  description: User's full name (optional)
+```
+
+**Response (Success)**:
+```yaml
+user:
+  type: object
+  description: Placeholder user object
+  properties:
+    id:
+      type: string
+      example: "user_123"
+    email:
+      type: string
+      example: "user@example.com"
+    name:
+      type: string
+      example: "John Doe"
+    created_at:
+      type: string
+      format: date-time
+      example: "2025-01-27T00:00:00Z"
+
+message:
+  type: string
+  description: Success message
+  example: "User created successfully (placeholder)"
+```
+
+**Response (Error)**:
+```yaml
+error:
+  type: string
+  description: Error message
+  example: "Email already exists (placeholder)"
+
+code:
+  type: string
+  description: Error code
+  example: "EMAIL_EXISTS"
+```
+
+---
+
+### POST /auth/login
+
+**Description**: Authenticate user and create session (placeholder).
+
+**Request Body**:
+```yaml
+email:
+  type: string
+  required: true
+  format: email
+  description: User's email address
+
+password:
+  type: string
+  required: true
+  description: User's password
+```
+
+**Response (Success)**:
+```yaml
+user:
+  type: object
+  description: Placeholder user object
+  properties:
+    id:
+      type: string
+      example: "user_123"
+    email:
+      type: string
+      example: "user@example.com"
+    name:
+      type: string
+      example: "John Doe"
+
+session_token:
+  type: string
+  description: Placeholder session token
+  example: "placeholder_session_token_123"
+```
+
+**Response (Error)**:
+```yaml
+error:
+  type: string
+  description: Error message
+  example: "Invalid credentials (placeholder)"
+
+code:
+  type: string
+  description: Error code
+  example: "INVALID_CREDENTIALS"
+```
+
+---
+
+### POST /auth/logout
+
+**Description**: End user session (placeholder).
+
+**Request Body** (Optional):
+```yaml
+session_token:
+  type: string
+  required: false
+  description: Session token to invalidate (optional)
+```
+
+**Response (Success)**:
+```yaml
+message:
+  type: string
+  description: Success message
+  example: "Logged out successfully (placeholder)"
+```
+
+---
+
+### GET /auth/me
+
+**Description**: Get current user profile (placeholder).
+
+**Request Headers**:
+```yaml
+Authorization:
+  type: string
+  required: false
+  description: Bearer token or session cookie (placeholder)
+  example: "Bearer placeholder_token"
+```
+
+**Response (Success)**:
+```yaml
+user:
+  type: object
+  description: Placeholder user object
+  properties:
+    id:
+      type: string
+      example: "user_123"
+    email:
+      type: string
+      example: "user@example.com"
+    name:
+      type: string
+      example: "John Doe"
+    role:
+      type: string
+      example: "student"
+    created_at:
+      type: string
+      format: date-time
+      example: "2025-01-27T00:00:00Z"
+```
+
+**Response (Error)**:
+```yaml
+error:
+  type: string
+  description: Error message
+  example: "Unauthorized (placeholder)"
+
+code:
+  type: string
+  description: Error code
+  example: "UNAUTHORIZED"
+```
+
+---
+
+## Validation Rules
+
+### Email Validation
+- Must be valid email format
+- No real validation (placeholder)
+
+### Password Validation
+- Minimum length: 8 characters (placeholder)
+- Maximum length: 128 characters
+- No complexity requirements (placeholder)
+- No real validation (placeholder)
+
+### Session Token
+- Placeholder format: "placeholder_session_token_{id}"
+- No real validation (placeholder)
+- No expiration (placeholder)
+
+---
+
+## Error Codes
+
+- `EMAIL_EXISTS`: Email already registered (placeholder)
+- `INVALID_CREDENTIALS`: Login failed (placeholder)
+- `UNAUTHORIZED`: Session invalid or missing (placeholder)
+- `VALIDATION_ERROR`: Request validation failed
+- `SERVER_ERROR`: Internal server error
+
+---
+
+## Future Extensions
+
+- Real password hashing
+- Real session management
+- JWT token generation
+- OAuth/SSO integration
+- Multi-factor authentication
+- Password reset flow
+- Email verification
+

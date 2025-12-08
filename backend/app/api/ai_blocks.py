@@ -20,7 +20,7 @@ TODO: Future RAG Integration
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List
-from app.ai.runtime.engine import run_ai_block
+from app.ai.runtime.engine import run_ai_block, ai_block_router
 # TODO: Import runtime router
 # from app.ai.runtime.router import route
 
@@ -102,12 +102,27 @@ async def ask_question(request: AskQuestionRequest) -> AIBlockResponse:
     # result = await route(chapter_id, "ask-question", request.model_dump())
     # TODO: Update response model to match runtime engine output format
     
-    # Placeholder: Route to runtime engine (existing functionality)
-    result = await run_ai_block("ask-question", request.model_dump())
-    return AIBlockResponse(
-        message="AI block placeholder",
-        received=request.model_dump()
-    )
+    # Route to unified AI block router
+    chapter_id = request.chapterId or 1  # Default to Chapter 1
+    user_input = {
+        "question": request.question,
+        "sectionId": request.sectionId
+    }
+    result = await ai_block_router("ask-question", chapter_id, user_input)
+    # Extract answer from standardized response
+    answer = result.get("answer", result.get("message", ""))
+    
+    # TODO: Real analytics tracking
+    # Log AI block usage event (placeholder)
+    event_logger.log("ai_block_used", {
+        "user_id": "user_123",  # Placeholder: Extract from request/auth
+        "chapter_id": chapter_id,
+        "section_id": request.sectionId,
+        "block_type": "ask-question",
+        "query": request.question
+    })
+    
+    return AIBlockResponse(message=answer, received=result)
 
 
 @router.post("/explain-like-10", response_model=AIBlockResponse)
@@ -136,13 +151,15 @@ async def explain_like_10(request: ExplainLike10Request) -> AIBlockResponse:
     #     context = await build_context_for_ch2(request.concept)
     #     # Pass context to runtime engine
     """
-    # Route to runtime engine
-    # TODO: Chapter 2 ELI10 routing
-    # if request.chapterId == 2:
-    #     from app.ai.explain.ch2_el10_runtime import run as ch2_el10_run
-    #     result = await ch2_el10_run(
-    #         concept=request.concept,
-    #         chapter_id=2,
+    # Route to unified AI block router
+    chapter_id = request.chapterId or 1  # Default to Chapter 1
+    user_input = {
+        "concept": request.concept
+    }
+    result = await ai_block_router("explain-like-el10", chapter_id, user_input)
+    # Extract explanation from standardized response
+    explanation = result.get("explanation", result.get("message", ""))
+    return AIBlockResponse(message=explanation, received=result)
     #         context=None
     #     )
     #     return result
@@ -192,13 +209,16 @@ async def quiz(request: QuizRequest) -> AIBlockResponse:
     #     context = await build_context_for_ch2("")  # Empty query for full chapter context
     #     # Pass context to runtime engine
     """
-    # Route to quiz runtime
-    # TODO: Chapter 2 quiz routing
-    # if request.chapterId == 2:
-    #     from app.ai.quiz.ch2_quiz_runtime import run as ch2_quiz_run
-    #     result = await ch2_quiz_run(
-    #         chapter_id=2,
-    #         num_questions=request.numQuestions,
+    # Route to unified AI block router
+    chapter_id = request.chapterId or 1  # Default to Chapter 1
+    user_input = {
+        "numQuestions": request.numQuestions,
+        "learningObjectives": request.learningObjectives
+    }
+    result = await ai_block_router("interactive-quiz", chapter_id, user_input)
+    # Extract quiz_title from standardized response
+    quiz_title = result.get("quiz_title", result.get("message", ""))
+    return AIBlockResponse(message=quiz_title, received=result)
     #         learning_objectives=request.learningObjectives
     #     )
     #     return result
@@ -269,17 +289,16 @@ async def diagram(request: DiagramRequest) -> AIBlockResponse:
     # result = await route(chapter_id, "diagram", request.model_dump())
     # TODO: Update response model to match runtime engine output format
     
-    # Placeholder: Route to runtime engine (existing functionality)
-    from app.ai.diagram.runtime import run_diagram_generator
-    result = await run_diagram_generator(
-        request.diagramType,
-        request.chapterId or 1,
-        request.concepts or []
-    )
-    return AIBlockResponse(
-        message="AI block placeholder",
-        received=request.model_dump()
-    )
+    # Route to unified AI block router
+    chapter_id = request.chapterId or 1  # Default to Chapter 1
+    user_input = {
+        "diagramType": request.diagramType,
+        "concepts": request.concepts or []
+    }
+    result = await ai_block_router("diagram-generator", chapter_id, user_input)
+    # Extract diagram description from standardized response
+    description = result.get("description", result.get("message", ""))
+    return AIBlockResponse(message=description, received=result)
 
 
 # ============================================================================

@@ -12,11 +12,16 @@ from typing import Optional, List, Dict, Any
 class BaseLLMProvider(ABC):
     """
     Abstract base class for LLM providers.
-    
+
     This interface standardizes how different LLM providers (OpenAI, Gemini, DeepSeek)
     are called, ensuring consistent behavior across providers.
-    
+
     All provider implementations must implement the generate() method.
+    
+    TODO: Add provider-level safety interface
+    - Abstract method for safety settings configuration
+    - Provider-specific safety settings (optional)
+    - Integration with global guardrails
     """
     
     @abstractmethod

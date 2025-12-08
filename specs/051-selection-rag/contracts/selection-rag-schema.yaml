@@ -1,0 +1,173 @@
+# Selection-Based RAG API Contract
+
+**Feature**: 051-selection-rag
+**Created**: 2025-01-27
+**Status**: Draft
+
+## Overview
+
+This contract defines the API schema for selection-based RAG functionality. When a learner highlights text in a chapter, they can ask questions about that specific selection, and the system answers using only the selected content context.
+
+---
+
+## API Endpoint
+
+### POST /api/rag/selection
+
+**Description**: Process a question about selected text from a chapter.
+
+**Request Body**:
+```yaml
+selected_text:
+  type: string
+  required: true
+  min_length: 10
+  max_length: 10000
+  description: The text selected by the user in the chapter
+
+question:
+  type: string
+  required: true
+  min_length: 1
+  max_length: 1000
+  description: The question about the selected text
+
+chapter_id:
+  type: integer
+  required: true
+  minimum: 1
+  description: The chapter ID where the selection was made
+```
+
+**Response (Success)**:
+```yaml
+answer:
+  type: string
+  description: The answer to the question based on selected text context
+  example: "Based on the selected text, the answer is..."
+
+context_used:
+  type: string
+  description: The context snippet that was used to generate the answer
+  example: "The selected text mentions that..."
+
+confidence:
+  type: float
+  description: Confidence score (placeholder, 0.0-1.0)
+  example: 0.85
+```
+
+**Response (Error)**:
+```yaml
+error:
+  type: string
+  description: Human-readable error message
+  example: "Selected text is too short. Minimum 10 characters required."
+
+code:
+  type: string
+  description: Error code
+  example: "INVALID_INPUT"
+
+details:
+  type: object
+  description: Additional error details
+```
+
+---
+
+## Frontend Component Contract
+
+### SelectionRAGBar Component
+
+**Props**:
+```typescript
+interface SelectionRAGBarProps {
+  selectedText: string;      // The selected text
+  chapterId: number;         // Current chapter ID
+  onClose: () => void;       // Close handler
+  position?: {               // Optional position override
+    x: number;
+    y: number;
+  };
+}
+```
+
+**State**:
+```typescript
+interface SelectionRAGBarState {
+  question: string;          // User's question
+  loading: boolean;          // Loading state
+  answer: string | null;     // Answer from backend
+  error: string | null;      // Error message
+}
+```
+
+**Events**:
+- `onAsk`: Triggers POST request to `/api/rag/selection`
+- `onClose`: Closes the selection bar
+
+---
+
+## Pipeline Contract
+
+### Selection Pipeline Functions
+
+**clean_selected_text(selected_text: str) -> str**:
+- Input: Raw selected text
+- Output: Cleaned text (normalized whitespace, removed noise)
+- TODO: Real implementation
+
+**embed_selected_text(selected_text: str) -> List[float]**:
+- Input: Cleaned selected text
+- Output: Embedding vector (placeholder)
+- TODO: Real embedding generation
+
+**run_similarity_search_over_selected(selected_text: str, query: str, chapter_id: int) -> List[Dict]**:
+- Input: Selected text, question, chapter ID
+- Output: List of relevant chunks (placeholder)
+- TODO: Real similarity search
+
+**pass_context_to_llm(context: str, question: str) -> str**:
+- Input: Assembled context, question
+- Output: LLM-generated answer (placeholder)
+- TODO: Real LLM call
+
+---
+
+## Validation Rules
+
+### Selected Text Validation
+- Minimum length: 10 characters
+- Maximum length: 10000 characters
+- Must not be empty or whitespace-only
+
+### Question Validation
+- Minimum length: 1 character
+- Maximum length: 1000 characters
+- Must not be empty or whitespace-only
+
+### Chapter ID Validation
+- Must be a valid integer >= 1
+- Must correspond to an existing chapter
+
+---
+
+## Error Codes
+
+- `INVALID_INPUT`: Input validation failed
+- `SELECTION_TOO_SHORT`: Selected text is too short
+- `SELECTION_TOO_LONG`: Selected text exceeds maximum length
+- `INVALID_CHAPTER`: Chapter ID is invalid
+- `PIPELINE_ERROR`: Selection pipeline failed
+- `LLM_ERROR`: LLM provider error (future)
+
+---
+
+## Future Extensions
+
+- Support for multi-selection
+- Selection history
+- Selection sharing
+- Real-time streaming responses
+- Selection-based diagram generation

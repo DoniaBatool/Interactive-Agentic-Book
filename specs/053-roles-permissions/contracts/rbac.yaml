@@ -1,0 +1,184 @@
+# RBAC (Role-Based Access Control) Contract
+
+**Feature**: 053-roles-permissions
+**Created**: 2025-01-27
+**Status**: Draft
+
+## Overview
+
+This contract defines the RBAC framework structure for role-based access control. All implementations are placeholders—no real permission enforcement logic.
+
+---
+
+## Role Model
+
+### Available Roles
+
+```yaml
+roles:
+  - admin: "Administrator with full system access"
+  - educator: "Educator with content management access"
+  - student: "Student with read-only access"
+```
+
+### Role Constants
+
+```python
+ROLE_ADMIN = "admin"
+ROLE_EDUCATOR = "educator"
+ROLE_STUDENT = "student"
+```
+
+---
+
+## Permission Structure
+
+### Permission Map (Placeholder)
+
+```yaml
+permissions:
+  admin:
+    - "*"  # All permissions
+  
+  educator:
+    - "read:chapters"
+    - "write:content"
+    - "read:analytics"
+    - "manage:students"
+  
+  student:
+    - "read:chapters"
+    - "read:content"
+    - "read:own_progress"
+```
+
+### Permission Format
+
+- Format: `{action}:{resource}`
+- Examples:
+  - `read:chapters` - Read chapter content
+  - `write:content` - Write/create content
+  - `read:analytics` - View analytics
+  - `manage:students` - Manage student accounts
+
+---
+
+## Decorator Usage
+
+### require_role(role: str)
+
+**Purpose**: Require specific role for route access
+
+**Usage**:
+```python
+@require_role("admin")
+async def admin_only_route(request: Request):
+    # Only admins can access (placeholder)
+    pass
+```
+
+**Placeholder Behavior**: Logs message, allows access
+
+---
+
+### require_permission(action: str)
+
+**Purpose**: Require specific permission for route access
+
+**Usage**:
+```python
+@require_permission("write:content")
+async def create_content_route(request: Request):
+    # Only users with write:content permission can access (placeholder)
+    pass
+```
+
+**Placeholder Behavior**: Logs message, allows access
+
+---
+
+## Middleware Integration
+
+### Role Attachment
+
+**Middleware**: `attach_role_middleware`
+
+**Behavior**:
+- Extracts role from request (placeholder)
+- Attaches to `request.state.user_role`
+- Default role: "student" (if no role found)
+
+**Usage**:
+```python
+# In main.py
+app.add_middleware(attach_role_middleware)
+```
+
+---
+
+## API Response Format
+
+### /auth/me Response
+
+```yaml
+user:
+  id: string
+  email: string
+  name: string
+  role: string  # "admin" | "educator" | "student"
+  created_at: string
+```
+
+**Example**:
+```json
+{
+  "user": {
+    "id": "user_123",
+    "email": "user@example.com",
+    "name": "John Doe",
+    "role": "student",
+    "created_at": "2025-01-27T00:00:00Z"
+  }
+}
+```
+
+---
+
+## Frontend Role Helpers
+
+### useRole.ts Functions
+
+```typescript
+getRole(): Promise<string | null>
+  // Returns user role or null
+
+isAdmin(): Promise<boolean>
+  // Returns true if role is "admin"
+
+isEducator(): Promise<boolean>
+  // Returns true if role is "educator"
+
+isStudent(): Promise<boolean>
+  // Returns true if role is "student"
+```
+
+---
+
+## Constraints
+
+- **No Real Enforcement**: All permission checks are placeholders
+- **No Database**: Roles are static, not persisted
+- **No Validation**: No real permission validation logic
+- **Scaffolding Only**: Structure for future implementation
+
+---
+
+## Future Extensions
+
+- Real permission enforcement
+- Database-backed role storage
+- Dynamic permission assignment
+- Role hierarchies
+- Permission inheritance
+- User-specific overrides
+

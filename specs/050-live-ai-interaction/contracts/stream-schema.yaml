@@ -1,0 +1,93 @@
+# Streaming Schema Contract
+# Feature: 050-live-ai-interaction
+# Purpose: Define streaming chunk schema and event types
+
+version: "1.0.0"
+last_updated: "2025-01-27"
+
+# Streaming Chunk Schema
+streaming_chunk:
+  structure:
+    token: string  # Single token or chunk of text
+    seq: integer   # Sequence number (0, 1, 2, ...)
+    event_type: string  # "chunk" | "error" | "complete"
+    metadata: object  # Optional metadata
+  
+  example:
+    token: "Physical"
+    seq: 0
+    event_type: "chunk"
+    metadata:
+      block_type: "ask-question"
+      chapter_id: 1
+
+# Event Types
+event_types:
+  chunk:
+    description: "Streaming token/chunk event"
+    structure:
+      token: string
+      seq: integer
+      event_type: "chunk"
+  
+  error:
+    description: "Error event"
+    structure:
+      error: string
+      code: string
+      event_type: "error"
+  
+  complete:
+    description: "Streaming completion event"
+    structure:
+      message: string
+      total_tokens: integer
+      event_type: "complete"
+
+# SSE Format
+sse_format:
+  content_type: "text/event-stream"
+  chunk_format: "data: {json_chunk}\n\n"
+  example: |
+    data: {"token": "Physical", "seq": 0, "event_type": "chunk"}
+    
+    data: {"token": " AI", "seq": 1, "event_type": "chunk"}
+    
+    data: {"event_type": "complete", "total_tokens": 2}
+
+# WebSocket Format (Alternative)
+websocket_format:
+  message_type: "json"
+  chunk_format: "{json_chunk}"
+  example: |
+    {"token": "Physical", "seq": 0, "event_type": "chunk"}
+    {"token": " AI", "seq": 1, "event_type": "chunk"}
+    {"event_type": "complete", "total_tokens": 2}
+
+# Compatibility Requirements
+compatibility:
+  sse:
+    - Must use text/event-stream content type
+    - Must format chunks as "data: {json}\n\n"
+    - Must support chunk, error, complete events
+  
+  websocket:
+    - Must use JSON message format
+    - Must support chunk, error, complete events
+    - Must handle connection lifecycle
+
+# Error Handling
+error_handling:
+  connection_lost:
+    - Frontend should handle reconnection
+    - Backend should close stream gracefully
+  
+  provider_failure:
+    - Return error event
+    - Close stream gracefully
+  
+  user_cancellation:
+    - Close stream
+    - Stop generation
+    - Return cancellation event
+

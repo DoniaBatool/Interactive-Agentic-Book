@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+// TODO: Import streaming hooks when implementing real streaming
+// import { useAIBlockStreaming } from '@site/src/ai/streamHooks';
 
 /**
  * AskQuestionBlock Component
@@ -28,6 +30,12 @@ export default function AskQuestionBlock({
   sectionId 
 }: AskQuestionBlockProps) {
   const [question, setQuestion] = useState('');
+  // TODO: Add streaming support
+  // const { chunks, isStreaming, startStream, stopStream } = useAIBlockStreaming(
+  //   "ask-question",
+  //   chapterId || 1,
+  //   { question, sectionId }
+  // );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,6 +91,13 @@ export default function AskQuestionBlock({
           Submit Question
         </button>
       </form>
+      {/* TODO: Add streaming output display */}
+      {/* {isStreaming && (
+        <div style={{ marginTop: '12px' }}>
+          <p>Streaming response:</p>
+          <div>{chunks.join('')}</div>
+        </div>
+      )} */}
       <p style={{ 
         marginTop: '12px', 
         fontSize: '12px', 
@@ -90,6 +105,7 @@ export default function AskQuestionBlock({
         fontStyle: 'italic'
       }}>
         This is a placeholder. Real AI-powered question answering will be available soon.
+        {/* TODO: Enable streaming mode when AI_STREAMING_ENABLED is true */}
       </p>
     </div>
   );

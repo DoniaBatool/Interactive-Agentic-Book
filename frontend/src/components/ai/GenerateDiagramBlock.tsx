@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+// TODO: Import streaming hooks when implementing real streaming
+// import { useAIBlockStreaming } from '@site/src/ai/streamHooks';
 
 /**
  * GenerateDiagramBlock Component
@@ -28,6 +30,12 @@ export default function GenerateDiagramBlock({
   chapterId 
 }: GenerateDiagramBlockProps) {
   const [diagramGenerated, setDiagramGenerated] = useState(false);
+  // TODO: Add streaming support
+  // const { chunks, isStreaming, startStream, stopStream } = useAIBlockStreaming(
+  //   "diagram-generator",
+  //   chapterId || 1,
+  //   { diagramType }
+  // );
 
   const handleGenerate = () => {
     console.log('GenerateDiagramBlock: Diagram generation requested', { 
@@ -73,6 +81,13 @@ export default function GenerateDiagramBlock({
       >
         Generate Diagram
       </button>
+      {/* TODO: Add streaming output display */}
+      {/* {isStreaming && (
+        <div style={{ marginTop: '12px' }}>
+          <p>Streaming diagram description:</p>
+          <div>{chunks.join('')}</div>
+        </div>
+      )} */}
       {diagramGenerated ? (
         <div style={{
           padding: '12px',
@@ -90,6 +105,7 @@ export default function GenerateDiagramBlock({
             textAlign: 'center'
           }}>
             Diagram will be generated here in future features.
+            {/* TODO: Enable streaming mode when AI_STREAMING_ENABLED is true */}
           </p>
         </div>
       ) : (

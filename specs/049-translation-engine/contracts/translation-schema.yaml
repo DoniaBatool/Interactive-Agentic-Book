@@ -1,0 +1,106 @@
+# Translation Schema Contract
+# Feature: 049-translation-engine
+# Purpose: Define translation input/output schemas and language codes
+
+version: "1.0.0"
+last_updated: "2025-01-27"
+
+# Supported Language Codes
+languages:
+  en:
+    name: "English"
+    code: "en"
+    script: "Latin"
+    default: true
+  
+  ur:
+    name: "Urdu"
+    code: "ur"
+    script: "Arabic"
+    default: false
+  
+  ru:
+    name: "Roman Urdu"
+    code: "ru"
+    script: "Latin"
+    default: false
+  
+  ar:
+    name: "Arabic"
+    code: "ar"
+    script: "Arabic"
+    default: false
+
+# Translation Output Structure
+translation_output:
+  structure:
+    source: string
+    translated: string
+    language: string
+    source_language: string  # Optional, defaults to "en"
+    metadata: object  # Optional
+  
+  example:
+    source: "What is Physical AI?"
+    translated: "Physical AI کیا ہے؟"
+    language: "ur"
+    source_language: "en"
+    metadata:
+      provider: "openai"
+      model: "gpt-4o-mini"
+
+# Chapter Translation Output Structure
+chapter_translation_output:
+  structure:
+    chapter_id: integer
+    language: string
+    sections: List[SectionTranslation]
+    glossary: Dict[string, string]  # term -> translated_definition
+    metadata: object
+  
+  SectionTranslation:
+    section_id: string
+    title: string  # Translated title
+    content: string  # Translated content
+    placeholders: List[PlaceholderTranslation]  # AI-BLOCK, DIAGRAM placeholders
+  
+  PlaceholderTranslation:
+    type: string  # "AI-BLOCK" | "DIAGRAM"
+    name: string
+    description: string  # Translated description
+
+# Translation Request Structure
+translation_request:
+  snippet:
+    structure:
+      text: string
+      target_language: string
+      source_language: string  # Optional, defaults to "en"
+  
+  chapter:
+    structure:
+      chapter_id: integer
+      target_language: string
+      source_language: string  # Optional, defaults to "en"
+      include_glossary: boolean  # Optional, defaults to true
+
+# Error Handling
+error_handling:
+  standard_errors:
+    - code: "INVALID_LANGUAGE"
+      message: "Invalid language code"
+      http_status: 400
+    
+    - code: "TRANSLATION_PROVIDER_ERROR"
+      message: "Translation provider request failed"
+      http_status: 500
+    
+    - code: "TRANSLATION_FAILED"
+      message: "Translation operation failed"
+      http_status: 500
+  
+  fallback_behavior:
+    - If translation provider fails: Return original content or error
+    - If language code invalid: Return error with valid codes list
+    - If content too long: Chunk and translate in batches
+
