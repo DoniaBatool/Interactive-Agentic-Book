@@ -91,7 +91,15 @@ class Settings(BaseSettings):
     # === Application Configuration ===
     environment: str = "development"
     backend_port: int = 8000
-    cors_origins: list[str] = ["http://localhost:3000"]  # Frontend URL
+    cors_origins: str = "http://localhost:3000"  # Comma-separated list from env, will be parsed
+    
+    def get_cors_origins(self) -> list[str]:
+        """Parse CORS origins from environment variable or use default."""
+        if self.cors_origins:
+            # Split by comma and strip whitespace
+            origins = [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+            return origins
+        return ["http://localhost:3000"]  # Default
 
     class Config:
         env_file = ".env"

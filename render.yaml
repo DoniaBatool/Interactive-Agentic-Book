@@ -1,0 +1,54 @@
+# Render Blueprint - Full Stack Deployment
+# This file deploys both Frontend (Static Site) and Backend (Web Service)
+
+services:
+  # ============================================
+  # BACKEND: FastAPI Web Service
+  # ============================================
+  - type: web
+    name: ai-robotics-textbook-backend
+    env: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: ENVIRONMENT
+        value: production
+      - key: BACKEND_PORT
+        value: 8000
+      # CORS - Will be updated with actual Render URLs after deployment
+      - key: CORS_ORIGINS
+        value: http://localhost:3000
+      # Optional: Add your API keys in Render dashboard
+      # - key: OPENAI_API_KEY
+      #   sync: false
+      # - key: QDRANT_URL
+      #   sync: false
+      # - key: DATABASE_URL
+      #   fromDatabase:
+      #     name: neon-db
+      #     property: connectionString
+
+  # ============================================
+  # FRONTEND: Docusaurus Static Site
+  # ============================================
+  - type: web
+    name: ai-robotics-textbook-frontend
+    env: node
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npx serve -s build -l $PORT
+    envVars:
+      - key: NODE_VERSION
+        value: 18.20.0
+      # Set backend URL for frontend (will be updated after backend deployment)
+      - key: REACT_APP_API_URL
+        value: https://ai-robotics-textbook-backend.onrender.com
+      # Docusaurus config for Render (no baseUrl needed)
+      - key: BASE_URL
+        value: /
+

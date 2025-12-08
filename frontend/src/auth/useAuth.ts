@@ -8,6 +8,8 @@
  * Currently returns placeholder responses.
  */
 
+import { apiCall } from '@site/src/config/api';
+
 interface User {
   id: string;
   email: string;
@@ -38,12 +40,8 @@ interface MeResponse {
  * @returns Promise with user and session token
  */
 export async function login(email: string, password: string): Promise<LoginResponse> {
-  // TODO: Replace with actual API endpoint
-  const response = await fetch('/api/auth/login', {
+  const response = await apiCall('/api/auth/login', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify({ email, password }),
   });
 
@@ -76,12 +74,8 @@ export async function signup(
     domainInterests?: string[];
   }
 ): Promise<SignupResponse> {
-  // TODO: Replace with actual API endpoint
-  const response = await fetch('/api/auth/signup', {
+  const response = await apiCall('/api/auth/signup', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify({ 
       email, 
       password, 
@@ -104,13 +98,9 @@ export async function signup(
  * @returns Promise<void>
  */
 export async function logout(): Promise<void> {
-  // TODO: Replace with actual API endpoint
   // TODO: Clear session token from storage
-  const response = await fetch('/api/auth/logout', {
+  const response = await apiCall('/api/auth/logout', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify({}),
   });
 
@@ -127,15 +117,11 @@ export async function logout(): Promise<void> {
  * @returns Promise with user or null if not authenticated
  */
 export async function getSession(): Promise<User | null> {
-  // TODO: Replace with actual API endpoint
   // TODO: Include session token in request
   try {
-    const response = await fetch('/api/auth/me', {
+    const response = await apiCall('/api/auth/me', {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        // TODO: Add Authorization header with session token
-      },
+      // TODO: Add Authorization header with session token
     });
 
     if (!response.ok) {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './styles.module.css';
+import { apiCall } from '@site/src/config/api';
 
 interface TranslationButtonProps {
   chapterId: number;
@@ -31,14 +32,21 @@ const TranslationButton: React.FC<TranslationButtonProps> = ({
 
     setIsLoading(true);
     try {
-      // TODO: Call translation API
-      // const response = await fetch(`/api/translate/chapter/${chapterId}`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ target_language: languageCode }),
-      // });
+      const response = await apiCall(`/api/translation/chapter/${chapterId}`, {
+        method: 'POST',
+        body: JSON.stringify({ 
+          target_language: languageCode,
+          source_language: currentLanguage,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Translation request failed');
+      }
+
+      const data = await response.json();
       
-      // For now, just update the state
+      // Update the state
       setSelectedLanguage(languageCode);
       
       if (onLanguageChange) {
@@ -47,7 +55,7 @@ const TranslationButton: React.FC<TranslationButtonProps> = ({
       
       // Show success message
       const langName = SUPPORTED_LANGUAGES.find(l => l.code === languageCode)?.name || languageCode;
-      alert(`Content translated to ${langName}!`);
+      alert(data.message || `Content translated to ${langName}!`);
       setIsOpen(false);
     } catch (error) {
       console.error('Translation error:', error);

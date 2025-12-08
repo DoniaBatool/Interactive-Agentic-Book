@@ -19,7 +19,7 @@ from app.api.progress import router as progress_router
 from app.api.search import router as search_router
 from app.api.lss import router as lss_router
 from app.analytics.telemetry_router import router as telemetry_router
-from app.api.lss import router as lss_router
+from app.api import personalization
 
 # Create FastAPI application instance
 app = FastAPI(
@@ -33,7 +33,7 @@ app = FastAPI(
 # Configure CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=settings.get_cors_origins(),  # Parse CORS origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -52,7 +52,7 @@ app.include_router(progress_router, tags=["progress"])
 app.include_router(search_router, tags=["search"])
 app.include_router(lss_router, tags=["lss"])
 app.include_router(telemetry_router, tags=["telemetry"])
-app.include_router(lss_router, tags=["lss"])
+app.include_router(personalization.router, tags=["personalization"])
 
 
 @app.on_event("startup")

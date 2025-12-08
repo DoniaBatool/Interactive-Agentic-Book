@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './styles.module.css';
+import { apiCall } from '@site/src/config/api';
 
 interface PersonalizationButtonProps {
   chapterId: number;
@@ -29,20 +30,31 @@ const PersonalizationButton: React.FC<PersonalizationButtonProps> = ({
   const handlePersonalize = async () => {
     setIsLoading(true);
     try {
-      // TODO: Call personalization API
-      // const response = await fetch(`/api/personalize/chapter/${chapterId}`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(settings),
-      // });
+      const response = await apiCall(`/api/personalize/chapter/${chapterId}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          settings: {
+            experience_level: settings.experienceLevel,
+            learning_goal: settings.learningGoal,
+            preferred_depth: settings.preferredDepth,
+            domain_interests: settings.domainInterests,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Personalization request failed');
+      }
+
+      const data = await response.json();
       
-      // For now, just call the callback
+      // Call the callback if provided
       if (onPersonalize) {
         onPersonalize(settings);
       }
       
       // Show success message
-      alert('Content personalized successfully!');
+      alert(data.message || 'Content personalized successfully!');
       setIsOpen(false);
     } catch (error) {
       console.error('Personalization error:', error);

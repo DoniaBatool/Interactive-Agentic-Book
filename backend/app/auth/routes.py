@@ -19,11 +19,21 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 # Request/Response Models
 # ============================================================================
 
+class UserProfile(BaseModel):
+    """User profile for personalization."""
+    technical_background: Optional[str] = None
+    experience_level: Optional[str] = None
+    learning_goal: Optional[str] = None
+    preferred_depth: Optional[str] = None
+    domain_interests: Optional[List[str]] = None
+
+
 class SignupRequest(BaseModel):
     """Request model for user signup."""
     email: EmailStr = Field(..., description="User's email address")
     password: str = Field(..., min_length=8, max_length=128, description="User's password")
     name: Optional[str] = Field(None, max_length=100, description="User's full name (optional)")
+    user_profile: Optional[UserProfile] = Field(None, description="User background/profile for personalization")
 
 
 class SignupResponse(BaseModel):
@@ -85,17 +95,31 @@ async def signup(request: SignupRequest):
     # TODO: Validate email doesn't already exist
     # TODO: Hash password (bcrypt, argon2)
     # TODO: Create user in database
+    # TODO: Store user_profile in database
     # TODO: Generate session token
+    
+    # Build user object with profile
+    user_data = {
+        "id": "user_123",
+        "email": request.email,
+        "name": request.name or "User",
+        "role": "student",
+        "created_at": "2025-01-27T00:00:00Z"
+    }
+    
+    # Include user profile if provided
+    if request.user_profile:
+        user_data["user_profile"] = {
+            "technical_background": request.user_profile.technical_background,
+            "experience_level": request.user_profile.experience_level,
+            "learning_goal": request.user_profile.learning_goal,
+            "preferred_depth": request.user_profile.preferred_depth,
+            "domain_interests": request.user_profile.domain_interests or []
+        }
     
     # Placeholder response
     return SignupResponse(
-        user={
-            "id": "user_123",
-            "email": request.email,
-            "name": request.name or "User",
-            "role": "student",
-            "created_at": "2025-01-27T00:00:00Z"
-        },
+        user=user_data,
         message="User created successfully (placeholder)"
     )
 
