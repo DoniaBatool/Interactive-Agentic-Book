@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
-[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
 
 ## 🎯 Project Overview
 
@@ -198,7 +198,7 @@ pkill -f "uvicorn"
 - **FastAPI 0.109+** - Python web framework
 - **Uvicorn** - ASGI server
 - **Pydantic** - Data validation
-- **Python 3.11+** - Programming language
+- **Python 3.12+** - Programming language
 
 ### Infrastructure
 - **Qdrant** - Vector database (for RAG)
