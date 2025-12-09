@@ -160,25 +160,6 @@ async def explain_like_10(request: ExplainLike10Request) -> AIBlockResponse:
     # Extract explanation from standardized response
     explanation = result.get("explanation", result.get("message", ""))
     return AIBlockResponse(message=explanation, received=result)
-    #         context=None
-    #     )
-    #     return result
-      # Route Chapter 2 ELI10 requests to ch2_el10_runtime (placeholder routing)
-
-      # Route to runtime router (placeholder)
-      # TODO: Import runtime router
-      # from app.ai.runtime.router import route
-      # TODO: Call router.route() with chapter_id and block_type
-      # chapter_id = request.chapterId or 1
-      # result = await route(chapter_id, "explain-like-10", request.model_dump())
-      # TODO: Update response model to match runtime engine output format
-      
-      # Placeholder: Route to runtime engine (existing functionality)
-      result = await run_ai_block("explain-like-10", request.model_dump())
-      return AIBlockResponse(
-          message="AI block placeholder",
-          received=request.model_dump()
-      )
 
 
 @router.post("/quiz", response_model=AIBlockResponse)

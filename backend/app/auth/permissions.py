@@ -57,3 +57,33 @@ def has_permission(user_role: str, action: str) -> bool:
     
     return False
 
+
+def can_access_chapter(user_role: str, chapter_number: int) -> bool:
+    """
+    Check if user role can access a specific chapter.
+    
+    Args:
+        user_role: User's role (admin, educator, student)
+        chapter_number: Chapter number to check access for
+        
+    Returns:
+        True if user can access chapter, False otherwise
+        
+    TODO: Implement real chapter access checking logic:
+    1. Check CHAPTER_ACCESS_MAP for chapter access rules
+    2. Admin has access to all chapters
+    3. Check role-based chapter access
+    4. Support dynamic chapter access assignment
+    
+    Placeholder: Returns True for admin, checks access map for others.
+    """
+    # TODO: Real chapter access checking logic
+    if user_role == ROLE_ADMIN:
+        return True  # Admin has access to all chapters
+    
+    if chapter_number in CHAPTER_ACCESS_MAP:
+        allowed_roles = CHAPTER_ACCESS_MAP[chapter_number]
+        return user_role in allowed_roles
+    
+    return False
+
