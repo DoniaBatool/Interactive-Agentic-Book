@@ -1,0 +1,474 @@
+---
+title: "Module 2 — The Digital Twin (Gazebo & Unity)"
+description: "Build physics-based simulations with Gazebo and Unity for testing robots in virtual environments before hardware deployment"
+sidebar_position: 2
+sidebar_label: "Module 2: Simulation"
+tags: ["physical-ai", "robotics", "gazebo", "unity", "simulation", "physics", "sensors"]
+---
+
+import PersonalizationButton from '@site/src/components/personalization/PersonalizationButton';
+import TranslationButton from '@site/src/components/translation/TranslationButton';
+
+<PersonalizationButton chapterId={2} />
+<TranslationButton chapterId={2} />
+
+## Introduction: Why Simulate Before Building?
+
+Building and testing humanoid robots in the real world is:
+- **Expensive**: Hardware costs $10k-$100k+, and crashes break components
+- **Dangerous**: Untested balance algorithms can cause falls and damage
+- **Slow**: Physical testing requires setup, calibration, and recovery time
+- **Limited**: Testing edge cases (e.g., slippery floors, strong winds) is impractical
+
+**Simulation solves these problems**. A **digital twin** is a virtual replica of your robot and its environment where you can:
+
+- Test algorithms 1000x faster than real-time
+- Generate training data for machine learning (millions of scenarios)
+- Safely explore dangerous situations (stairs, obstacles, collisions)
+- Debug without hardware (develop before parts arrive)
+
+In this module, we'll explore two powerful simulation platforms:
+
+1. **Gazebo**: Open-source physics simulator deeply integrated with ROS 2, ideal for robotics research and development
+2. **Unity**: Game engine offering photorealistic rendering and advanced physics, increasingly used for sim-to-real AI training
+
+## Gazebo: The Robotics Simulator
+
+**Gazebo** (formerly Gazebo Classic, now Gazebo Sim/Ignition Gazebo) is the de facto standard for robot simulation. It provides:
+
+- **Accurate physics**: Collision detection, friction, gravity, joint dynamics
+- **Sensor simulation**: LiDAR, cameras, IMUs, force/torque sensors with realistic noise
+- **ROS 2 integration**: Publish sensor data and subscribe to control commands via ROS 2 topics
+- **Plugin system**: Extend functionality with custom physics, sensors, or controllers
+
+### Key Components of Gazebo
+
+1. **World File**: Defines the environment (terrain, obstacles, lighting)
+2. **Model Files (SDF)**: Describes robots and objects (like URDF but Gazebo-specific)
+3. **Physics Engine**: Simulates forces, collisions, and dynamics (ODE, Bullet, DART)
+4. **Plugins**: Add custom behaviors (e.g., controller algorithms, sensor noise models)
+
+### Setting Up a Gazebo Environment
+
+#### World File Structure (XML)
+
+```xml
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="humanoid_testbed">
+    
+    <!-- Lighting -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+    </light>
+    
+    <!-- Ground plane -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>1.0</mu>  <!-- Friction coefficient -->
+                <mu2>1.0</mu2>
+              </ode>
+            </friction>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    
+    <!-- Obstacles for navigation testing -->
+    <model name="box_obstacle">
+      <pose>2 3 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1.0 1.0 1.0</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1.0 1.0 1.0</size>
+            </box>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    
+    <!-- Physics configuration -->
+    <physics name="default_physics" type="ode">
+      <max_step_size>0.001</max_step_size>  <!-- 1ms time step -->
+      <real_time_factor>1.0</real_time_factor>
+      <gravity>0 0 -9.81</gravity>  <!-- Earth gravity -->
+    </physics>
+    
+  </world>
+</sdf>
+```
+
+**Key Concepts**:
+- **`<pose>`**: Position (x y z) and orientation (roll pitch yaw)
+- **`<collision>`**: Defines physics interaction (affects dynamics)
+- **`<visual>`**: Defines appearance (what you see, doesn't affect physics)
+- **`<surface>`**: Material properties (friction, bounce, contact stiffness)
+
+### Launching Gazebo with ROS 2
+
+```bash
+# Install Gazebo and ROS 2 integration packages
+sudo apt install ros-humble-gazebo-ros-pkgs
+
+# Launch Gazebo with an empty world
+ros2 launch gazebo_ros gazebo.launch.py world:=humanoid_testbed.world
+
+# Spawn a robot model into the simulation
+ros2 run gazebo_ros spawn_entity.py -entity my_robot -file robot.sdf
+```
+
+Once running, Gazebo publishes sensor data to ROS 2 topics (e.g., `/camera/image`, `/imu/data`) and listens for control commands (e.g., `/joint_commands`).
+
+## URDF and SDF: Describing Robots for Simulation
+
+While **URDF** (from Module 1) describes robot kinematics, **SDF (Simulation Description Format)** extends it with simulation-specific features:
+
+- **Physics properties**: Damping, spring stiffness, contact parameters
+- **Sensor plugins**: Camera, LiDAR, GPS configurations
+- **Controller plugins**: PID controllers, trajectory followers
+
+### Converting URDF to SDF
+
+You can use URDF in Gazebo, but SDF offers more control. To convert:
+
+```bash
+gz sdf -p robot.urdf > robot.sdf
+```
+
+#### Code Example 1: SDF Model with Sensors
+
+```xml
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="humanoid_with_sensors">
+    
+    <!-- Base link (torso) -->
+    <link name="torso">
+      <pose>0 0 1.0 0 0 0</pose>
+      <inertial>
+        <mass>25.0</mass>
+        <inertia>
+          <ixx>2.0</ixx><iyy>2.0</iyy><izz>1.0</izz>
+          <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+        </inertia>
+      </inertial>
+      
+      <collision name="collision">
+        <geometry>
+          <box><size>0.4 0.3 0.6</size></box>
+        </geometry>
+      </collision>
+      
+      <visual name="visual">
+        <geometry>
+          <box><size>0.4 0.3 0.6</size></box>
+        </geometry>
+        <material>
+          <ambient>0.2 0.2 0.8 1</ambient>
+          <diffuse>0.3 0.3 0.9 1</diffuse>
+        </material>
+      </visual>
+      
+      <!-- IMU sensor -->
+      <sensor name="imu_sensor" type="imu">
+        <always_on>true</always_on>
+        <update_rate>100</update_rate>  <!-- 100 Hz -->
+        <imu>
+          <angular_velocity>
+            <x><noise type="gaussian"><stddev>0.01</stddev></noise></x>
+            <y><noise type="gaussian"><stddev>0.01</stddev></noise></y>
+            <z><noise type="gaussian"><stddev>0.01</stddev></noise></z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x><noise type="gaussian"><stddev>0.1</stddev></noise></x>
+            <y><noise type="gaussian"><stddev>0.1</stddev></noise></y>
+            <z><noise type="gaussian"><stddev>0.1</stddev></noise></z>
+          </linear_acceleration>
+        </imu>
+        <plugin name="imu_plugin" filename="libgazebo_ros_imu_sensor.so">
+          <ros>
+            <namespace>/robot</namespace>
+            <remapping>~/out:=imu/data</remapping>
+          </ros>
+        </plugin>
+      </sensor>
+      
+      <!-- Camera sensor -->
+      <sensor name="camera" type="camera">
+        <camera>
+          <horizontal_fov>1.047</horizontal_fov>  <!-- 60 degrees -->
+          <image>
+            <width>640</width>
+            <height>480</height>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+        </camera>
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <plugin name="camera_plugin" filename="libgazebo_ros_camera.so">
+          <ros>
+            <namespace>/robot</namespace>
+            <remapping>~/image_raw:=camera/image</remapping>
+          </ros>
+        </plugin>
+      </sensor>
+    </link>
+    
+  </model>
+</sdf>
+```
+
+**Key Features**:
+- **`<sensor type="imu">`**: Simulates accelerometer and gyroscope with realistic noise
+- **`<sensor type="camera">`**: Generates RGB images at specified resolution and framerate
+- **`<plugin>`**: Bridges sensor to ROS 2 (publishes to topics)
+- **`<noise>`**: Models sensor imperfections (critical for testing robust algorithms)
+
+## Physics Simulation: Making It Realistic
+
+Gazebo uses **physics engines** to compute:
+- **Collisions**: When objects touch, what happens?
+- **Dynamics**: How do forces cause motion (F = ma)?
+- **Constraints**: How do joints limit movement?
+
+### Physics Parameters That Matter
+
+#### 1. **Friction**
+Determines slip vs. grip. For humanoid feet:
+```xml
+<surface>
+  <friction>
+    <ode>
+      <mu>1.5</mu>   <!-- High friction (rubber sole) -->
+      <mu2>1.5</mu2>
+    </ode>
+  </friction>
+</surface>
+```
+
+Low friction (μ = 0.1): Ice skating
+High friction (μ = 1.5): Normal walking
+
+#### 2. **Contact Stiffness and Damping**
+Controls how "soft" collisions are:
+```xml
+<surface>
+  <contact>
+    <ode>
+      <kp>1000000.0</kp>  <!-- Stiffness (N/m) -->
+      <kd>1.0</kd>        <!-- Damping (N·s/m) -->
+    </ode>
+  </contact>
+</surface>
+```
+
+Stiff contacts: Rigid floor (robot doesn't "sink")
+Soft contacts: Foam mat (absorbs impact)
+
+#### 3. **Gravity and Time Step**
+```xml
+<physics type="ode">
+  <max_step_size>0.001</max_step_size>  <!-- Smaller = more accurate, slower -->
+  <real_time_factor>1.0</real_time_factor>
+  <gravity>0 0 -9.81</gravity>
+</physics>
+```
+
+**Trade-off**: Smaller time steps are more accurate but computationally expensive. For humanoid balance control, 1ms (0.001s) is typical.
+
+## Sensor Simulation: LiDAR, Depth Cameras, and IMUs
+
+Simulating sensors realistically is crucial for testing perception algorithms.
+
+### LiDAR (Light Detection and Ranging)
+
+LiDAR measures distance to obstacles by firing laser beams. Used for navigation and SLAM.
+
+#### Code Example 2: LiDAR Sensor in Gazebo
+
+```xml
+<sensor name="lidar" type="gpu_lidar">
+  <pose>0 0 0.2 0 0 0</pose>  <!-- Mounted 20cm above base -->
+  <always_on>true</always_on>
+  <update_rate>10</update_rate>
+  
+  <lidar>
+    <scan>
+      <horizontal>
+        <samples>720</samples>      <!-- 720 points per scan -->
+        <resolution>1.0</resolution>
+        <min_angle>-1.57</min_angle> <!-- -90° -->
+        <max_angle>1.57</max_angle>  <!-- +90° -->
+      </horizontal>
+    </scan>
+    <range>
+      <min>0.1</min>
+      <max>30.0</max>  <!-- 30 meter range -->
+      <resolution>0.01</resolution>
+    </range>
+    <noise>
+      <type>gaussian</type>
+      <mean>0.0</mean>
+      <stddev>0.01</stddev>  <!-- 1cm noise -->
+    </noise>
+  </lidar>
+  
+  <plugin name="lidar_plugin" filename="libgazebo_ros_ray_sensor.so">
+    <ros>
+      <namespace>/robot</namespace>
+      <remapping>~/out:=scan</remapping>
+    </ros>
+    <output_type>sensor_msgs/LaserScan</output_type>
+  </plugin>
+</sensor>
+```
+
+**How It Works**:
+1. Gazebo ray-traces 720 beams in a 180° arc
+2. Each beam returns distance to nearest obstacle
+3. Published as `sensor_msgs/LaserScan` on `/robot/scan` topic
+4. Noise model adds realistic inaccuracy
+
+**Visualizing LiDAR in RViz**:
+```bash
+ros2 run rviz2 rviz2
+# Add LaserScan display, set topic to /robot/scan
+```
+
+### Depth Camera (Intel RealSense, Kinect)
+
+Depth cameras provide **RGB + Depth** images, crucial for object manipulation.
+
+```xml
+<sensor name="depth_camera" type="depth_camera">
+  <camera>
+    <horizontal_fov>1.047</horizontal_fov>
+    <image>
+      <width>640</width>
+      <height>480</height>
+    </image>
+    <clip>
+      <near>0.1</near>
+      <far>10.0</far>
+    </clip>
+  </camera>
+  <always_on>true</always_on>
+  <update_rate>30</update_rate>
+  
+  <plugin name="depth_plugin" filename="libgazebo_ros_camera.so">
+    <ros>
+      <namespace>/robot</namespace>
+      <remapping>~/image_raw:=camera/rgb/image</remapping>
+      <remapping>~/depth/image_raw:=camera/depth/image</remapping>
+    </ros>
+  </plugin>
+</sensor>
+```
+
+Output:
+- **RGB image**: `/robot/camera/rgb/image` (for object recognition)
+- **Depth image**: `/robot/camera/depth/image` (distance to each pixel)
+
+## Unity for High-Fidelity Rendering
+
+While Gazebo excels at physics accuracy, **Unity** (a game engine) offers:
+
+- **Photorealistic rendering**: Ray tracing, global illumination, advanced shaders
+- **Faster rendering**: GPU-accelerated, optimized for visual quality
+- **Human-robot interaction**: Animate virtual humans for social robotics scenarios
+- **Large-scale environments**: Cities, buildings, complex terrains
+
+### Unity + ROS 2 Integration
+
+Unity can communicate with ROS 2 via **Unity Robotics Hub**:
+
+```
+[Unity Simulation] <--TCP--> [ROS-TCP-Connector] <--ROS 2--> [Your Robot Code]
+```
+
+**Use Cases**:
+1. **Synthetic data generation**: Render millions of training images with ground-truth labels
+2. **Visual SLAM testing**: Test camera-based localization in diverse lighting conditions
+3. **Human-robot interaction**: Simulate people walking, gesturing, and interacting with robots
+4. **Marketing/visualization**: Create high-quality videos and demos
+
+### When to Use Gazebo vs. Unity
+
+| Criteria | Gazebo | Unity |
+|----------|--------|-------|
+| **Physics accuracy** | Excellent | Good |
+| **Visual quality** | Good | Excellent |
+| **ROS 2 integration** | Native | Via plugin |
+| **Setup complexity** | Low (open-source) | Medium (requires Unity license) |
+| **Best for** | Algorithm testing, research | Synthetic data, visualization |
+
+**Best Practice**: Use **Gazebo for development** and **Unity for large-scale training data generation**.
+
+## Summary and Key Takeaways
+
+In this module, you've learned:
+
+1. **Digital twins enable safe, fast testing**: Simulate robots before hardware deployment
+2. **Gazebo** is the standard for robotics simulation:
+   - Accurate physics (collision, friction, dynamics)
+   - Sensor simulation with realistic noise
+   - Deep ROS 2 integration
+3. **SDF extends URDF**: Adds simulation-specific features (sensors, plugins, physics properties)
+4. **Sensor simulation is critical**:
+   - LiDAR for navigation and SLAM
+   - Depth cameras for manipulation
+   - IMUs for balance control
+5. **Unity complements Gazebo**: Use for photorealism, synthetic data, and human interaction scenarios
+
+### Why This Matters for Humanoid Robots
+
+Humanoid robots are **expensive and fragile**. Simulation lets you:
+- **Test balance algorithms** without risking falls
+- **Train ML models** with millions of scenarios (slippery floors, obstacles, varied lighting)
+- **Debug perception pipelines** without hardware
+- **Iterate rapidly** (minutes vs. hours)
+
+A well-simulated robot can transfer to real hardware with minimal tuning (sim-to-real transfer), which we'll explore in Module 3.
+
+### Connection to Module 3
+
+Simulation generates massive amounts of training data, but how do you use it to train intelligent behaviors? In the next module, we'll explore **NVIDIA Isaac™**—a platform that combines simulation, synthetic data generation, and AI training at scale. You'll learn how Isaac Sim creates photorealistic training environments and how Isaac ROS accelerates perception on real robot hardware.
+
+---
+
+**Previous**: [← Module 1 - The Robotic Nervous System (ROS 2)](./01-module-1-ros2.mdx)  
+**Next**: [Module 3 - The AI-Robot Brain (NVIDIA Isaac™) →](./03-module-3-isaac.mdx)
+

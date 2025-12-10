@@ -18,7 +18,7 @@ This is an **AI-native interactive textbook** built for the modern learner. It f
 
 ## 🚀 Getting Started
 
-This platform is currently in **Phase 0 - Base Project Initialization**. More content and features are coming soon!
+This platform contains the **complete Physical AI & Humanoid Robotics curriculum** covering all 13 weeks of course content. Navigate through the chapters in the sidebar to begin your learning journey!
 
 ### For Learners
 
@@ -44,14 +44,14 @@ Built with modern, production-ready technologies:
 
 ## 📖 What You'll Learn
 
-_(Content coming in future features)_
+This textbook covers the complete Physical AI and Humanoid Robotics curriculum:
 
-- **Chapter 1**: Introduction to Physical AI
-- **Chapter 2**: Fundamentals of Robotics
-- **Chapter 3**: Humanoid Robot Design
-- **Chapter 4**: AI Integration Techniques
-- **Chapter 5**: Real-World Applications
-- ... and more!
+- **Introduction**: Physical AI principles, embodied intelligence, and why humanoid robots matter
+- **Module 1: ROS 2**: The robotic nervous system - master middleware, nodes, topics, services, and URDF
+- **Module 2: Simulation**: Build digital twins with Gazebo and Unity for safe, fast testing
+- **Module 3: NVIDIA Isaac**: AI-powered perception, synthetic data generation, and hardware acceleration
+- **Module 4: VLA**: Vision-Language-Action - integrate LLMs with robotics for voice-controlled autonomous systems
+- **Hardware Requirements**: Complete guide to workstations, edge computing, and robot platforms
 
 ## 🤝 Join the Community
 

@@ -1,0 +1,665 @@
+---
+title: "Module 4 — Vision-Language-Action (VLA)"
+description: "Integrate LLMs with robotics: voice commands, cognitive planning, and the capstone autonomous humanoid project"
+sidebar_position: 4
+sidebar_label: "Module 4: VLA"
+tags: ["physical-ai", "robotics", "vla", "llm", "whisper", "cognitive-planning", "capstone"]
+---
+
+import PersonalizationButton from '@site/src/components/personalization/PersonalizationButton';
+import TranslationButton from '@site/src/components/translation/TranslationButton';
+
+<PersonalizationButton chapterId={4} />
+<TranslationButton chapterId={4} />
+
+## Introduction: The Convergence of Language and Action
+
+Imagine giving a robot a simple command:
+
+**"Clean up the table and put the dishes in the sink."**
+
+For a human, this is trivial. But for a robot, it requires:
+
+1. **Understanding** natural language (what is "table"? what does "clean up" mean?)
+2. **Perception** (where is the table? what objects are on it?)
+3. **Planning** (sequence of actions: navigate → detect dishes → grasp → navigate to sink → place)
+4. **Execution** (control motors, maintain balance, handle errors)
+
+Traditional robotics separates these: speech recognition is one system, planning is another, control is a third. **Vision-Language-Action (VLA)** models **unify them**.
+
+A VLA model:
+- Takes **multimodal inputs**: camera images, voice, proprioception (joint angles)
+- Outputs **robot actions**: "Move left arm to (x,y,z)", "Grasp with 50% force"
+- Learns **end-to-end**: From "clean the table" directly to motor commands
+
+This module explores how **Large Language Models (LLMs)** like GPT-4 enable robots to understand tasks, plan intelligently, and execute with natural language interfaces.
+
+## The VLA Revolution: Why Now?
+
+Three breakthroughs enable practical VLA:
+
+### 1. **Large Language Models (LLMs)**
+GPT-4, Claude, Gemini have:
+- **Common-sense reasoning**: Understand that "clean the table" implies removing dirty objects
+- **Task decomposition**: Break "make breakfast" into: toast bread, fry eggs, brew coffee
+- **Context awareness**: Maintain conversation history and user preferences
+
+### 2. **Vision-Language Models (VLMs)**
+Models like GPT-4V, CLIP, Florence can:
+- **Understand images**: "Is the table clean?" (by analyzing camera feed)
+- **Ground language in vision**: "The red mug is on the left side of the table"
+- **Zero-shot detection**: Find objects without task-specific training
+
+### 3. **Embodied AI Datasets**
+New datasets like RT-X, Open X-Embodiment contain:
+- Millions of robot manipulation demonstrations
+- Paired with natural language commands
+- Across diverse robots and environments
+
+**Result**: VLA models trained on this data can generalize to new tasks, new environments, and new robot morphologies—including humanoids.
+
+## Voice-to-Action Pipeline with OpenAI Whisper
+
+The first step in conversational robotics is **speech recognition**. **OpenAI Whisper** is a neural network that converts audio to text with:
+
+- **High accuracy**: State-of-the-art on diverse accents and noisy environments
+- **Multilingual support**: 100+ languages
+- **Fast inference**: Real-time on edge devices (NVIDIA Jetson)
+
+### Architecture: Voice Command → Robot Action
+
+```
+[Microphone] → [Whisper] → [Text Command] → [GPT-4 Planner] → [ROS 2 Actions]
+                 (Audio)      "Go to kitchen"    (Action sequence)  (Robot executes)
+```
+
+#### Code Example 1: Whisper Integration with ROS 2
+
+```python
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+import whisper
+import pyaudio
+import wave
+import tempfile
+import numpy as np
+
+class VoiceCommandNode(Node):
+    """Captures audio and converts to text commands using Whisper."""
+    
+    def __init__(self):
+        super().__init__('voice_command_node')
+        
+        # Load Whisper model (options: tiny, base, small, medium, large)
+        self.model = whisper.load_model("base")  # Good balance of speed/accuracy
+        self.get_logger().info('Whisper model loaded')
+        
+        # Publisher for text commands
+        self.command_publisher = self.create_publisher(
+            String,
+            '/robot/voice_command',
+            10
+        )
+        
+        # Audio capture settings
+        self.CHUNK = 1024
+        self.FORMAT = pyaudio.paInt16
+        self.CHANNELS = 1
+        self.RATE = 16000  # Whisper expects 16kHz
+        self.RECORD_SECONDS = 5
+        
+        self.audio = pyaudio.PyAudio()
+        
+        # Start listening loop
+        self.create_timer(6.0, self.listen_and_process)  # Every 6 seconds
+    
+    def listen_and_process(self):
+        """Record audio, transcribe with Whisper, publish as ROS 2 message."""
+        self.get_logger().info('Listening for command...')
+        
+        # Open microphone stream
+        stream = self.audio.open(
+            format=self.FORMAT,
+            channels=self.CHANNELS,
+            rate=self.RATE,
+            input=True,
+            frames_per_buffer=self.CHUNK
+        )
+        
+        # Record audio
+        frames = []
+        for _ in range(0, int(self.RATE / self.CHUNK * self.RECORD_SECONDS)):
+            data = stream.read(self.CHUNK)
+            frames.append(data)
+        
+        stream.stop_stream()
+        stream.close()
+        
+        # Save to temporary WAV file
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_audio:
+            wf = wave.open(temp_audio.name, 'wb')
+            wf.setnchannels(self.CHANNELS)
+            wf.setsampwidth(self.audio.get_sample_size(self.FORMAT))
+            wf.setframerate(self.RATE)
+            wf.writeframes(b''.join(frames))
+            wf.close()
+            
+            # Transcribe with Whisper
+            result = self.model.transcribe(temp_audio.name, language='en')
+            text = result["text"].strip()
+        
+        if text:
+            self.get_logger().info(f'Recognized: "{text}"')
+            
+            # Publish to ROS 2
+            msg = String()
+            msg.data = text
+            self.command_publisher.publish(msg)
+        else:
+            self.get_logger().warn('No speech detected')
+    
+    def __del__(self):
+        self.audio.terminate()
+
+def main():
+    rclpy.init()
+    node = VoiceCommandNode()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
+
+**How It Works**:
+1. **Audio Capture**: Records 5 seconds of audio from microphone
+2. **Preprocessing**: Converts to WAV format at 16kHz (Whisper requirement)
+3. **Transcription**: Whisper model converts audio → text
+4. **Publishing**: Sends text command to `/robot/voice_command` topic
+
+**Testing**:
+```bash
+# Terminal 1: Start voice command node
+ros2 run my_robot_package voice_command_node
+
+# Terminal 2: Monitor recognized commands
+ros2 topic echo /robot/voice_command
+
+# Speak into microphone: "Go to the kitchen"
+# Output: data: "Go to the kitchen"
+```
+
+### Handling Wake Words
+
+To avoid processing ambient noise, use a **wake word** (e.g., "Hey Robot"):
+
+```python
+def listen_for_wake_word(self):
+    """Listen continuously, only process after wake word detected."""
+    while True:
+        audio = self.record_audio(duration=3)
+        text = self.model.transcribe(audio)["text"].lower()
+        
+        if "hey robot" in text:
+            self.get_logger().info('Wake word detected!')
+            # Now listen for actual command
+            command = self.record_audio(duration=5)
+            command_text = self.model.transcribe(command)["text"]
+            self.command_publisher.publish(String(data=command_text))
+```
+
+## Cognitive Planning with LLMs
+
+Once we have a text command, the robot needs to **plan actions**. This is where GPT-4 excels.
+
+### From Natural Language to Action Sequences
+
+**Input**: "Go to the kitchen and bring me a coffee mug"
+
+**GPT-4 Output** (structured JSON):
+```json
+{
+  "plan": [
+    {
+      "action": "navigate",
+      "parameters": {"location": "kitchen"},
+      "description": "Move to the kitchen"
+    },
+    {
+      "action": "detect_objects",
+      "parameters": {"object_type": "mug", "container": "coffee"},
+      "description": "Locate coffee mugs on counters or tables"
+    },
+    {
+      "action": "grasp",
+      "parameters": {"target": "closest_mug", "force": "medium"},
+      "description": "Pick up the mug with appropriate grip force"
+    },
+    {
+      "action": "navigate",
+      "parameters": {"location": "user"},
+      "description": "Return to the user's location"
+    },
+    {
+      "action": "handover",
+      "parameters": {"object": "mug"},
+      "description": "Extend arm and release mug when user grasps it"
+    }
+  ]
+}
+```
+
+### LLM as a Task Planner
+
+#### Code Example 2: GPT-4 Cognitive Planner
+
+```python
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+import openai
+import json
+
+class CognitivePlannerNode(Node):
+    """Converts natural language commands to structured action plans using GPT-4."""
+    
+    def __init__(self):
+        super().__init__('cognitive_planner_node')
+        
+        # Initialize OpenAI API
+        openai.api_key = "YOUR_OPENAI_API_KEY"  # Use environment variable in production
+        
+        # Subscribe to voice commands
+        self.command_sub = self.create_subscription(
+            String,
+            '/robot/voice_command',
+            self.command_callback,
+            10
+        )
+        
+        # Publisher for action plans
+        self.plan_publisher = self.create_publisher(
+            String,
+            '/robot/action_plan',
+            10
+        )
+        
+        self.get_logger().info('Cognitive Planner ready')
+    
+    def command_callback(self, msg):
+        """Receive voice command and generate action plan."""
+        command = msg.data
+        self.get_logger().info(f'Planning for: "{command}"')
+        
+        # Create GPT-4 prompt
+        system_prompt = """
+You are a humanoid robot task planner. Given a natural language command, 
+output a JSON action sequence using these available actions:
+
+- navigate(location): Move to a named location (e.g., "kitchen", "living_room")
+- detect_objects(object_type): Find objects in the current view
+- grasp(target, force): Pick up an object
+- place(location): Put down a held object
+- handover(object): Give object to a person
+
+Output only valid JSON with no explanation. Example:
+{"plan": [{"action": "navigate", "parameters": {"location": "kitchen"}}, ...]}
+"""
+        
+        # Call GPT-4
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": command}
+            ],
+            temperature=0.2  # Low temperature for consistent output
+        )
+        
+        # Parse response
+        plan_json = response.choices[0].message['content'].strip()
+        
+        try:
+            plan = json.loads(plan_json)
+            self.get_logger().info(f'Generated plan: {len(plan["plan"])} steps')
+            
+            # Publish plan
+            msg = String()
+            msg.data = plan_json
+            self.plan_publisher.publish(msg)
+            
+        except json.JSONDecodeError:
+            self.get_logger().error(f'Invalid JSON from GPT-4: {plan_json}')
+
+def main():
+    rclpy.init()
+    node = CognitivePlannerNode()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
+
+**Key Advantages**:
+- **Flexible**: Handles variations ("grab a mug", "fetch me a coffee cup", "bring a cup for coffee")
+- **Context-aware**: Can incorporate user preferences or environment state
+- **Error handling**: GPT-4 can suggest fallback actions if the primary plan fails
+
+### Advanced: Chain-of-Thought Reasoning
+
+For complex tasks, use **chain-of-thought prompting**:
+
+```python
+system_prompt = """
+You are a humanoid robot. Before outputting actions, think step-by-step:
+
+1. What is the goal?
+2. What obstacles or constraints exist?
+3. What is the optimal sequence?
+
+Then output the action plan in JSON.
+"""
+```
+
+**Example**:
+```
+User: "Set the table for dinner"
+
+GPT-4 Reasoning:
+1. Goal: Place plates, utensils, and glasses on dining table
+2. Constraints: Need to know how many people (assume 4), where items are stored
+3. Sequence: Navigate to cabinet → grasp plates → navigate to table → place → repeat for utensils
+
+JSON Plan: [navigate(cabinet), detect_objects(plates), grasp(plate), ...]
+```
+
+This explicit reasoning improves plan quality and helps debug failures.
+
+## Translating Natural Language to ROS 2 Actions
+
+The action plan from GPT-4 must now execute using ROS 2.
+
+### ROS 2 Action Server: Executing Commands
+
+```python
+import rclpy
+from rclpy.action import ActionServer
+from rclpy.node import Node
+from geometry_msgs.msg import PoseStamped
+from nav_msgs.msg import Odometry
+# Import custom action (defined in .action file)
+from my_robot_interfaces.action import Navigate
+
+class NavigationActionServer(Node):
+    """Executes navigation actions from the cognitive planner."""
+    
+    def __init__(self):
+        super().__init__('navigation_action_server')
+        
+        self.action_server = ActionServer(
+            self,
+            Navigate,
+            '/robot/navigate',
+            self.execute_navigation
+        )
+        
+        # Subscribe to current robot pose
+        self.current_pose = None
+        self.pose_sub = self.create_subscription(
+            Odometry,
+            '/robot/odom',
+            self.pose_callback,
+            10
+        )
+        
+        self.get_logger().info('Navigation Action Server ready')
+    
+    def pose_callback(self, msg):
+        self.current_pose = msg.pose.pose
+    
+    def execute_navigation(self, goal_handle):
+        """Execute navigation to target location."""
+        target = goal_handle.request.target_location
+        self.get_logger().info(f'Navigating to: {target}')
+        
+        # Map location names to coordinates
+        locations = {
+            "kitchen": (5.0, 3.0),
+            "living_room": (0.0, 0.0),
+            "user": (-2.0, 1.0)
+        }
+        
+        if target not in locations:
+            goal_handle.abort()
+            return Navigate.Result(success=False, message="Unknown location")
+        
+        target_x, target_y = locations[target]
+        
+        # Send navigation goal to Nav2 (simplified)
+        # In reality, use Nav2 action client
+        feedback = Navigate.Feedback()
+        for i in range(10):  # Simulate navigation progress
+            if goal_handle.is_cancel_requested:
+                goal_handle.canceled()
+                return Navigate.Result(success=False, message="Canceled")
+            
+            feedback.distance_remaining = 10.0 - i
+            goal_handle.publish_feedback(feedback)
+            rclpy.spin_once(self, timeout_sec=1.0)
+        
+        goal_handle.succeed()
+        return Navigate.Result(success=True, message=f"Reached {target}")
+
+def main():
+    rclpy.init()
+    node = NavigationActionServer()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
+
+### Orchestrating the Full Pipeline
+
+```python
+# Simplified orchestrator
+class VLARobotController(Node):
+    def __init__(self):
+        super().__init__('vla_robot_controller')
+        
+        # Subscribe to action plans from cognitive planner
+        self.plan_sub = self.create_subscription(
+            String,
+            '/robot/action_plan',
+            self.execute_plan,
+            10
+        )
+        
+        # Action clients for each robot capability
+        self.nav_client = ActionClient(self, Navigate, '/robot/navigate')
+        # self.grasp_client = ActionClient(self, Grasp, '/robot/grasp')
+        # ... other action clients
+    
+    def execute_plan(self, msg):
+        """Execute the full action plan step-by-step."""
+        plan = json.loads(msg.data)
+        
+        for step in plan["plan"]:
+            action = step["action"]
+            params = step["parameters"]
+            
+            if action == "navigate":
+                goal = Navigate.Goal(target_location=params["location"])
+                self.nav_client.send_goal_async(goal)
+                # Wait for completion...
+            
+            elif action == "grasp":
+                # Send grasp goal...
+                pass
+            
+            # Handle other actions...
+```
+
+## Multi-Modal Interaction: Speech, Gesture, Vision
+
+Humans use multiple channels to communicate. Advanced VLA systems integrate:
+
+### 1. **Vision**: Understanding the Scene
+```python
+# Use GPT-4V to analyze camera feed
+response = openai.ChatCompletion.create(
+    model="gpt-4-vision-preview",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "Is the table clean? List all objects you see."},
+                {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}
+            ]
+        }
+    ]
+)
+```
+
+**Output**: "The table has: 1 coffee mug, 2 plates with food crumbs, 1 napkin. It is not clean."
+
+### 2. **Gesture**: Pointing and Indicating
+- User points at object: "Pick up that one"
+- Robot uses hand tracking (depth camera + pose estimation) to determine target
+
+### 3. **Dialogue**: Clarification
+```
+User: "Bring me a drink"
+Robot: "I see water and orange juice. Which would you prefer?"
+User: "Orange juice"
+Robot: [executes]
+```
+
+## Capstone Project: The Autonomous Humanoid
+
+**Goal**: Build a simulated humanoid robot that:
+1. Receives a **voice command**
+2. **Plans** a sequence of actions
+3. **Navigates** through obstacles
+4. **Identifies and manipulates** objects
+5. **Completes the task** and reports back
+
+### Project Requirements
+
+#### Functional Requirements:
+- ✅ Accept voice commands via microphone (Whisper)
+- ✅ Generate action plan using GPT-4
+- ✅ Navigate in Gazebo/Isaac Sim environment using Nav2
+- ✅ Detect objects using Isaac ROS or OpenCV
+- ✅ Execute grasping (simulated or with MoveIt2)
+- ✅ Provide voice feedback (text-to-speech)
+
+#### Technical Stack:
+- **Simulation**: Gazebo or Isaac Sim
+- **Robot Model**: Humanoid URDF (custom or from Open Robotics)
+- **Speech**: OpenAI Whisper + GPT-4
+- **Navigation**: ROS 2 Nav2 with Isaac ROS vSLAM
+- **Manipulation**: MoveIt2 for arm planning
+
+### Architecture Overview
+
+```
+┌─────────────────┐
+│  User (Voice)   │
+└────────┬────────┘
+         │
+         v
+┌─────────────────────────────────────────────────────────┐
+│                    VLA Pipeline                          │
+│  ┌──────────┐  ┌──────────┐  ┌────────────────────┐    │
+│  │ Whisper  │→│  GPT-4   │→│  Action Executor   │    │
+│  │ (Audio)  │  │(Planner) │  │  (ROS 2 Actions)   │    │
+│  └──────────┘  └──────────┘  └────────────────────┘    │
+└─────────────────────────────────────────────────────────┘
+         │                            │
+         v                            v
+┌──────────────────┐         ┌──────────────────┐
+│   Isaac Sim /    │         │  Isaac ROS /     │
+│     Gazebo       │◄────────┤     Nav2         │
+│   (Simulation)   │ Sensors │  (Navigation)    │
+└──────────────────┘         └──────────────────┘
+```
+
+### Example Scenario
+
+**Command**: "Go to the kitchen table, find the red mug, and bring it to me."
+
+**Execution**:
+1. **Whisper** transcribes audio → "Go to the kitchen table, find the red mug, and bring it to me."
+2. **GPT-4** generates plan:
+   ```json
+   {
+     "plan": [
+       {"action": "navigate", "parameters": {"location": "kitchen_table"}},
+       {"action": "detect_objects", "parameters": {"color": "red", "object_type": "mug"}},
+       {"action": "grasp", "parameters": {"target": "red_mug"}},
+       {"action": "navigate", "parameters": {"location": "user"}},
+       {"action": "handover", "parameters": {"object": "red_mug"}}
+     ]
+   }
+   ```
+3. **Nav2** plans path to kitchen, avoiding obstacles
+4. **Isaac ROS** object detector identifies red mug at (x=2.3, y=1.5, z=0.8)
+5. **MoveIt2** plans arm trajectory to grasp position
+6. Gripper closes (force control to avoid breaking mug)
+7. Nav2 navigates back to user
+8. Arm extends, waits for user to take mug (force sensor detects release)
+9. **Text-to-speech**: "Here is your red mug."
+
+### Evaluation Criteria
+
+- **Success Rate**: % of commands completed successfully (target: >80%)
+- **Planning Quality**: Does GPT-4 generate reasonable plans? (human evaluation)
+- **Navigation Safety**: No collisions, maintains balance
+- **Manipulation Precision**: Grasps objects without dropping
+- **Response Time**: From voice command to task completion (<2 minutes for simple tasks)
+
+## Summary and Key Takeaways
+
+In this module, you've learned:
+
+1. **Vision-Language-Action (VLA)**: Unifies perception, language understanding, and robot control
+2. **OpenAI Whisper**: State-of-the-art speech recognition for voice commands
+3. **LLMs as Planners**: GPT-4 converts natural language to structured action sequences
+4. **ROS 2 Action Integration**: Execute plans using existing robot capabilities
+5. **Multi-modal Interaction**: Combine speech, vision, and gesture for natural communication
+6. **Capstone Project**: Design and implement an autonomous humanoid with voice control
+
+### The Future of Physical AI
+
+VLA represents the future of human-robot interaction:
+- **Natural Interfaces**: No programming, just speak
+- **Generalization**: Same robot, infinite tasks (via language)
+- **Personalization**: Learn user preferences over time
+
+Current limitations (active research areas):
+- **Latency**: GPT-4 API calls add 1-2 seconds delay
+- **Robustness**: LLMs can generate invalid plans (needs verification)
+- **Sim-to-Real**: VLA policies trained in simulation must transfer reliably
+
+As these challenges are solved, conversational humanoid robots will transition from research labs to homes and workplaces—executing tasks through natural dialogue, just like human assistants.
+
+---
+
+**Congratulations!** You've completed the core curriculum. Next, explore the [Hardware Requirements](./05-hardware-requirements.mdx) to understand the equipment needed to build these systems.
+
+---
+
+**Previous**: [← Module 3 - The AI-Robot Brain (NVIDIA Isaac™)](./03-module-3-isaac.mdx)  
+**Next**: [Hardware Requirements →](./05-hardware-requirements.mdx)
+

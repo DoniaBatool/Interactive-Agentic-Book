@@ -1,0 +1,415 @@
+---
+title: "Hardware Requirements for Physical AI"
+description: "Complete guide to workstations, edge computing kits, robots, and infrastructure for teaching Physical AI and Humanoid Robotics"
+sidebar_position: 5
+sidebar_label: "Hardware Requirements"
+tags: ["physical-ai", "hardware", "nvidia-jetson", "workstation", "robots", "infrastructure"]
+---
+
+import PersonalizationButton from '@site/src/components/personalization/PersonalizationButton';
+import TranslationButton from '@site/src/components/translation/TranslationButton';
+
+<PersonalizationButton chapterId={5} />
+<TranslationButton chapterId={5} />
+
+## Overview: Why Hardware Matters
+
+This course sits at the intersection of three computationally intensive domains:
+
+1. **Physics Simulation** (Isaac Sim, Gazebo)
+2. **Visual Perception** (SLAM, Computer Vision)
+3. **Generative AI** (LLMs, VLA Models)
+
+Running these simultaneously requires significant hardware investment. You have two main options:
+
+- **Option A: On-Premise Lab** (High CapEx, low OpEx)
+- **Option B: Cloud-Native Lab** (Low CapEx, high OpEx)
+
+This guide details equipment requirements, costs, and trade-offs for teaching Physical AI effectively.
+
+## The "Digital Twin" Workstation (Required per Student)
+
+This is the **most critical component**. NVIDIA Isaac Sim requires **RTX (Ray Tracing) GPUs**. Standard laptops (MacBooks, non-RTX Windows machines) **will not work**.
+
+### Component Specifications
+
+#### GPU: The Bottleneck
+**Requirement**: NVIDIA RTX 4070 Ti (12GB VRAM) or higher
+
+**Why**:
+- Isaac Sim loads USD (Universal Scene Description) assets requiring high VRAM
+- VLA models need GPU memory for simultaneous simulation and inference
+- Real-time ray tracing for photorealistic rendering
+
+**Ideal Options**:
+| GPU | VRAM | Performance | Price (Approx.) | Notes |
+|-----|------|-------------|------------------|-------|
+| RTX 3090 | 24GB | Excellent | $1,200 | Best value for sim-to-real training |
+| RTX 4070 Ti | 12GB | Good | $800 | Minimum for complex scenes |
+| RTX 4090 | 24GB | Outstanding | $1,600 | Smoothest experience, future-proof |
+
+#### CPU: Physics Calculations
+**Requirement**: Intel Core i7 (13th Gen+) or AMD Ryzen 9
+
+**Why**:
+- Rigid body dynamics in Gazebo/Isaac are CPU-intensive
+- Multi-core performance critical for parallel simulation
+
+**Recommended**:
+- **Intel Core i7-13700K** (16 cores) - $400
+- **AMD Ryzen 9 7900X** (12 cores) - $450
+
+#### RAM: Environment Rendering
+**Requirement**: **64GB DDR5** (32GB absolute minimum)
+
+**Why**:
+- Complex scenes (humanoid + environment + physics) consume 10-20GB
+- Multiple Chrome tabs + RViz + IDE = another 8-10GB
+- 32GB will crash during large scene rendering
+
+**Recommendation**: 64GB DDR5-5600 ($200)
+
+#### Storage
+**Requirement**: 1TB NVMe SSD (PCIe 4.0)
+
+**Why**:
+- Isaac Sim install: ~40GB
+- ROS 2 + dependencies: ~20GB
+- Recorded simulation data: 10-50GB per day
+
+**Recommendation**: Samsung 980 Pro 1TB NVMe ($100)
+
+#### Operating System
+**Requirement**: **Ubuntu 22.04 LTS**
+
+**Why**:
+- ROS 2 Humble is native to Ubuntu (best performance, fewest issues)
+- Isaac Sim officially supports Ubuntu (Windows support exists but is experimental)
+- NVIDIA drivers and CUDA install seamlessly
+
+**Note**: Dual-boot with Windows or use WSL2, but native Ubuntu is strongly recommended.
+
+### Complete Workstation Build
+
+**"Student-Grade" Build** (~$2,500):
+| Component | Model | Price |
+|-----------|-------|-------|
+| GPU | NVIDIA RTX 4070 Ti (12GB) | $800 |
+| CPU | Intel Core i7-13700K | $400 |
+| RAM | 64GB DDR5-5600 | $200 |
+| Storage | 1TB NVMe SSD (PCIe 4.0) | $100 |
+| Motherboard | ASUS Z790 | $250 |
+| Power Supply | 850W 80+ Gold | $150 |
+| Case + Cooling | Mid-tower + CPU cooler | $150 |
+| Monitor | 27" 1440p | $300 |
+| Peripherals | Keyboard, mouse | $100 |
+| **Total** | | **~$2,450** |
+
+**"Professional-Grade" Build** (~$4,000):
+- Upgrade GPU to **RTX 4090** (24GB) - adds $800
+- Upgrade CPU to **AMD Ryzen 9 7950X** (16 cores) - adds $400
+- Add second monitor for multi-tasking - adds $300
+
+**Total**: ~$3,950
+
+## The "Physical AI" Edge Kit
+
+For deploying trained models to real hardware, students need **edge AI compute**. This kit teaches resource-constrained deployment.
+
+### NVIDIA Jetson: The Robot's Brain
+
+**Recommended**: **NVIDIA Jetson Orin Nano Super Dev Kit (8GB)**
+
+**Specifications**:
+- **Performance**: 40 TOPS (Tera Operations Per Second) for AI
+- **GPU**: 1024-core NVIDIA Ampere
+- **CPU**: 6-core Arm Cortex-A78AE
+- **Memory**: 8GB LPDDR5
+- **Price**: **$249** (new official MSRP as of 2024)
+
+**Why Jetson**:
+- Industry standard for embodied AI (used by Boston Dynamics, Unitree, NASA)
+- Runs Isaac ROS natively (hardware-accelerated perception)
+- Low power consumption (~15W) for mobile robots
+- Full Ubuntu 22.04 + ROS 2 support
+
+**Alternatives**:
+- **Jetson Orin NX (16GB)** - $399 (if budget allows, more headroom for complex models)
+- **Jetson AGX Orin (32GB)** - $999 (research-grade, overkill for students)
+
+### The Eyes: Vision Sensors
+
+**Recommended**: **Intel RealSense D435i**
+
+**Specifications**:
+- **RGB Camera**: 1920×1080 @ 30fps
+- **Depth Camera**: Stereo depth up to 10 meters
+- **IMU**: Built-in accelerometer + gyroscope (critical for VSLAM)
+- **Interface**: USB 3.0 (easy Jetson integration)
+- **Price**: **$349**
+
+**Why RealSense**:
+- Isaac ROS has native drivers (plug-and-play)
+- IMU enables Visual-Inertial Odometry (VIO) for robust localization
+- Widely used in research (abundant tutorials and support)
+
+**Budget Alternative**:
+- **OAK-D Lite** ($149) - Good depth camera, less reliable IMU
+
+### The Ears: Voice Interface
+
+**Recommended**: **ReSpeaker USB Mic Array v2.0**
+
+**Specifications**:
+- **Far-field audio**: 4-microphone array (beamforming for noise rejection)
+- **Range**: 3-5 meters
+- **Interface**: USB (plug-and-play with Jetson)
+- **Price**: **$69**
+
+**Why Far-Field**:
+- Robots need to hear commands from across the room
+- Single microphones fail in noisy environments (fans, motors)
+- Beamforming isolates user's voice
+
+### Complete Edge Kit
+
+| Component | Model | Price |
+|-----------|-------|-------|
+| Edge Computer | NVIDIA Jetson Orin Nano Super Dev Kit (8GB) | $249 |
+| Vision | Intel RealSense D435i | $349 |
+| Voice | ReSpeaker USB Mic Array v2.0 | $69 |
+| Storage | 128GB microSD (high-endurance) | $30 |
+| Accessories | USB hub, power supply, jumper wires | $50 |
+| **Total** | | **~$747** |
+
+**Note**: Wi-Fi module is now included in the "Super" Jetson kit (no extra cost).
+
+## The Robot Lab: Physical Hardware
+
+For the "Physical AI" promise, you need actual robots. Three tiers based on budget:
+
+### Option A: The "Proxy" Approach (Recommended for Budget)
+
+Use a **quadruped (dog)** as a humanoid proxy. ROS 2, VSLAM, and Isaac Sim principles transfer 90%.
+
+**Recommended**: **Unitree Go2 Edu** ($1,800 - $3,000)
+
+**Pros**:
+- Highly durable (can handle falls, student mistakes)
+- Excellent ROS 2 support (official SDK)
+- Affordable enough for multiple units
+- 12 DOF (degrees of freedom) - sufficient for teaching locomotion
+
+**Cons**:
+- Not a humanoid (doesn't teach bipedal balance)
+
+**When to Use**: Budget-constrained programs, large class sizes (1 robot per 3-4 students)
+
+### Option B: The "Miniature Humanoid" Approach
+
+Table-top humanoids for research and prototyping.
+
+**Options**:
+1. **Unitree G1** (~$16,000)
+   - Full humanoid form factor
+   - 23-43 DOF (depending on configuration)
+   - ROS 2 SDK available
+   - **Best choice** if budget allows
+
+2. **Robotis OP3** (~$12,000)
+   - Open-source platform
+   - Proven track record in education
+   - Older (2016), but stable and well-documented
+
+3. **Budget: Hiwonder TonyPi Pro** (~$600)
+   - Raspberry Pi-based (cannot run Isaac ROS efficiently)
+   - Use for kinematics/walking only
+   - Pair with Jetson kit for AI tasks (separate system)
+
+### Option C: The "Premium" Lab (Sim-to-Real Focused)
+
+For programs with significant funding or industry partnerships.
+
+**Recommended**: **Unitree G1 Humanoid** ($16,000)
+
+**Why**:
+- One of few commercially available humanoids with **dynamic walking**
+- SDK open enough for students to inject ROS 2 controllers
+- Used in research (papers, benchmarks for reproducibility)
+
+**Alternative**: **Boston Dynamics Spot** ($75,000) - Not humanoid but gold-standard for robustness.
+
+## Lab Architecture Summary
+
+For a teaching lab supporting 20 students:
+
+| Component | Quantity | Unit Price | Total Cost | Notes |
+|-----------|----------|------------|------------|-------|
+| **Sim Workstations** | 20 | $2,500 | $50,000 | Students can pair for lower cost |
+| **Edge AI Kits** | 10 | $750 | $7,500 | Shared among pairs |
+| **Robots** | 5 | $3,000 | $15,000 | Unitree Go2, 1 per 4 students |
+| **Infrastructure** | 1 | $5,000 | $5,000 | Networking, storage server |
+| **Total** | | | **$77,500** | |
+
+**Cost-Saving Options**:
+- Students use personal laptops (if they meet GPU requirements)
+- Cloud workstations (see Option 2 below)
+- Fewer robots (heavy rotation schedule)
+
+**Result**: ~$3,875 per student for a full semester course.
+
+## Option 2: Cloud-Native Lab (High OpEx)
+
+If upfront capital is limited, rent cloud resources.
+
+### Cloud Workstations (AWS/Azure)
+
+**Instance Type**: AWS **g5.2xlarge** (A10G GPU, 24GB VRAM)
+
+**Specifications**:
+- **GPU**: NVIDIA A10G (similar to RTX 3080)
+- **CPU**: 8 vCPUs
+- **RAM**: 32GB
+- **Cost**: ~$1.50/hour (spot/on-demand mix)
+
+**Usage Calculation** (per student):
+- 10 hours/week × 12 weeks = 120 hours
+- 120 hours × $1.50 = **$180/student for semester**
+- EBS storage (500GB): ~$50/semester
+
+**Total Cloud Cost**: **$230/student/semester**
+
+**Advantages**:
+- No upfront hardware cost
+- Scalable (spin up 100 instances for final project week)
+- Always latest GPU models
+
+**Disadvantages**:
+- Recurring cost every semester
+- Latency for interactive work
+- Internet dependency
+
+### Hybrid Approach
+
+- **Simulation**: Cloud (AWS g5 instances)
+- **Deployment**: Local Jetson kits + robots
+
+**Rationale**: Simulation runs well remotely, but **controlling physical robots from cloud has dangerous latency** (50-200ms). Local edge devices are essential for real-time control.
+
+### Cost Comparison: On-Premise vs. Cloud (5-Year Horizon)
+
+| Scenario | Year 1 | Years 2-5 | 5-Year Total |
+|----------|--------|-----------|--------------|
+| **On-Premise** (20 workstations) | $77,500 | $5,000/year (maintenance) | $97,500 |
+| **Cloud** (20 students × 2 semesters/year) | $9,200 + $15,000 (robots/kits) | $9,200/year | $61,000 |
+
+**Verdict**: Cloud is cheaper **if you have <3 semesters of use**. For established programs, on-premise wins.
+
+## Software Costs (Free vs. Paid)
+
+Good news: Most software is **open-source and free**.
+
+| Software | License | Cost |
+|----------|---------|------|
+| **Ubuntu 22.04** | Free | $0 |
+| **ROS 2 Humble** | Apache 2.0 | $0 |
+| **Gazebo** | Apache 2.0 | $0 |
+| **Isaac Sim** | Free (NVIDIA Omniverse) | $0 |
+| **Isaac ROS** | Apache 2.0 | $0 |
+| **OpenAI Whisper** | MIT | $0 (local inference) |
+| **GPT-4 API** | Pay-per-use | ~$0.03/1K tokens |
+
+**API Costs** (GPT-4 for VLA):
+- Average query: 1,000 tokens = $0.03
+- 100 queries/student/semester = **$3/student**
+
+**Total Software Cost**: ~$3/student/semester (negligible)
+
+## Maintenance and Support
+
+### On-Premise Lab
+- **IT Support**: 0.25 FTE (~$20k/year for lab tech)
+- **Repairs**: ~5% of hardware cost annually (~$4k/year)
+
+### Cloud Lab
+- **IT Support**: Minimal (cloud provider handles infrastructure)
+- **Recurring Subscriptions**: AWS/Azure costs
+
+## Minimal Viable Setup (Budget-Constrained)
+
+**For Programs with <$10k Budget**:
+
+1. **No Workstations**: Students use AWS cloud instances ($230/student)
+2. **1 Jetson Kit**: Shared among all students ($750)
+3. **1 Quadruped Robot**: Unitree Go2 Standard ($1,800)
+4. **Software**: All free/open-source
+
+**Total**: ~$2,550 + cloud costs
+
+**Teaching Strategy**:
+- Students develop in simulation (cloud)
+- Rotate access to physical hardware for final projects
+- Emphasize sim-to-real transfer (most development happens virtually)
+
+## Procurement Checklist
+
+### Phase 1: Simulation Infrastructure
+- [ ] Workstations or cloud accounts (with RTX GPUs)
+- [ ] Install Ubuntu 22.04 (or cloud AMI)
+- [ ] Install ROS 2 Humble
+- [ ] Install Isaac Sim from Omniverse
+- [ ] Verify Gazebo installation
+
+### Phase 2: Edge Deployment
+- [ ] Procure Jetson Orin Nano Dev Kits
+- [ ] Procure RealSense D435i cameras
+- [ ] Procure ReSpeaker microphones
+- [ ] Flash JetPack 5.1+ to Jetson (Ubuntu 20.04/22.04)
+- [ ] Install Isaac ROS on Jetson
+
+### Phase 3: Physical Robots (if applicable)
+- [ ] Procure robots (Unitree Go2 or equivalent)
+- [ ] Setup ROS 2 SDK for robot
+- [ ] Integrate Jetson kit with robot
+- [ ] Calibrate sensors
+
+### Phase 4: Network and Infrastructure
+- [ ] High-speed Wi-Fi (Wi-Fi 6 recommended for low latency)
+- [ ] NAS or file server for shared datasets (optional)
+- [ ] GitHub/GitLab for version control
+
+## Summary and Recommendations
+
+### For Academic Institutions
+- **Upfront Budget Available**: On-premise workstations + shared robots
+- **Limited Budget**: Cloud simulation + 1-2 shared robots
+- **Large Classes (50+)**: Hybrid (cloud sim + rotation for physical hardware)
+
+### For Individual Learners
+- **Serious Hobbyist**: Build a $2,500 workstation + $750 Jetson kit
+- **Casual Learner**: Use cloud (AWS) + skip physical hardware (simulation only)
+
+### Key Takeaways
+
+1. **GPU is non-negotiable**: RTX 2070+ minimum for Isaac Sim
+2. **Jetson is industry standard**: Best path to real deployment
+3. **Robots are expensive but optional**: 80% of learning happens in simulation
+4. **Cloud is viable**: Good for short courses or budget constraints
+
+**The Investment is Worth It**: Physical AI is a rapidly growing field. Hardware skills (Jetson, ROS 2, simulation) are immediately employable at robotics companies, and the fundamentals transfer across domains (autonomous vehicles, drones, industrial automation).
+
+---
+
+**Congratulations on completing the Physical AI & Humanoid Robotics curriculum!** 🎉
+
+**Next Steps**:
+1. Review the [Introduction](./00-introduction.mdx) to recap learning outcomes
+2. Explore Module 1-4 in detail, working through code examples
+3. Build your capstone project (Module 4)
+4. Join robotics communities (ROS Discourse, NVIDIA Isaac forums, Open Robotics)
+
+---
+
+**Previous**: [← Module 4 - Vision-Language-Action (VLA)](./04-module-4-vla.mdx)  
+**Back to Start**: [Introduction to Physical AI →](./00-introduction.mdx)
+

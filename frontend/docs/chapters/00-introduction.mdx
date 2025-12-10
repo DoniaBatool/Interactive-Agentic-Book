@@ -1,0 +1,167 @@
+---
+title: "Introduction to Physical AI & Humanoid Robotics"
+description: "Understand the foundations of Physical AI, embodied intelligence, and the future of human-robot collaboration"
+sidebar_position: 0
+sidebar_label: "Introduction"
+tags: ["physical-ai", "robotics", "introduction", "embodied-intelligence"]
+---
+
+import PersonalizationButton from '@site/src/components/personalization/PersonalizationButton';
+import TranslationButton from '@site/src/components/translation/TranslationButton';
+
+<PersonalizationButton chapterId={0} />
+<TranslationButton chapterId={0} />
+
+## What is Physical AI?
+
+Physical AI represents a fundamental shift in artificial intelligence—from algorithms confined to servers and screens to intelligent systems that exist in and interact with the physical world. Unlike Digital AI (like ChatGPT or recommendation systems that operate purely in software), Physical AI gives machines the ability to **sense, understand, and act** in real-world environments.
+
+Think of Digital AI as a brilliant mind trapped in a computer. Physical AI takes that intelligence and gives it **a body**—with sensors for eyes and ears, motors for muscles, and the ability to manipulate objects, navigate spaces, and interact with humans naturally.
+
+### Examples of Physical AI in Action
+
+- **Warehouse Robots**: Autonomous systems at Amazon and other logistics companies that navigate complex environments, identify packages, and coordinate with human workers
+- **Surgical Robots**: AI-powered assistants that execute precise movements during operations, learning from thousands of procedures to improve outcomes
+- **Autonomous Vehicles**: Cars that perceive their surroundings through cameras and LiDAR, make split-second decisions, and navigate safely in dynamic traffic
+- **Humanoid Robots**: Machines like Tesla Optimus, Boston Dynamics Atlas, and Figure 01 that are designed to work in human environments without requiring infrastructure changes
+
+What makes these systems "AI" isn't just automation—it's their ability to **learn from experience, adapt to new situations**, and make decisions autonomously without being explicitly programmed for every scenario.
+
+## The Difference: Digital AI vs. Physical AI
+
+| Aspect | Digital AI | Physical AI |
+|--------|-----------|-------------|
+| **Environment** | Software/virtual | Physical world |
+| **Inputs** | Text, images, data files | Sensors (cameras, LiDAR, IMUs, force sensors) |
+| **Outputs** | Text, recommendations, predictions | Physical actions (movement, manipulation, navigation) |
+| **Challenges** | Data quality, model accuracy | Real-world physics, safety, hardware constraints |
+| **Examples** | ChatGPT, recommendation engines | Humanoid robots, autonomous vehicles, drones |
+| **Latency Tolerance** | Seconds acceptable | Milliseconds critical (safety) |
+
+The key distinction: **Physical AI must understand and obey the laws of physics**. It can't ignore gravity, collision dynamics, or the consequences of failure in the real world.
+
+## Embodied Intelligence
+
+**Embodied intelligence** is the principle that intelligence emerges not just from computation, but from the **interaction between a body and its environment**. A brain in isolation can't truly understand "heavy," "hot," or "sharp"—these concepts require physical experience.
+
+This is why humanoid robots are particularly significant:
+
+1. **Human-Centered World**: Our homes, workplaces, and cities are designed for human bodies (doorknobs, stairs, tables at human height)
+2. **Training Data Abundance**: Billions of hours of human video exist—robots with human form can learn from watching us
+3. **Natural Interaction**: Humans intuitively understand how to communicate with human-shaped entities (gestures, gaze, proximity)
+
+Embodied intelligence means that a humanoid robot learning to stack blocks isn't just executing an algorithm—it's developing an intuitive understanding of balance, weight distribution, and spatial relationships through physical trial and error, just like humans do.
+
+## Why Physical AI Matters Now
+
+The convergence of three technological revolutions makes this the defining decade for Physical AI:
+
+### 1. Advanced AI Models
+Large Language Models (LLMs) like GPT-4 can now:
+- Translate natural language commands ("clean the kitchen") into structured robot action sequences
+- Provide robots with common-sense reasoning
+- Enable voice-based human-robot collaboration
+
+### 2. Powerful Edge Computing
+NVIDIA Jetson, Apple Silicon, and other edge AI processors now deliver:
+- Real-time computer vision processing
+- On-device inference (no cloud dependency)
+- Energy efficiency for mobile robots
+
+### 3. Simulation Breakthroughs
+Platforms like NVIDIA Isaac Sim enable:
+- Photorealistic physics simulation for training
+- Synthetic data generation (millions of training scenarios)
+- Sim-to-real transfer (train in simulation, deploy to hardware)
+
+The combination means we can now train robots in virtual environments at massive scale, transfer that learning to real hardware, and have them understand human instructions in natural language. This wasn't possible even five years ago.
+
+## Learning Outcomes
+
+By the end of this course, you will be able to:
+
+1. **Understand Physical AI Principles**: Explain embodied intelligence, the challenges of real-world deployment, and how Physical AI differs from traditional software AI
+2. **Master ROS 2**: Design and implement robot control systems using the Robot Operating System, including nodes, topics, services, and URDF robot descriptions
+3. **Simulate Robots**: Create realistic physics-based simulations using Gazebo and Unity, test algorithms in virtual environments before hardware deployment
+4. **Develop with NVIDIA Isaac**: Build AI-powered perception and navigation systems using Isaac Sim and Isaac ROS, including VSLAM and path planning
+5. **Design Humanoid Interactions**: Apply biomechanics principles to bipedal locomotion, balance control, and natural human-robot interaction design
+6. **Integrate GPT Models**: Combine Large Language Models with robotic systems for conversational AI, voice command processing, and cognitive planning
+
+## Course Structure: 13-Week Learning Journey
+
+### **Weeks 1-2: Foundations**
+- Physical AI principles and embodied intelligence
+- Overview of humanoid robotics landscape
+- Sensor systems: LiDAR, cameras, IMUs, force/torque sensors
+- From digital AI to robots that understand physical laws
+
+### **Weeks 3-5: Module 1 - The Robotic Nervous System (ROS 2)**
+- ROS 2 architecture and middleware concepts
+- Building control systems with nodes, topics, services, and actions
+- Python integration with rclpy
+- Robot description with URDF for humanoid models
+
+### **Weeks 6-7: Module 2 - The Digital Twin (Gazebo & Unity)**
+- Physics simulation for robot testing
+- URDF and SDF robot description formats
+- Sensor simulation (vision, depth, inertial)
+- High-fidelity rendering with Unity
+
+### **Weeks 8-10: Module 3 - The AI-Robot Brain (NVIDIA Isaac™)**
+- NVIDIA Isaac Sim for photorealistic simulation
+- Synthetic data generation at scale
+- Isaac ROS for hardware-accelerated perception (VSLAM)
+- Nav2 navigation stack for bipedal humanoids
+- Reinforcement learning and sim-to-real transfer
+
+### **Weeks 11-13: Module 4 - Vision-Language-Action (VLA)**
+- The convergence of LLMs and robotics
+- Voice-to-action with OpenAI Whisper
+- Cognitive planning: natural language → robot actions
+- **Capstone Project**: Build an autonomous humanoid that receives voice commands, plans paths, navigates obstacles, and manipulates objects
+
+## Assessment Types
+
+Throughout this course, you will be evaluated through:
+
+- **ROS 2 Package Development Project**: Build a functional robot control system with publishers, subscribers, and services
+- **Gazebo Simulation Implementation**: Create a simulated environment with physics and sensor feedback
+- **Isaac-Based Perception Pipeline**: Implement VSLAM or object detection using Isaac ROS
+- **Capstone: Simulated Humanoid with Conversational AI**: Integrate all course components into a voice-controlled autonomous robot
+
+These assessments are designed to be cumulative—each builds on skills from previous modules, culminating in a comprehensive demonstration of Physical AI capabilities.
+
+## What Makes Humanoid Robots Different?
+
+While industrial robots excel in controlled factory environments (welding, assembly, painting), humanoid robots are designed for **unstructured human spaces**. Consider:
+
+- **Industrial Robot**: Fixed in place, operates on predictable parts, requires safety cages
+- **Humanoid Robot**: Mobile, navigates homes/offices, interacts with arbitrary objects, works alongside humans
+
+Humanoid robots face challenges like:
+- **Dynamic Balance**: Bipedal walking is inherently unstable (like continuously catching yourself from falling)
+- **Dexterity**: Manipulating diverse objects (keys, coffee cups, doorknobs) with human-like hands
+- **Perception Uncertainty**: Understanding cluttered scenes with partial information
+- **Social Navigation**: Moving through spaces with people without being intrusive or unsafe
+
+These challenges are why Physical AI—combining perception, planning, and control with machine learning—is essential for humanoid robotics.
+
+## The Road Ahead
+
+This textbook will take you from fundamental concepts to deploying AI-powered humanoid systems. You'll learn:
+
+- **The Science**: Physics, kinematics, dynamics, control theory
+- **The Tools**: ROS 2, Gazebo, NVIDIA Isaac, Python, simulation frameworks
+- **The AI**: Computer vision, reinforcement learning, LLM integration
+- **The Practice**: Hands-on projects, simulations, and a capstone deployment
+
+Whether you're a student exploring robotics, a professional transitioning into Physical AI, or a researcher pushing the boundaries of embodied intelligence, this course provides a comprehensive foundation.
+
+**Physical AI isn't just the future—it's happening now**. Companies like Tesla, Boston Dynamics, Figure AI, and Unitree are deploying humanoid robots for real-world tasks. The skills you'll learn here are immediately applicable to this rapidly growing field.
+
+Let's begin! 🚀
+
+---
+
+**Next**: [Module 1 - The Robotic Nervous System (ROS 2) →](./01-module-1-ros2.mdx)
+

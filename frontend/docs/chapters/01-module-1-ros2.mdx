@@ -1,0 +1,561 @@
+---
+title: "Module 1 — The Robotic Nervous System (ROS 2)"
+description: "Master ROS 2 middleware for robot control: nodes, topics, services, Python integration, and URDF for humanoid robots"
+sidebar_position: 1
+sidebar_label: "Module 1: ROS 2"
+tags: ["physical-ai", "robotics", "ros2", "middleware", "python", "urdf"]
+---
+
+import PersonalizationButton from '@site/src/components/personalization/PersonalizationButton';
+import TranslationButton from '@site/src/components/translation/TranslationButton';
+
+<PersonalizationButton chapterId={1} />
+<TranslationButton chapterId={1} />
+
+## Introduction: The Robot's Communication Framework
+
+Imagine a humanoid robot trying to walk. Its vision system detects obstacles, its IMU (Inertial Measurement Unit) reports body tilt, its foot sensors measure ground contact force, and its motor controllers need commands—all at the same time, potentially running on different processors.
+
+**How do these components communicate?**
+
+This is where **ROS 2** (Robot Operating System 2) comes in. ROS 2 isn't an operating system like Windows or Linux—it's a **middleware framework** that provides:
+
+- **Communication infrastructure**: Components exchange messages without knowing each other's implementation
+- **Hardware abstraction**: Swap sensors or actuators without rewriting control algorithms
+- **Distributed computing**: Run components on different machines (edge device + cloud server)
+- **Reusable packages**: Use community-built navigation, perception, and manipulation libraries
+
+Think of ROS 2 as the **nervous system of a robot**—it's the messaging infrastructure that allows the "brain" (AI algorithms) to coordinate the "body" (sensors and motors).
+
+### Why ROS 2 Matters for Physical AI
+
+ROS 2 is the industry standard for research and commercial robotics. Companies like Boston Dynamics, NASA, and autonomous vehicle manufacturers use ROS 2 because:
+
+1. **Modularity**: Swap perception algorithms without touching navigation code
+2. **Scalability**: Run simple demos on a Raspberry Pi, scale to multi-server clusters
+3. **Ecosystem**: Thousands of pre-built packages for SLAM, planning, computer vision
+4. **Real-Time Support**: Critical for safety (e.g., emergency stops must execute within milliseconds)
+
+For humanoid robotics specifically, ROS 2 enables **complex coordination**—balancing, walking, arm movement, and object grasping all happen simultaneously through coordinated message passing.
+
+## ROS 2 Architecture and Core Concepts
+
+### The Big Picture: Distributed Publish-Subscribe
+
+ROS 2 uses a **publish-subscribe architecture**:
+
+```
+[Camera Node] --publishes--> [/image_raw Topic] --subscribes--> [Object Detection Node]
+                                     |
+                                subscribes
+                                     |
+                              [Display Node]
+```
+
+- **Nodes**: Independent processes (e.g., camera driver, object detector)
+- **Topics**: Named channels for data flow (e.g., `/image_raw`, `/odom`)
+- **Messages**: Strongly-typed data structures (e.g., `Image`, `Odometry`)
+
+This **decoupling** is powerful: You can replace the camera node with a simulator, or swap the object detector with a better model—without changing any other code.
+
+### Communication Patterns
+
+ROS 2 supports multiple communication patterns:
+
+#### 1. **Topics (Publish-Subscribe)**
+**Use Case**: Continuous data streams (sensor readings, odometry, images)
+
+```python
+# Publisher sends data continuously
+publisher.publish(sensor_data)
+
+# Subscriber receives whenever data arrives
+def callback(msg):
+    process(msg.data)
+```
+
+**Characteristics**:
+- One-to-many (multiple subscribers can listen to same topic)
+- Asynchronous (publishers don't wait for subscribers)
+- Lossy (if subscriber is slow, messages may be dropped)
+
+#### 2. **Services (Request-Response)**
+**Use Case**: Occasional commands needing confirmation (e.g., "move arm to position X")
+
+```python
+# Client sends request and waits for response
+response = client.call(request)
+
+# Server processes request and returns result
+def handle_request(request, response):
+    response.success = perform_action(request.target)
+    return response
+```
+
+**Characteristics**:
+- One-to-one (single client, single server)
+- Synchronous (client blocks until server responds)
+- Reliable (guaranteed response or timeout)
+
+#### 3. **Actions (Long-Running Tasks)**
+**Use Case**: Commands that take time and need progress updates (e.g., "navigate to waypoint")
+
+```python
+# Client sends goal and receives periodic feedback
+goal = NavigateToPoint(target_x=5.0, target_y=10.0)
+action_client.send_goal_async(goal, feedback_callback=on_progress)
+
+# Server provides progress updates
+def execute_goal(goal_handle):
+    while not_at_target:
+        send_feedback(distance_remaining)
+    return result
+```
+
+**Characteristics**:
+- Client can cancel goals mid-execution
+- Server sends progress feedback
+- Suitable for navigation, manipulation, long-duration tasks
+
+### Middleware: DDS Under the Hood
+
+ROS 2 uses **DDS (Data Distribution Service)** for actual network communication. DDS provides:
+
+- **Quality of Service (QoS)**: Configure reliability, latency, bandwidth per-topic
+- **Discovery**: Nodes automatically find each other on the network
+- **Security**: Encrypt messages, authenticate nodes
+
+You rarely interact with DDS directly, but knowing it exists explains why ROS 2 can handle both real-time control (low latency) and large data streams (like 4K video) simultaneously.
+
+<!-- DIAGRAM: ros2-architecture-overview -->
+
+## Building ROS 2 Packages with Python
+
+### Package Structure
+
+A ROS 2 Python package looks like this:
+
+```
+my_robot_package/
+├── my_robot_package/          # Python module
+│   ├── __init__.py
+│   ├── my_node.py             # Node implementation
+│   └── utils.py               # Helper functions
+├── resource/my_robot_package  # Package marker
+├── test/                      # Unit tests
+├── package.xml                # Package metadata
+└── setup.py                   # Python build config
+```
+
+### Creating a Simple Node: Publisher/Subscriber
+
+Let's build a **sensor data publisher** and a **processing subscriber** to demonstrate the topic pattern.
+
+#### Code Example 1: ROS 2 Publisher Node
+
+```python
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import Float32
+import random
+
+class IMUSensorNode(Node):
+    """Simulates an IMU (Inertial Measurement Unit) publishing tilt angle."""
+    
+    def __init__(self):
+        super().__init__('imu_sensor_node')
+        
+        # Create a publisher for tilt angle (degrees)
+        self.publisher = self.create_publisher(
+            Float32,              # Message type
+            '/robot/imu/tilt',    # Topic name
+            10                    # Queue size (QoS)
+        )
+        
+        # Publish at 50 Hz (20ms period)
+        self.timer = self.create_timer(0.02, self.publish_tilt)
+        self.get_logger().info('IMU Sensor Node started')
+    
+    def publish_tilt(self):
+        """Simulate reading tilt angle from IMU hardware."""
+        msg = Float32()
+        # Simulate noisy sensor reading (replace with actual hardware read)
+        msg.data = random.uniform(-5.0, 5.0)
+        
+        self.publisher.publish(msg)
+        # Uncomment to see published values:
+        # self.get_logger().info(f'Published tilt: {msg.data:.2f}°')
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = IMUSensorNode()
+    
+    try:
+        rclpy.spin(node)  # Keep node alive, processing callbacks
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
+
+**Key Concepts**:
+- **`Node` class**: Inherit to create a ROS 2 node
+- **`create_publisher()`**: Set up topic to send data
+- **`create_timer()`**: Execute a callback at regular intervals
+- **`rclpy.spin()`**: Process callbacks (messages, timers, services)
+
+#### Code Example 2: ROS 2 Subscriber Node
+
+```python
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import Float32
+
+class BalanceControllerNode(Node):
+    """Subscribes to IMU data and calculates balance adjustments."""
+    
+    def __init__(self):
+        super().__init__('balance_controller_node')
+        
+        # Subscribe to the tilt angle topic
+        self.subscription = self.create_subscription(
+            Float32,
+            '/robot/imu/tilt',
+            self.tilt_callback,   # Function to call when message arrives
+            10
+        )
+        
+        self.get_logger().info('Balance Controller Node started')
+    
+    def tilt_callback(self, msg):
+        """Process incoming tilt angle and compute motor commands."""
+        tilt = msg.data
+        
+        # Simple proportional control: correct tilt by adjusting motors
+        correction = -0.5 * tilt  # Negative feedback
+        
+        if abs(tilt) > 10.0:
+            self.get_logger().warn(f'Dangerous tilt: {tilt:.2f}° - Emergency stop!')
+        else:
+            self.get_logger().info(f'Tilt: {tilt:.2f}°, Correction: {correction:.2f}')
+        
+        # In a real robot, you would:
+        # motor_command = MotorCommand(left=correction, right=-correction)
+        # self.motor_publisher.publish(motor_command)
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = BalanceControllerNode()
+    
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
+
+**Key Concepts**:
+- **`create_subscription()`**: Register a callback for incoming messages
+- **Callbacks**: Asynchronous functions triggered when data arrives
+- **Logging**: Use `get_logger()` for debugging and monitoring
+
+**Running These Nodes**:
+```bash
+# Terminal 1: Start the sensor publisher
+ros2 run my_robot_package imu_sensor_node
+
+# Terminal 2: Start the balance controller
+ros2 run my_robot_package balance_controller_node
+
+# Terminal 3: Monitor the data flow
+ros2 topic echo /robot/imu/tilt
+```
+
+The beauty: These nodes don't know about each other's implementation. You could replace the IMU sensor with real hardware or a simulation without touching the controller code.
+
+## ROS 2 Services: Request-Response Pattern
+
+When you need **guaranteed responses** (not just broadcasting data), use services.
+
+#### Code Example 3: ROS 2 Service Server and Client
+
+```python
+# File: gripper_service.py
+from example_interfaces.srv import SetBool  # Standard bool service
+import rclpy
+from rclpy.node import Node
+
+class GripperServiceNode(Node):
+    """Service that opens/closes a robot gripper."""
+    
+    def __init__(self):
+        super().__init__('gripper_service')
+        
+        # Create service
+        self.service = self.create_service(
+            SetBool,
+            '/robot/gripper/set_state',
+            self.handle_gripper_request
+        )
+        
+        self.gripper_closed = False
+        self.get_logger().info('Gripper Service ready')
+    
+    def handle_gripper_request(self, request, response):
+        """Process gripper open/close command."""
+        action = "close" if request.data else "open"
+        
+        # Simulate gripper actuation (replace with actual hardware command)
+        self.gripper_closed = request.data
+        
+        response.success = True
+        response.message = f'Gripper {action}ed successfully'
+        
+        self.get_logger().info(f'Gripper state changed: {action}')
+        return response
+
+# Client example
+class GripperClientNode(Node):
+    def __init__(self):
+        super().__init__('gripper_client')
+        self.client = self.create_client(SetBool, '/robot/gripper/set_state')
+        
+        while not self.client.wait_for_service(timeout_sec=1.0):
+            self.get_logger().info('Waiting for gripper service...')
+    
+    def send_command(self, close: bool):
+        """Send gripper command and wait for confirmation."""
+        request = SetBool.Request()
+        request.data = close
+        
+        future = self.client.call_async(request)
+        rclpy.spin_until_future_complete(self, future)
+        
+        if future.result() is not None:
+            self.get_logger().info(f'Result: {future.result().message}')
+        else:
+            self.get_logger().error('Service call failed')
+
+# Usage:
+# client = GripperClientNode()
+# client.send_command(close=True)  # Close gripper
+```
+
+**Key Differences from Topics**:
+- Services are **synchronous**: Client waits for server response
+- Services are **one-to-one**: Only one server per service name
+- Use services for commands that need confirmation (e.g., "Did the gripper close successfully?")
+
+## URDF: Describing Humanoid Robots
+
+**URDF (Unified Robot Description Format)** is an XML-based language for describing robot geometry, kinematics, and dynamics. For humanoids, URDF defines:
+
+- **Links**: Rigid body parts (torso, upper arm, forearm, hand, etc.)
+- **Joints**: Connections between links (revolute, prismatic, fixed)
+- **Kinematics**: How joints move (position, velocity, torque limits)
+- **Collision/Visual Meshes**: For simulation and visualization
+
+### Why URDF Matters for Humanoids
+
+Humanoid robots have complex kinematic chains:
+- **Legs**: Hip (3 DOF) → Knee (1 DOF) → Ankle (2 DOF) = 6 DOF per leg
+- **Arms**: Shoulder (3 DOF) → Elbow (1 DOF) → Wrist (2 DOF) → Hand (multi-DOF gripper)
+- **Total**: 20-30+ degrees of freedom
+
+URDF allows simulators (like Gazebo) and controllers to understand this structure.
+
+#### Code Example 4: Basic URDF Snippet (Humanoid Arm)
+
+```xml
+<?xml version="1.0"?>
+<robot name="humanoid_arm">
+  
+  <!-- Base link (torso attachment point) -->
+  <link name="torso">
+    <visual>
+      <geometry>
+        <box size="0.3 0.2 0.4"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="10.0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+  </link>
+  
+  <!-- Upper arm link -->
+  <link name="upper_arm">
+    <visual>
+      <geometry>
+        <cylinder radius="0.04" length="0.3"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="2.5"/>
+      <inertia ixx="0.02" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  
+  <!-- Shoulder joint (revolute = hinge) -->
+  <joint name="shoulder_joint" type="revolute">
+    <parent link="torso"/>
+    <child link="upper_arm"/>
+    <origin xyz="0.0 0.15 0.2" rpy="0 0 0"/>  <!-- Offset from torso -->
+    <axis xyz="0 1 0"/>  <!-- Rotation axis (pitch) -->
+    <limit lower="-1.57" upper="1.57" effort="50" velocity="2.0"/>
+  </joint>
+  
+  <!-- Forearm link -->
+  <link name="forearm">
+    <visual>
+      <geometry>
+        <cylinder radius="0.03" length="0.25"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="1.5"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  
+  <!-- Elbow joint -->
+  <joint name="elbow_joint" type="revolute">
+    <parent link="upper_arm"/>
+    <child link="forearm"/>
+    <origin xyz="0.0 0.0 -0.3" rpy="0 0 0"/>  <!-- At end of upper arm -->
+    <axis xyz="0 1 0"/>
+    <limit lower="0" upper="2.35" effort="30" velocity="2.0"/>  <!-- 0-135° -->
+  </joint>
+  
+  <!-- Hand (simplified as box) -->
+  <link name="hand">
+    <visual>
+      <geometry>
+        <box size="0.08 0.12 0.03"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  
+  <!-- Wrist joint (simplified as fixed for this example) -->
+  <joint name="wrist_joint" type="fixed">
+    <parent link="forearm"/>
+    <child link="hand"/>
+    <origin xyz="0.0 0.0 -0.25" rpy="0 0 0"/>
+  </joint>
+  
+</robot>
+```
+
+**Key Elements**:
+- **`<link>`**: Defines a rigid body part with visual geometry, collision geometry, and inertial properties
+- **`<joint>`**: Connects two links and defines motion constraints
+  - `type="revolute"`: Rotational joint with limits
+  - `type="prismatic"`: Linear sliding joint
+  - `type="fixed"`: No motion (e.g., sensor mounting)
+- **`<origin>`**: Position and orientation (xyz, roll-pitch-yaw)
+- **`<limit>`**: Joint constraints (lower/upper bounds, max torque, max velocity)
+- **`<inertia>`**: Mass distribution (required for accurate physics simulation)
+
+**Visualizing URDF**:
+```bash
+# Install URDF visualization tool
+sudo apt install ros-humble-joint-state-publisher-gui
+
+# Launch visualization
+ros2 launch urdf_tutorial display.launch.py model:=humanoid_arm.urdf
+```
+
+This opens RViz (ROS Visualization tool) where you can move joint sliders and see the arm move in 3D.
+
+## Launch Files and Parameter Management
+
+For complex robots, you need to start multiple nodes simultaneously and configure them with parameters. **Launch files** automate this.
+
+### Python Launch File Example
+
+```python
+# File: robot_bringup.launch.py
+from launch import LaunchDescription
+from launch_ros.actions import Node
+
+def generate_launch_description():
+    return LaunchDescription([
+        # Start IMU sensor node
+        Node(
+            package='my_robot_package',
+            executable='imu_sensor_node',
+            name='imu_sensor',
+            output='screen',
+            parameters=[{'publish_rate': 50.0}]  # Parameter
+        ),
+        
+        # Start balance controller
+        Node(
+            package='my_robot_package',
+            executable='balance_controller_node',
+            name='balance_controller',
+            output='screen',
+            parameters=[{'gain': 0.5}]
+        ),
+        
+        # Start robot state publisher (for URDF)
+        Node(
+            package='robot_state_publisher',
+            executable='robot_state_publisher',
+            name='robot_state_publisher',
+            parameters=[{'robot_description': open('humanoid_arm.urdf').read()}]
+        ),
+    ])
+```
+
+**Launch it with**:
+```bash
+ros2 launch my_robot_package robot_bringup.launch.py
+```
+
+This starts all three nodes with one command. Parameters can also be loaded from YAML files for easier configuration management.
+
+## Summary and Key Takeaways
+
+In this module, you've learned:
+
+1. **ROS 2 is middleware**: It's the communication layer that connects robot components (sensors, controllers, actuators)
+2. **Three communication patterns**:
+   - **Topics**: Continuous data streams (sensor readings)
+   - **Services**: Request-response for commands needing confirmation
+   - **Actions**: Long-running tasks with progress feedback
+3. **Python with rclpy**: Build nodes, publishers, subscribers, and services using Python
+4. **URDF**: Describe robot kinematics and dynamics for simulation and control
+5. **Launch files**: Start and configure multiple nodes simultaneously
+
+### Why This Matters for Humanoid Robots
+
+Humanoid robots are **highly distributed systems**:
+- Vision runs on a GPU
+- Balance control runs on a real-time processor
+- Motor drivers run on embedded microcontrollers
+- AI planning might run in the cloud
+
+ROS 2 enables these components to work together seamlessly, handling network communication, timing, and data synchronization—so you can focus on algorithms, not plumbing.
+
+### Connection to Module 2
+
+In the next module, we'll take these URDF robot descriptions and bring them to life in **Gazebo simulation**. You'll see the robot models move in physics-based environments, test controllers without hardware, and simulate sensors like cameras and LiDAR—all using the ROS 2 infrastructure you've just learned.
+
+---
+
+**Next**: [Module 2 - The Digital Twin (Gazebo & Unity) →](./02-module-2-simulation.mdx)
+
