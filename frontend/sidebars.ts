@@ -18,7 +18,7 @@ const sidebars: SidebarsConfig = {
     // Introduction
     {
       type: 'doc',
-      id: 'chapters/00-introduction',
+      id: 'chapters/introduction',
       label: 'Introduction',
     },
     
@@ -31,22 +31,22 @@ const sidebars: SidebarsConfig = {
       items: [
         {
           type: 'doc',
-          id: 'chapters/01-module-1-ros2',
+          id: 'chapters/module-1-ros2',
           label: 'Module 1: ROS 2',
         },
         {
           type: 'doc',
-          id: 'chapters/02-module-2-simulation',
+          id: 'chapters/module-2-simulation',
           label: 'Module 2: Simulation',
         },
         {
           type: 'doc',
-          id: 'chapters/03-module-3-isaac',
+          id: 'chapters/module-3-isaac',
           label: 'Module 3: NVIDIA Isaac',
         },
         {
           type: 'doc',
-          id: 'chapters/04-module-4-vla',
+          id: 'chapters/module-4-vla',
           label: 'Module 4: VLA',
         },
       ],
@@ -55,7 +55,7 @@ const sidebars: SidebarsConfig = {
     // Hardware Requirements
     {
       type: 'doc',
-      id: 'chapters/05-hardware-requirements',
+      id: 'chapters/hardware-requirements',
       label: 'Hardware Requirements',
     },
   ],
