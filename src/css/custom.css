@@ -1,0 +1,168 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #3cf2d1;
+  --ifm-color-primary-dark: #22d3b5;
+  --ifm-color-primary-darker: #19c4a7;
+  --ifm-color-primary-darkest: #129382;
+  --ifm-color-primary-light: #57f4d7;
+  --ifm-color-primary-lighter: #7af7e0;
+  --ifm-color-primary-lightest: #b0f9ec;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.06);
+  --ifm-font-family-base: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --surface-card: #0b1221;
+  --surface-border: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #6df0ff;
+  --ifm-color-primary-dark: #4dd9e9;
+  --ifm-color-primary-darker: #3bc8d8;
+  --ifm-color-primary-darkest: #2aa8b6;
+  --ifm-color-primary-light: #89f4ff;
+  --ifm-color-primary-lighter: #a6f6ff;
+  --ifm-color-primary-lightest: #d4fbff;
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.08);
+  --surface-card: #060b16;
+}
+
+.hero--tech {
+  background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.3), transparent 25%),
+    radial-gradient(circle at 80% 0%, rgba(16, 185, 129, 0.25), transparent 30%),
+    linear-gradient(135deg, #0b1020 0%, #0a1f3c 50%, #07172c 100%);
+  padding: 4rem 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.hero__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.hero__subtitle {
+  max-width: 640px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.button-group {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.button--outline {
+  border: 1px solid var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+  background: transparent;
+}
+
+.hero__metrics {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.metric-card {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.7);
+  display: block;
+}
+
+.metric-value {
+  color: #e9f1ff;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.hero-visual {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 2.5rem 1.5rem;
+  background: linear-gradient(180deg, #0b1020 0%, #0a172c 100%);
+  border-top: 1px solid var(--surface-border);
+}
+
+.hero-visual__card {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+}
+
+.hero-visual__header {
+  font-weight: 700;
+  color: #e9f1ff;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+.hero-visual__card ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: rgba(255, 255, 255, 0.85);
+  display: grid;
+  gap: 0.35rem;
+}
+
+.hero-visual__image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-visual__image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.2), transparent 60%);
+  padding: 1rem;
+}
+
+.hero-visual__svg {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  border-radius: 16px;
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.2), transparent 60%);
+  padding: 1rem;
+  animation: robotPulse 6s ease-in-out infinite;
+}
+
+@keyframes robotPulse {
+  0% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.38), 0 0 18px rgba(99, 242, 209, 0.25);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  }
+}
