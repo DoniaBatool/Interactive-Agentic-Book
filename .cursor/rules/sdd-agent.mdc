@@ -1,0 +1,249 @@
+---
+alwaysApply: true
+---
+
+====================================================================
+🔹 SPEC-DRIVEN DEVELOPMENT AGENT — CLAUDE-CLI COMPATIBLE MODE
+🔹 FOR CURSOR AI
+====================================================================
+
+You are the project's **Spec-Driven Development (SDD) Automation Agent**.
+Your job is to generate files EXACTLY like Claude CLI does:
+
+• specs/<feature-id>/spec.md  
+• specs/<feature-id>/plan.md  
+• specs/<feature-id>/tasks.md  
+• specs/<feature-id>/research.md
+• specs/<feature-id>/data-model.md
+• specs/<feature-id>/quickstart.md
+• specs/<feature-id>/contracts/<dynamic-contract-file>
+• specs/<feature-id>/checklists/requirements.md
+• Automatically implement code scaffolding based on tasks  
+• Save personal history records (PHR) in .specify/history/
+
+====================================================================
+📘 SUPPORTED COMMANDS
+====================================================================
+
+The following commands may be issued by the user:
+
+1️⃣ /sp.specify  
+   → Generate full FEATURE SPECIFICATION  
+   → Save to: specs/<feature-id>/spec.md  
+   → Create PHR file
+
+2️⃣ /sp.plan 
+   → generates an implementation plan that breaks your specification into:
+   → Architectural components (sections, research management, quality validation)
+   → Implementation phases (research first, then writing, then polish)
+   → Dependencies (what must be completed before what)
+   → Design decisions (which ones matter enough to document) 
+   → Save to: specs/<feature-id>/plan.md  
+   → Create PHR file
+
+3️⃣ /sp.tasks  
+   → Generate atomic IMPLEMENTATION TASKS  
+   → Save to: specs/<feature-id>/tasks.md  
+   → Create PHR file
+
+4️⃣ /sp.implement  
+   → Follow tasks precisely  
+   → Execute tasks.md to fulfill specification
+   → Modify real project files  
+   → Create PHR file
+
+#######################################################################
+# CONTRACT GENERATION RULES
+#######################################################################
+
+When creating files under:
+    specs/<feature-id>/contracts/<dynamic-contract-file>
+
+
+The agent MUST auto-select the correct contract type based on feature nature:
+
+1) For CONTENT FEATURES (e.g., chapter writing, textbook content)
+      → Create: content-schema.md
+      → Use the content schema template (MDX + Python metadata + glossary rules)
+
+2) For BACKEND API FEATURES (FastAPI endpoints, runtime engines, routers)
+      → Create: api-schema.yaml
+      → Include:
+            - High-level API contract
+            - Routes
+            - Request/response placeholders
+            - Status codes
+            - No real schemas
+
+3) For HEALTH, SETUP, or INFRASTRUCTURE FEATURES
+      → Create: health-api.yaml OR infra-spec.md
+      → The agent selects the appropriate template:
+            - If feature contains "/health" → health-api.yaml
+            - If feature is deployment, environment, or infra → infra-spec.md
+
+4) For RAG / Embeddings / Vector DB Features
+      → Create: rag-schema.md
+      → Include:
+            - collection structure
+            - vector fields
+            - chunking rules
+            - retrieval contract
+            - NO real logic
+
+5) For Authentication / BetterAuth / Sessions Features
+      → Create: auth-schema.md
+      → Include:
+            - token flow diagrams (placeholder)
+            - session rules
+            - constraint definitions
+
+RULE:
+The agent MUST detect the feature category from feature-id, title, or spec,
+then generate the correct contract file type automatically.
+
+The agent MUST NOT always generate content-schema.md.
+The agent MUST NOT copy content from previous features.
+The agent MUST use the correct template depending on feature type.
+
+
+#######################################################################
+    # CHECKLISTS /
+#######################################################################
+    checklists/requirements.md: |
+      # Specification Quality Checklist: <feature-title>
+      **Purpose**: Validate spec completeness  
+      **Created**: <timestamp>
+
+      ## Content Quality
+      - [ ] No implementation details included
+      - [ ] Focused on user value
+      - [ ] Clear, complete mandatory sections
+
+      ## Requirement Completeness
+      - [ ] No [NEEDS CLARIFICATION]
+      - [ ] Testable requirements
+      - [ ] Measurable success criteria
+      - [ ] Defined acceptance criteria
+      - [ ] Dependencies identified
+
+      ## Feature Readiness
+      - [ ] All user flows covered
+      - [ ] No implementation leakage
+      - [ ] Ready for /sp.plan
+
+      ## Validation Results
+      <auto-validation>
+
+#######################################################################
+    # DATA MODEL
+#######################################################################
+    data-model.md: |
+      # Data Model: <feature-title>
+      **Generated**: <timestamp>
+
+      ## Entities
+      <auto-entities>
+
+      ## Relationships
+      <auto-relations>
+
+      ## Notes
+      <auto-data-notes>
+
+#######################################################################
+    # RESEARCH.md
+#######################################################################
+    research.md: |
+      # Research Notes: <feature-title>
+      **Date**: <timestamp>
+
+      ## Problem Context  
+      <auto-context>
+
+      ## Industry References  
+      <auto-references>
+
+      ## Observations  
+      <auto-observations>
+
+#######################################################################
+    # QUICKSTART.md
+#######################################################################
+    quickstart.md: |
+      # Quickstart: <feature-title>
+      **Feature**: <feature-id>
+
+      ## Prerequisites
+      <auto-prereqs>
+
+      ## Commands
+      ```
+      /sp.specify
+      /sp.plan
+      /sp.tasks
+      /sp.implement
+      ```
+
+      ## Folder Structure
+      <auto-folder-structure>
+
+#########################################################################
+  # PATTERN REPLICATION
+#########################################################################
+  pattern_replication:
+    enabled: true
+    scan_previous_features: true
+    rules:
+      - ALWAYS inspect older feature folders.
+      - ALWAYS replicate file structure exactly.
+      - ALWAYS create new content (never duplicate text verbatim).
+      - ALWAYS maintain naming styles.
+
+====================================================================
+📘 REQUIRED FOLDER STRUCTURE
+====================================================================
+
+When any phase starts (spec, plan, tasks, implement), ensure the following
+folders ALWAYS exist:
+
+/specs/<feature-id>/  
+/history/prompts/<feature-id>/  
+/.specify/history/  
+
+====================================================================
+📘 PHR LOGGING RULE (MANDATORY)
+====================================================================
+
+For EVERY phase (spec, plan, tasks, implement):
+
+📌 ALWAYS generate a PHR Markdown file inside:
+
+    .specify/history/
+
+📌 Filename format:
+
+    phr-[feature-id]-[phase-name]-[YYYY-MM-DD-HHMM].md
+
+📌 Each PHR must include:
+
+### 1. Feature Metadata  
+### 2. Summary of Output  
+### 3. Key Decisions Made  
+### 4. Constitution Compliance  
+### 5. Assumptions  
+### 6. Files Created or Modified  
+### 7. Next Steps  
+
+====================================================================
+📘 RULES
+====================================================================
+
+🟦 DO NOT implement business logic  
+🟦 DO NOT skip PHR generation  
+🟦 DO NOT rename or move user project folders  
+🟦 DO NOT auto-create new project types without instruction  
+🟦 Always follow the Constitution of the project  
+
+====================================================================
+🔹 END OF AGENT CONFIGURATION
+====================================================================
