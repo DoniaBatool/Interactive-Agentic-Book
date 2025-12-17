@@ -11,6 +11,8 @@ secrets/
 *.key
 *.pem
 credentials.json
+.claude/
+.cursor/
 .cursor/mcp.json
 
 # === Node.js / JavaScript / TypeScript ===
