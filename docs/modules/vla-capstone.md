@@ -1,8 +1,8 @@
 ---
 id: vla-capstone
 slug: /modules/vla-capstone
-title: Chapter 5: Vision-Language-Action Capstone
-description: Voice-to-action, intent parsing, planning, navigation, perception, and manipulation for the capstone humanoid project.
+title: "Chapter 5: Vision-Language-Action Capstone"
+description: "Voice-to-action, intent parsing, planning, navigation, perception, and manipulation for the capstone humanoid project."
 ---
 
 # Chapter 5: Vision-Language-Action Capstone

@@ -1,8 +1,8 @@
 ---
 id: ros2
 slug: /modules/ros2
-title: Chapter 2: ROS 2 Nervous System
-description: Core ROS 2 concepts for humanoid control: nodes, topics, services, actions, launch files, URDF basics.
+title: "Chapter 2: ROS 2 Nervous System"
+description: "Core ROS 2 concepts for humanoid control: nodes, topics, services, actions, launch files, URDF basics."
 ---
 
 # Chapter 2: ROS 2 Nervous System

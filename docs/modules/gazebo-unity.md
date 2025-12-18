@@ -1,8 +1,8 @@
 ---
 id: gazebo-unity
 slug: /modules/gazebo-unity
-title: Chapter 3: Gazebo & Unity Digital Twin
-description: Physics simulation, URDF/SDF, sensor simulation, and Unity visualization for humanoid workflows.
+title: "Chapter 3: Gazebo & Unity Digital Twin"
+description: "Physics simulation, URDF/SDF, sensor simulation, and Unity visualization for humanoid workflows."
 ---
 
 # Chapter 3: Gazebo & Unity Digital Twin

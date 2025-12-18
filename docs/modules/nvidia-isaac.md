@@ -1,8 +1,8 @@
 ---
 id: nvidia-isaac
 slug: /modules/nvidia-isaac
-title: Chapter 4: NVIDIA Isaac AI Brain
-description: Isaac Sim/ROS for perception, VSLAM/navigation, synthetic data, and sim-to-real for humanoids.
+title: "Chapter 4: NVIDIA Isaac AI Brain"
+description: "Isaac Sim/ROS for perception, VSLAM/navigation, synthetic data, and sim-to-real for humanoids."
 ---
 
 # Chapter 4: NVIDIA Isaac AI Brain

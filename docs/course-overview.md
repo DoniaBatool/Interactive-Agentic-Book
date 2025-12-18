@@ -47,3 +47,10 @@ This course is computationally heavy (physics + vision + LLM):
 4. NVIDIA Isaac AI brain
 5. Vision-Language-Action capstone (voice-to-action, planning, perception, manipulation)
 
+## Chat with the Textbook Assistant
+
+import RagChatPanel from '@site/src/components/RagChatPanel';
+
+<RagChatPanel chapter="Course Overview" />
+
+
