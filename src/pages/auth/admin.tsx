@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from '@docusaurus/router';
 import Layout from '@theme/Layout';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from '../../lib/i18n';
@@ -18,6 +19,7 @@ interface AdminUser {
 export default function AdminPage(): React.JSX.Element {
   const { user, loading: authLoading } = useAuth();
   const { t } = useTranslation();
+  const history = useHistory();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,10 +31,10 @@ export default function AdminPage(): React.JSX.Element {
     if (!authLoading && user) {
       const isAdmin = (user as any).isAdmin || (user as any).role === 'admin';
       if (!isAdmin) {
-        window.location.href = '/';
+        history.push('/');
       }
     }
-  }, [user, authLoading]);
+  }, [user, authLoading, history]);
 
   // Fetch users
   useEffect(() => {

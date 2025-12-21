@@ -74,6 +74,8 @@ export const pool = new Pool({
 });
 
 export const auth = betterAuth({
+  baseURL: process.env.AUTH_SERVER_URL || "http://localhost:8002",
+  basePath: "/api/auth",
   database: pool,
   emailAndPassword: {
     enabled: true,
