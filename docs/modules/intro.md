@@ -1,11 +1,11 @@
 ---
 id: intro
 slug: /modules/intro
-title: Introduction to Physical AI
+title: "Chapter 1: Introduction to Physical AI"
 description: Foundations of embodied intelligence, sensors, safety, and course roadmap.
 ---
 
-# Introduction to Physical AI
+# Chapter 1: Introduction to Physical AI
 
 ## Overview
 Physical AI bridges digital intelligence with the physical world so robots can perceive, plan, and act safely alongside humans. This course focuses on humanoid-capable systems using ROS 2, Gazebo/Unity, NVIDIA Isaac, and Vision-Language-Action (VLA) pipelines.

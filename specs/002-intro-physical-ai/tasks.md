@@ -8,7 +8,7 @@ description: "Tasks for Intro to Physical AI chapter"
 **Tests**: `npm test` (content check + typecheck)
 
 ## Phase 1: Content
-- [ ] T001 Write `docs/modules/intro.md` with required sections:
+- [x] T001 Write `docs/modules/intro.md` with required sections:
   - Overview
   - Why Physical AI Matters
   - Scope
@@ -20,8 +20,8 @@ description: "Tasks for Intro to Physical AI chapter"
   - Lab Preview
 
 ## Phase 2: Verify
-- [ ] T010 Run `npm test` (content check + typecheck).
+- [x] T010 Run `npm test` (content check + typecheck).
 
 ## Phase 3: Polish
-- [ ] T020 Quick skim for clarity/typos and heading consistency.
+- [x] T020 Quick skim for clarity/typos and heading consistency.
 

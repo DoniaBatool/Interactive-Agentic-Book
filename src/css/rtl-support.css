@@ -1,0 +1,431 @@
+/* ============================================
+   RTL Support & Urdu Typography
+   ============================================ */
+
+/* Urdu Font Definitions */
+:root {
+  --urdu-font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', 'Al Qalam Taj Nastaleeq', serif;
+  --urdu-font-size-base: 1.1em;
+  --urdu-line-height: 1.8;
+}
+
+/* RTL Document Direction */
+[dir="rtl"] {
+  font-family: var(--urdu-font-family);
+}
+
+/* ============================================
+   Language Toggle Button
+   ============================================ */
+
+.language-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.language-toggle:hover:not(:disabled) {
+  border-color: var(--ifm-color-primary);
+  background: rgba(var(--ifm-color-primary-rgb), 0.1);
+  color: var(--ifm-color-primary);
+  transform: translateY(-1px);
+}
+
+.language-toggle:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.language-toggle-text {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.language-label {
+  font-weight: 600;
+}
+
+.language-icon {
+  font-size: 0.875em;
+}
+
+.language-toggle-spinner {
+  display: flex;
+  align-items: center;
+  color: var(--ifm-color-primary);
+}
+
+/* ============================================
+   RTL Layout Adjustments
+   ============================================ */
+
+/* Navbar RTL */
+[dir="rtl"] .navbar__items {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .navbar__item {
+  margin-left: 0;
+  margin-right: var(--ifm-navbar-item-padding-horizontal);
+}
+
+[dir="rtl"] .navbar__brand {
+  margin-right: 0;
+  margin-left: 1rem;
+}
+
+/* Sidebar RTL */
+[dir="rtl"] .theme-doc-sidebar-container {
+  border-right: none;
+  border-left: 1px solid var(--ifm-toc-border-color);
+}
+
+[dir="rtl"] .menu__list-item {
+  text-align: right;
+}
+
+[dir="rtl"] .menu__link {
+  padding-left: 0;
+  padding-right: var(--ifm-menu-link-padding-horizontal);
+}
+
+[dir="rtl"] .menu__list-item--collapsed .menu__list {
+  margin-left: 0;
+  margin-right: var(--ifm-menu-link-padding-horizontal);
+}
+
+/* Table of Contents RTL */
+[dir="rtl"] .table-of-contents {
+  border-left: none;
+  border-right: 1px solid var(--ifm-toc-border-color);
+  padding-left: 0;
+  padding-right: var(--ifm-toc-padding-vertical);
+}
+
+[dir="rtl"] .table-of-contents__link {
+  padding-left: 0;
+  padding-right: 0.75rem;
+}
+
+/* Pagination RTL */
+[dir="rtl"] .pagination-nav {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .pagination-nav__item--prev {
+  text-align: right;
+}
+
+[dir="rtl"] .pagination-nav__item--next {
+  text-align: left;
+}
+
+/* Breadcrumbs RTL */
+[dir="rtl"] .breadcrumbs__item:not(:last-child):after {
+  content: '\\';
+  margin: 0 0.5rem;
+}
+
+/* ============================================
+   Code Blocks - Keep LTR
+   ============================================ */
+
+[dir="rtl"] pre,
+[dir="rtl"] code,
+[dir="rtl"] .prism-code,
+[dir="rtl"] .token {
+  direction: ltr;
+  text-align: left;
+  font-family: var(--ifm-font-family-monospace);
+}
+
+[dir="rtl"] .code-block-error-line,
+[dir="rtl"] .code-block-highlighted-line {
+  direction: ltr;
+}
+
+/* Inline code in RTL text */
+[dir="rtl"] p code,
+[dir="rtl"] li code,
+[dir="rtl"] td code {
+  direction: ltr;
+  display: inline-block;
+  text-align: left;
+}
+
+/* ============================================
+   Urdu Content Typography
+   ============================================ */
+
+.urdu-content-container {
+  direction: rtl;
+  text-align: right;
+}
+
+.urdu-content {
+  font-family: var(--urdu-font-family);
+  font-size: var(--urdu-font-size-base);
+  line-height: var(--urdu-line-height);
+  direction: rtl;
+  text-align: right;
+}
+
+/* Urdu headings */
+.urdu-content h1,
+.urdu-content h2,
+.urdu-content h3,
+.urdu-content h4,
+.urdu-content h5,
+.urdu-content h6 {
+  font-family: var(--urdu-font-family);
+  font-weight: 700;
+  text-align: right;
+  direction: rtl;
+}
+
+.urdu-content h1 {
+  font-size: 2.5rem;
+  line-height: 1.4;
+}
+
+.urdu-content h2 {
+  font-size: 2rem;
+  line-height: 1.5;
+}
+
+.urdu-content h3 {
+  font-size: 1.5rem;
+  line-height: 1.6;
+}
+
+/* Urdu paragraphs */
+.urdu-content p {
+  text-align: right;
+  direction: rtl;
+  margin-bottom: 1.5rem;
+}
+
+/* Urdu lists */
+.urdu-content ul,
+.urdu-content ol {
+  text-align: right;
+  direction: rtl;
+  padding-right: 2rem;
+  padding-left: 0;
+}
+
+.urdu-content li {
+  text-align: right;
+  direction: rtl;
+  margin-bottom: 0.5rem;
+}
+
+/* Urdu blockquotes */
+.urdu-content blockquote {
+  border-right: 4px solid var(--ifm-color-primary);
+  border-left: none;
+  padding-right: 1rem;
+  padding-left: 0;
+  text-align: right;
+  direction: rtl;
+}
+
+/* Urdu tables */
+.urdu-content table {
+  direction: rtl;
+}
+
+.urdu-content th,
+.urdu-content td {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Keep code blocks LTR even in Urdu content */
+.urdu-content pre,
+.urdu-content code,
+.urdu-content .prism-code {
+  direction: ltr;
+  text-align: left;
+  font-family: var(--ifm-font-family-monospace);
+}
+
+/* ============================================
+   Translation Loading States
+   ============================================ */
+
+.translation-loading-container {
+  position: relative;
+}
+
+.translation-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(var(--ifm-background-color-rgb), 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  backdrop-filter: blur(2px);
+}
+
+.translation-loading-spinner {
+  color: var(--ifm-color-primary);
+  margin-bottom: 1rem;
+}
+
+.translation-loading-text {
+  font-family: var(--urdu-font-family);
+  font-size: 1.1rem;
+  color: var(--ifm-font-color-base);
+  text-align: center;
+  direction: rtl;
+}
+
+.translation-loading-content {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ============================================
+   Translation Error States
+   ============================================ */
+
+.translation-error-container {
+  margin-bottom: 2rem;
+}
+
+.translation-error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.translation-error-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.translation-error-content {
+  flex: 1;
+}
+
+.translation-error-title {
+  font-weight: 600;
+  color: #dc2626;
+  margin-bottom: 0.5rem;
+}
+
+.translation-error-message {
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.translation-retry-button {
+  background: var(--ifm-color-primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.translation-retry-button:hover {
+  background: var(--ifm-color-primary-dark);
+}
+
+.translation-fallback-content {
+  opacity: 0.8;
+}
+
+/* ============================================
+   Dark Mode Adjustments
+   ============================================ */
+
+[data-theme='dark'] .language-toggle {
+  border-color: var(--ifm-color-emphasis-600);
+  background: var(--ifm-background-surface-color);
+}
+
+[data-theme='dark'] .language-toggle:hover:not(:disabled) {
+  background: rgba(var(--ifm-color-primary-rgb), 0.15);
+}
+
+[data-theme='dark'] .translation-loading-overlay {
+  background: rgba(var(--ifm-background-color-rgb), 0.95);
+}
+
+[data-theme='dark'] .translation-error-banner {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 768px) {
+  .urdu-content {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  
+  .urdu-content h1 {
+    font-size: 2rem;
+  }
+  
+  .urdu-content h2 {
+    font-size: 1.75rem;
+  }
+  
+  .urdu-content h3 {
+    font-size: 1.25rem;
+  }
+  
+  .language-toggle {
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+
+@media print {
+  .language-toggle {
+    display: none;
+  }
+  
+  .translation-loading-overlay {
+    display: none;
+  }
+  
+  .translation-error-banner {
+    display: none;
+  }
+}
