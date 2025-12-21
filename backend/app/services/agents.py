@@ -13,9 +13,9 @@ from fastapi import HTTPException
 from openai import OpenAI
 from openai.types.chat import ChatCompletionMessageToolCall
 
-from backend.app.core.config import get_settings
-from backend.app.models.schemas.chat import ChatRequest, ChatResponse, Citation
-from backend.app.services.retrieval import retrieve_chunks
+from app.core.config import get_settings
+from app.models.schemas.chat import ChatRequest, ChatResponse, Citation
+from app.services.retrieval import retrieve_chunks
 
 
 logger = logging.getLogger(__name__)
@@ -77,7 +77,7 @@ def _execute_rag_tool(
             return "No query provided.", []
         
         # Use existing retrieval logic
-        from backend.app.models.schemas.chat import ChatFilters
+        from app.models.schemas.chat import ChatFilters
         chat_filters = ChatFilters(chapter=chapter, section=section) if chapter or section else None
         
         top_k = settings.retrieval_top_k
@@ -358,4 +358,3 @@ def _log_done(stream: bool, duration_ms: int, retrieved_count: int) -> None:
         duration_ms=duration_ms,
         retrieved=retrieved_count,
     )
-
