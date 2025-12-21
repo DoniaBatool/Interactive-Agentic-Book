@@ -5,11 +5,10 @@ Feature 013: Auth & Personalization
 Feature 014: Urdu Translation
 """
 
-from backend.app.models.session import Session
-from backend.app.models.message import Message
-from backend.app.models.user import User
-from backend.app.models.user_profile import UserProfile
-from backend.app.models.translation import Translation, TranslationMetadata, TranslationCache
+from app.models.session import Session
+from app.models.message import Message
+from app.models.user import User
+from app.models.user_profile import UserProfile
+from app.models.translation import Translation, TranslationMetadata, TranslationCache
 
 __all__ = ["Session", "Message", "User", "UserProfile", "Translation", "TranslationMetadata", "TranslationCache"]
-
