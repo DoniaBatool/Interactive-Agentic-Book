@@ -1,0 +1,35 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1020"/>
+      <stop offset="50%" stop-color="#102a4a"/>
+      <stop offset="100%" stop-color="#07172c"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3cf2d1"/>
+      <stop offset="100%" stop-color="#6df0ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="32" fill="url(#bg)"/>
+  <rect x="80" y="90" width="1040" height="450" rx="28" stroke="rgba(255,255,255,0.1)" stroke-width="2" fill="rgba(255,255,255,0.02)"/>
+  <text x="120" y="200" fill="#e9f1ff" font-family="Inter, system-ui" font-size="54" font-weight="700">Physical AI &amp; Humanoid Robotics</text>
+  <text x="120" y="250" fill="#9bb4d8" font-family="Inter, system-ui" font-size="26">Build embodied intelligence with ROS 2, Gazebo, NVIDIA Isaac, and VLA</text>
+  <rect x="120" y="300" width="520" height="140" rx="18" fill="rgba(15,23,42,0.7)" stroke="rgba(108,196,255,0.4)"/>
+  <text x="150" y="340" fill="#6df0ff" font-family="Inter, system-ui" font-size="18" font-weight="600" letter-spacing="0.08em">STACK</text>
+  <text x="150" y="368" fill="#e9f1ff" font-family="Inter, system-ui" font-size="24">ROS 2 • Gazebo • NVIDIA Isaac • VLA</text>
+  <text x="150" y="408" fill="#6df0ff" font-family="Inter, system-ui" font-size="18" font-weight="600" letter-spacing="0.08em">FOCUS</text>
+  <text x="150" y="436" fill="#e9f1ff" font-family="Inter, system-ui" font-size="24">Embodied AI, digital twins, and humanoid control</text>
+  <circle cx="900" cy="315" r="130" fill="rgba(15,23,42,0.8)" stroke="url(#accent)" stroke-width="4"/>
+  <circle cx="860" cy="280" r="46" fill="#111a2f" stroke="#3cf2d1" stroke-width="3"/>
+  <circle cx="860" cy="280" r="12" fill="#3cf2d1"/>
+  <rect x="840" y="330" width="40" height="90" rx="12" fill="#111a2f" stroke="#3cf2d1" stroke-width="3"/>
+  <circle cx="940" cy="260" r="36" fill="#111a2f" stroke="#6df0ff" stroke-width="3"/>
+  <circle cx="940" cy="260" r="10" fill="#6df0ff"/>
+  <rect x="920" y="310" width="40" height="90" rx="12" fill="#111a2f" stroke="#6df0ff" stroke-width="3"/>
+  <path d="M886 280 H915" stroke="url(#accent)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M915 350 L940 330" stroke="#6df0ff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M865 350 L890 332" stroke="#3cf2d1" stroke-width="3" stroke-linecap="round"/>
+  <text x="120" y="500" fill="#6df0ff" font-family="Inter, system-ui" font-size="20" font-weight="600">Panaversity · Physical AI Course</text>
+  <text x="120" y="530" fill="#9bb4d8" font-family="Inter, system-ui" font-size="18">ai-native textbook • docusaurus • rag chatbot ready</text>
+</svg>
+
