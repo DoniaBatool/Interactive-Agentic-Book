@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from '@docusaurus/router';
 import Layout from '@theme/Layout';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from '../../lib/i18n';
@@ -7,6 +8,7 @@ import { AUTH_SERVER_URL } from '../../config/env';
 export default function SigninPage(): React.JSX.Element {
   const { login, user, loading, error, clearError } = useAuth();
   const { t } = useTranslation();
+  const history = useHistory();
   
   const [formData, setFormData] = useState({
     email: '',
@@ -20,9 +22,9 @@ export default function SigninPage(): React.JSX.Element {
   // Redirect if already logged in
   useEffect(() => {
     if (user && !loading) {
-      window.location.href = '/';
+      history.push('/');
     }
-  }, [user, loading]);
+  }, [user, loading, history]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -49,7 +51,7 @@ export default function SigninPage(): React.JSX.Element {
     if (success) {
       // Redirect to previous page or home
       const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/';
-      window.location.href = redirectUrl;
+      history.push(redirectUrl);
     }
   };
 

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from '@docusaurus/router';
 import Layout from '@theme/Layout';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from '../../lib/i18n';
+import { AUTH_SERVER_URL } from '../../config/env';
 
 const TECHNOLOGIES = [
   { key: 'python', label: 'Python' },
@@ -17,6 +19,7 @@ const TECHNOLOGIES = [
 export default function SignupPage(): React.JSX.Element {
   const { signup, user, loading, error, clearError } = useAuth();
   const { t } = useTranslation();
+  const history = useHistory();
   
   const [formData, setFormData] = useState({
     email: '',
@@ -37,9 +40,9 @@ export default function SignupPage(): React.JSX.Element {
   // Redirect if already logged in
   useEffect(() => {
     if (user && !loading) {
-      window.location.href = '/';
+      history.push('/');
     }
-  }, [user, loading]);
+  }, [user, loading, history]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -90,7 +93,7 @@ export default function SignupPage(): React.JSX.Element {
     setIsSubmitting(false);
 
     if (success) {
-      window.location.href = '/';
+      history.push('/');
     }
   };
 

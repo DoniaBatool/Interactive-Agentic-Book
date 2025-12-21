@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useHistory } from '@docusaurus/router';
 import Link from '@docusaurus/Link';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from '../lib/i18n';
@@ -6,6 +7,7 @@ import { useTranslation } from '../lib/i18n';
 const UserMenu: React.FC = () => {
   const { user, logout, loading } = useAuth();
   const { t } = useTranslation();
+  const history = useHistory();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -44,12 +46,12 @@ const UserMenu: React.FC = () => {
       await logout();
       // Small delay to ensure state is cleared
       setTimeout(() => {
-        window.location.href = '/';
+        history.push('/');
       }, 100);
     } catch (error) {
       console.error('Logout error:', error);
       // Force redirect even if logout fails
-      window.location.href = '/';
+      history.push('/');
     }
   };
 
