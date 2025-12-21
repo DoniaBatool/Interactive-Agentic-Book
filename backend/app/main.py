@@ -84,4 +84,3 @@ app.include_router(history_api.router)
 app.include_router(auth_api.router)
 app.include_router(personalize_api.router)
 app.include_router(translation_api.router)
-

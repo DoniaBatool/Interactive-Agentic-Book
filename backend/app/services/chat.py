@@ -138,4 +138,3 @@ async def stream_answer(payload: ChatRequest) -> AsyncIterable[str]:
         logger.exception("chat.stream.error")
         _log_event("chat.error", stream=True, error=str(exc))
         yield _format_sse("error", {"message": "Chat stream failed"})
-

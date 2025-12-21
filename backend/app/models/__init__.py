@@ -12,4 +12,3 @@ from app.models.user_profile import UserProfile
 from app.models.translation import Translation, TranslationMetadata, TranslationCache
 
 __all__ = ["Session", "Message", "User", "UserProfile", "Translation", "TranslationMetadata", "TranslationCache"]
-

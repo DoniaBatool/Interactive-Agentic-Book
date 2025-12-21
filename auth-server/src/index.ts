@@ -161,4 +161,3 @@ app.listen(PORT, () => {
   console.log(`   Auth endpoints: http://localhost:${PORT}/api/auth/*`);
   console.log(`   Admin endpoints: http://localhost:${PORT}/api/auth/admin/*`);
 });
-

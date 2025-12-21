@@ -195,4 +195,3 @@ def is_db_available() -> bool:
     Check if database is available (cached result from init).
     """
     return _db_available is True
-

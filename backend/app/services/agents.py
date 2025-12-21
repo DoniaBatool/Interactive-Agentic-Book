@@ -358,4 +358,3 @@ def _log_done(stream: bool, duration_ms: int, retrieved_count: int) -> None:
         duration_ms=duration_ms,
         retrieved=retrieved_count,
     )
-

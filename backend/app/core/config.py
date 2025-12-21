@@ -93,4 +93,3 @@ def get_settings() -> Settings:
     
     object.__setattr__(settings, "allowed_origins", origins)
     return settings
-
