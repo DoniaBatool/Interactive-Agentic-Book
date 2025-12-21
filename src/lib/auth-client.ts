@@ -1,4 +1,4 @@
-import { createAuthClient } from "better-auth/react";
+import { createAuthClient } from "better-auth/client";
 import { AUTH_SERVER_URL } from "../config/env";
 
 // BetterAuth client configuration
