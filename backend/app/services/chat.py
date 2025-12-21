@@ -6,9 +6,9 @@ from typing import AsyncIterable, List, Tuple
 from fastapi import HTTPException
 from openai import OpenAI
 
-from backend.app.core.config import get_settings
-from backend.app.models.schemas.chat import ChatRequest, ChatResponse, Citation
-from backend.app.services.retrieval import retrieve_chunks
+from app.core.config import get_settings
+from app.models.schemas.chat import ChatRequest, ChatResponse, Citation
+from app.services.retrieval import retrieve_chunks
 
 
 logger = logging.getLogger(__name__)
@@ -138,4 +138,3 @@ async def stream_answer(payload: ChatRequest) -> AsyncIterable[str]:
         logger.exception("chat.stream.error")
         _log_event("chat.error", stream=True, error=str(exc))
         yield _format_sse("error", {"message": "Chat stream failed"})
-
