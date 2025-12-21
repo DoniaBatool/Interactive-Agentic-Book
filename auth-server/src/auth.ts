@@ -323,6 +323,8 @@ export const auth = betterAuth({
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     process.env.FRONTEND_URL || "",
+    "https://doniabatool.github.io",
+    "https://doniabatool.github.io/Interactive-Agentic-Book",
   ].filter(Boolean),
 });
 
