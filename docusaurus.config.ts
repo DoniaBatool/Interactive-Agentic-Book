@@ -15,15 +15,15 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://physical-ai-book.example.com',
+  url: 'https://doniabatool.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/Interactive-Agentic-Book/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'panaversity',
-  projectName: 'physical-ai-robotics-book',
+  organizationName: 'doniabatool',
+  projectName: 'Interactive-Agentic-Book',
 
   onBrokenLinks: 'throw',
 

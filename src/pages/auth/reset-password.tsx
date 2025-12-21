@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '@theme/Layout';
 import { useTranslation } from '../../lib/i18n';
+import { AUTH_SERVER_URL } from '../../config/env';
 
 export default function ResetPasswordPage(): React.JSX.Element {
   const { t } = useTranslation();
@@ -13,9 +14,7 @@ export default function ResetPasswordPage(): React.JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const authUrl = typeof window !== 'undefined' 
-    ? (window as any).__AUTH_URL__ || 'http://localhost:8002'
-    : 'http://localhost:8002';
+  const authUrl = AUTH_SERVER_URL;
 
   // Get token from URL
   useEffect(() => {

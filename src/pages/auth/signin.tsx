@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '@theme/Layout';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from '../../lib/i18n';
+import { AUTH_SERVER_URL } from '../../config/env';
 
 export default function SigninPage(): React.JSX.Element {
   const { login, user, loading, error, clearError } = useAuth();
@@ -152,7 +153,7 @@ export default function SigninPage(): React.JSX.Element {
             </div>
             <div className="auth-oauth-buttons">
               <a
-                href={`http://localhost:8002/api/auth/sign-in/social?provider=google&callbackURL=${encodeURIComponent(window.location.origin)}`}
+                href={`${AUTH_SERVER_URL}/api/auth/sign-in/social?provider=google&callbackURL=${encodeURIComponent(window.location.origin)}`}
                 className="auth-oauth-button auth-oauth-google"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24">
@@ -164,7 +165,7 @@ export default function SigninPage(): React.JSX.Element {
                 {t('auth.signInWithGoogle')}
               </a>
               <a
-                href={`http://localhost:8002/api/auth/sign-in/social?provider=github&callbackURL=${encodeURIComponent(window.location.origin)}`}
+                href={`${AUTH_SERVER_URL}/api/auth/sign-in/social?provider=github&callbackURL=${encodeURIComponent(window.location.origin)}`}
                 className="auth-oauth-button auth-oauth-github"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">

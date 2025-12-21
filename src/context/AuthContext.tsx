@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { AUTH_SERVER_URL } from '../config/env';
 
 // Types
 interface UserProfile {
@@ -40,19 +41,6 @@ interface SignupData {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// BetterAuth server URL
-const getAuthUrl = (): string => {
-  if (typeof window !== 'undefined') {
-    // In browser, check for configured URL
-    if ((window as any).__AUTH_URL__) {
-      return (window as any).__AUTH_URL__;
-    }
-    // Default to localhost:8002 for BetterAuth (backend uses 8001)
-    return 'http://localhost:8002';
-  }
-  return 'http://localhost:8002';
-};
-
 // Helper to convert user data to profile
 const userToProfile = (user: User): UserProfile => {
   let technologies: Record<string, boolean> = {};
@@ -77,7 +65,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  const authUrl = getAuthUrl();
+  const authUrl = AUTH_SERVER_URL;
 
   // Check session on mount
   const refreshSession = useCallback(async () => {

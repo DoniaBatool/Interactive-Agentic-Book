@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '@theme/Layout';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from '../../lib/i18n';
+import { AUTH_SERVER_URL } from '../../config/env';
 
 interface AdminUser {
   id: string;
@@ -21,9 +22,7 @@ export default function AdminPage(): React.JSX.Element {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const authUrl = typeof window !== 'undefined' 
-    ? (window as any).__AUTH_URL__ || 'http://localhost:8002'
-    : 'http://localhost:8002';
+  const authUrl = AUTH_SERVER_URL;
 
   // Check if user is admin
   useEffect(() => {

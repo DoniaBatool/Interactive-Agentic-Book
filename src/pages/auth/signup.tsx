@@ -293,8 +293,7 @@ export default function SignupPage(): React.JSX.Element {
                 onClick={async (e) => {
                   e.preventDefault();
                   try {
-                    const authUrl = 'http://localhost:8002';
-                    const response = await fetch(`${authUrl}/api/auth/sign-in/social`, {
+                    const response = await fetch(`${AUTH_SERVER_URL}/api/auth/sign-in/social`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
                       credentials: 'include',
@@ -328,8 +327,7 @@ export default function SignupPage(): React.JSX.Element {
                 onClick={async (e) => {
                   e.preventDefault();
                   try {
-                    const authUrl = 'http://localhost:8002';
-                    const response = await fetch(`${authUrl}/api/auth/sign-in/social`, {
+                    const response = await fetch(`${AUTH_SERVER_URL}/api/auth/sign-in/social`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
                       credentials: 'include',

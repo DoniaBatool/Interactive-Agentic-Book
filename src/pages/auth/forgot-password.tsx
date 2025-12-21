@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '@theme/Layout';
 import { useTranslation } from '../../lib/i18n';
+import { AUTH_SERVER_URL } from '../../config/env';
 
 export default function ForgotPasswordPage(): React.JSX.Element {
   const { t } = useTranslation();
@@ -9,9 +10,7 @@ export default function ForgotPasswordPage(): React.JSX.Element {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const authUrl = typeof window !== 'undefined' 
-    ? (window as any).__AUTH_URL__ || 'http://localhost:8002'
-    : 'http://localhost:8002';
+  const authUrl = AUTH_SERVER_URL;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
