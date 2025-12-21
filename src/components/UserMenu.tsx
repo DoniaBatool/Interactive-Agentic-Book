@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import Link from '@docusaurus/Link';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from '../lib/i18n';
 
@@ -31,8 +32,8 @@ const UserMenu: React.FC = () => {
   if (!user) {
     return (
       <div className="user-menu-auth-links">
-        <a href="/auth/signin" className="user-menu-link">{t('common.signIn')}</a>
-        <a href="/auth/signup" className="user-menu-link user-menu-link-primary">{t('common.signUp')}</a>
+        <Link to="/auth/signin" className="user-menu-link">{t('common.signIn')}</Link>
+        <Link to="/auth/signup" className="user-menu-link user-menu-link-primary">{t('common.signUp')}</Link>
       </div>
     );
   }
@@ -93,7 +94,7 @@ const UserMenu: React.FC = () => {
             )}
           </div>
           <div className="user-menu-divider"></div>
-          <a href="/auth/profile" className="user-menu-item" onClick={() => setIsOpen(false)}>
+          <Link to="/auth/profile" className="user-menu-item" onClick={() => setIsOpen(false)}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path
                 d="M8 8a3 3 0 100-6 3 3 0 000 6zM2 14a6 6 0 0112 0H2z"
@@ -104,7 +105,7 @@ const UserMenu: React.FC = () => {
               />
             </svg>
             {t('common.profile')}
-          </a>
+          </Link>
           {(() => {
             const isAdmin = (user as any).isAdmin || (user as any).role === 'admin';
             // Debug: Log admin check
@@ -116,7 +117,7 @@ const UserMenu: React.FC = () => {
             });
             return isAdmin;
           })() && (
-            <a href="/auth/admin" className="user-menu-item" onClick={() => setIsOpen(false)}>
+            <Link to="/auth/admin" className="user-menu-item" onClick={() => setIsOpen(false)}>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path
                   d="M8 1L10.5 5.5L15.5 6.5L12 10L12.5 15L8 12.5L3.5 15L4 10L0.5 6.5L5.5 5.5L8 1Z"
@@ -127,7 +128,7 @@ const UserMenu: React.FC = () => {
                 />
               </svg>
               {t('admin.adminPanel')}
-            </a>
+            </Link>
           )}
           <button className="user-menu-item user-menu-item-danger" onClick={handleLogout}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
