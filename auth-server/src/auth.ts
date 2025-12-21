@@ -78,7 +78,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
-    requireEmailVerification: hasEmailService, // Enable if email service is configured
+    requireEmailVerification: false, // Temporarily disabled for easier testing
     sendResetPassword: async ({ user, url, token }: { user: { email: string; name?: string }; url: string; token: string }) => {
       await initializeEmailService();
       
@@ -131,7 +131,7 @@ export const auth = betterAuth({
     },
   },
   emailVerification: {
-    enabled: hasEmailService, // Enable if email service is configured
+    enabled: false, // Temporarily disabled - user can sign in without email verification
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
     getVerificationUrl: async ({ token, user }: { token: string; user: { email: string } }) => {
