@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { toNodeHandler } from "better-auth/node";
-import { auth, pool } from "./auth";
+import { auth, pool } from "./auth.js";
 import dotenv from "dotenv";
 
 dotenv.config({ path: "../.env" });
@@ -145,4 +145,3 @@ app.listen(PORT, () => {
   console.log(`   Auth endpoints: http://localhost:${PORT}/api/auth/*`);
   console.log(`   Admin endpoints: http://localhost:${PORT}/api/auth/admin/*`);
 });
-
