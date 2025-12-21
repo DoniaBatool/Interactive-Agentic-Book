@@ -77,6 +77,19 @@ def get_settings() -> Settings:
         str(AnyHttpUrl("http://localhost:3000")).rstrip('/'),
         str(AnyHttpUrl("http://127.0.0.1:3000")).rstrip('/'),
     ]
+    
+    # Add production URL from environment variable if set
+    allowed_origins_env = os.getenv("ALLOWED_ORIGINS")
+    if allowed_origins_env:
+        # Split comma-separated values and add to origins
+        for origin in allowed_origins_env.split(','):
+            origin = origin.strip()
+            if origin and origin not in origins:
+                try:
+                    origins.append(str(AnyHttpUrl(origin)).rstrip('/'))
+                except Exception:
+                    # Skip invalid URLs
+                    pass
+    
     object.__setattr__(settings, "allowed_origins", origins)
     return settings
-
