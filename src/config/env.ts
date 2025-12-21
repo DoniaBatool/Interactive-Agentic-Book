@@ -35,10 +35,7 @@ export const BACKEND_URL = (() => {
     }
     
     if (isProduction) {
-      // TODO: Replace with your actual backend URL when deployed to Render
-      // For now, using localhost as backend is not deployed yet
-      // When backend is deployed, update this to: 'https://your-backend.onrender.com'
-      return 'http://localhost:8000'; // TODO: Update to production URL when backend is deployed
+      return 'https://interactive-agentic-book-backend.onrender.com';
     }
   }
   
