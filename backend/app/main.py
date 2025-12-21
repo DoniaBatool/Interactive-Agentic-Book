@@ -5,13 +5,13 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from backend.app.core.config import get_settings
-from backend.app.api import chat as chat_api
-from backend.app.api import history as history_api
-from backend.app.api import auth as auth_api
-from backend.app.api import personalize as personalize_api
-from backend.app.api import translation as translation_api
-from backend.app.core.database import init_db, is_db_available
+from app.core.config import get_settings
+from app.api import chat as chat_api
+from app.api import history as history_api
+from app.api import auth as auth_api
+from app.api import personalize as personalize_api
+from app.api import translation as translation_api
+from app.core.database import init_db, is_db_available
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -84,4 +84,3 @@ app.include_router(history_api.router)
 app.include_router(auth_api.router)
 app.include_router(personalize_api.router)
 app.include_router(translation_api.router)
-
