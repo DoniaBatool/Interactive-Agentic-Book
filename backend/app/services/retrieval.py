@@ -2,10 +2,10 @@ from typing import List, Optional, Tuple
 
 from openai import OpenAI
 
-from backend.app.core.config import get_settings
-from backend.app.models.schemas.chat import ChatFilters
-from backend.app.models.schemas.chunk import DocumentChunk
-from backend.app.services.qdrant_client import get_qdrant_client, search_chunks
+from app.core.config import get_settings
+from app.models.schemas.chat import ChatFilters
+from app.models.schemas.chunk import DocumentChunk
+from app.services.qdrant_client import get_qdrant_client, search_chunks
 
 
 settings = get_settings()

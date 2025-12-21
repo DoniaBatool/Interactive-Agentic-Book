@@ -25,6 +25,8 @@ export interface RagChatProps {
   hideHeader?: boolean; // Hide the header when used inside sidebar
 }
 
+import { BACKEND_URL } from '../config/env';
+
 // Backend URL: use env var if available, otherwise default to localhost
 // Note: process.env is not available in browser, so we use a fallback
 const getBackendUrl = (): string => {
@@ -34,8 +36,8 @@ const getBackendUrl = (): string => {
       return (window as any).__BACKEND_URL__;
     }
   }
-  // Default to localhost for development (use localhost instead of 127.0.0.1 for better CORS compatibility)
-  return 'http://localhost:8000';
+  // Use BACKEND_URL from env config (automatically detects production vs development)
+  return BACKEND_URL;
 };
 
 const DEFAULT_BACKEND_URL = getBackendUrl();

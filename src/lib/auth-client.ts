@@ -1,8 +1,9 @@
 import { createAuthClient } from "better-auth/react";
+import { AUTH_SERVER_URL } from "../config/env";
 
 // BetterAuth client configuration
 export const authClient = createAuthClient({
-  baseURL: "http://localhost:8002", // BetterAuth server (backend uses 8001)
+  baseURL: AUTH_SERVER_URL,
 });
 
 // Export hooks and methods

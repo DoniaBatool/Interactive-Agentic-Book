@@ -8,8 +8,8 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.core.database import get_db
-from backend.app.services.translation import TranslationService
+from app.core.database import get_db
+from app.services.translation import TranslationService
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/translate", tags=["translation"])
@@ -204,7 +204,7 @@ async def get_cache_statistics(db: AsyncSession = Depends(get_db)):
     and performance metrics for monitoring purposes.
     """
     try:
-        from backend.app.services.translation_cache import TranslationCacheService
+        from app.services.translation_cache import TranslationCacheService
         
         cache_service = TranslationCacheService(db)
         stats = await cache_service.get_cache_stats()
@@ -228,7 +228,7 @@ async def cleanup_expired_cache(db: AsyncSession = Depends(get_db)):
     to free up storage space and maintain performance.
     """
     try:
-        from backend.app.services.translation_cache import TranslationCacheService
+        from app.services.translation_cache import TranslationCacheService
         
         cache_service = TranslationCacheService(db)
         cleared_count = await cache_service.clear_expired_cache()

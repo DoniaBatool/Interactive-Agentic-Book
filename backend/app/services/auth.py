@@ -10,7 +10,7 @@ from typing import Optional
 from passlib.context import CryptContext
 from jose import jwt, JWTError
 
-from backend.app.core.config import get_settings
+from app.core.config import get_settings
 
 logger = logging.getLogger(__name__)
 

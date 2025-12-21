@@ -8,9 +8,9 @@ from typing import List, Optional, Sequence, Tuple
 import tiktoken
 from openai import OpenAI
 
-from backend.app.core.config import get_settings
-from backend.app.models.schemas.chunk import DocumentChunk, IngestionResult
-from backend.app.services.qdrant_client import get_qdrant_client, upsert_chunks
+from app.core.config import get_settings
+from app.models.schemas.chunk import DocumentChunk, IngestionResult
+from app.services.qdrant_client import get_qdrant_client, upsert_chunks
 
 
 settings = get_settings()

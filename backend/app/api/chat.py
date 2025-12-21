@@ -4,13 +4,13 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 import logging
 
-from backend.app.core.config import get_settings
-from backend.app.core.database import get_db, is_db_available
-from backend.app.models.schemas.chat import ChatRequest, ChatResponse
-from backend.app.services.chat import generate_answer, stream_answer
-from backend.app.services.agents import generate_agent_answer, stream_agent_answer
-from backend.app.services import history as history_service
-from backend.app.services import user as user_service
+from app.core.config import get_settings
+from app.core.database import get_db, is_db_available
+from app.models.schemas.chat import ChatRequest, ChatResponse
+from app.services.chat import generate_answer, stream_answer
+from app.services.agents import generate_agent_answer, stream_agent_answer
+from app.services import history as history_service
+from app.services import user as user_service
 
 router = APIRouter()
 settings = get_settings()
@@ -92,7 +92,7 @@ async def agent_chat_endpoint(
         
         # Add user context to payload for personalized responses
         if user_profile:
-            from backend.app.models.schemas.chat import UserContext
+            from app.models.schemas.chat import UserContext
             payload.user_context = UserContext(
                 software_level=user_profile.get('software_level'),
                 hardware_level=user_profile.get('hardware_level'),

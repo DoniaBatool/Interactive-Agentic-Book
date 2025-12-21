@@ -8,7 +8,7 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship
 
-from backend.app.core.database import Base
+from app.core.database import Base
 
 
 class Session(Base):

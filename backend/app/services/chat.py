@@ -6,9 +6,9 @@ from typing import AsyncIterable, List, Tuple
 from fastapi import HTTPException
 from openai import OpenAI
 
-from backend.app.core.config import get_settings
-from backend.app.models.schemas.chat import ChatRequest, ChatResponse, Citation
-from backend.app.services.retrieval import retrieve_chunks
+from app.core.config import get_settings
+from app.models.schemas.chat import ChatRequest, ChatResponse, Citation
+from app.services.retrieval import retrieve_chunks
 
 
 logger = logging.getLogger(__name__)

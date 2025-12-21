@@ -11,8 +11,8 @@ from fastapi import APIRouter, Query, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.core.database import get_db, is_db_available
-from backend.app.services import history as history_service
+from app.core.database import get_db, is_db_available
+from app.services import history as history_service
 
 logger = logging.getLogger(__name__)
 

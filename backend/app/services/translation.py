@@ -11,9 +11,9 @@ from openai import OpenAI
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from backend.app.core.config import get_settings
-from backend.app.models.translation import Translation, TranslationMetadata
-from backend.app.services.translation_cache import TranslationCacheService
+from app.core.config import get_settings
+from app.models.translation import Translation, TranslationMetadata
+from app.services.translation_cache import TranslationCacheService
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

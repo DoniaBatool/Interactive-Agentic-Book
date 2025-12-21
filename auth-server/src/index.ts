@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { toNodeHandler } from "better-auth/node";
-import { auth, pool } from "./auth";
+import { auth, pool } from "./auth.js";
 import dotenv from "dotenv";
 
 dotenv.config({ path: "../.env" });
@@ -11,13 +11,29 @@ const app = express();
 const PORT = process.env.AUTH_PORT || 8002; // Changed to 8002 to avoid conflict with backend
 
 // CORS configuration
+const getAllowedOrigins = (): string[] => {
+  const origins: string[] = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+  ];
+  
+  // Add FRONTEND_URL if set
+  if (process.env.FRONTEND_URL) {
+    origins.push(process.env.FRONTEND_URL);
+  }
+  
+  // Add ALLOWED_ORIGINS if set (comma-separated)
+  if (process.env.ALLOWED_ORIGINS) {
+    const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean);
+    origins.push(...allowedOrigins);
+  }
+  
+  return origins.filter(Boolean);
+};
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://127.0.0.1:3000",
-      process.env.FRONTEND_URL || "",
-    ].filter(Boolean),
+    origin: getAllowedOrigins(),
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],

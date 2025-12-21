@@ -12,12 +12,14 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+import { BACKEND_URL } from '../config/env';
+
 // Backend URL
 const getBackendUrl = (): string => {
   if (typeof window !== 'undefined' && (window as any).__BACKEND_URL__) {
     return (window as any).__BACKEND_URL__;
   }
-  return 'http://localhost:8001';
+  return BACKEND_URL;
 };
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {

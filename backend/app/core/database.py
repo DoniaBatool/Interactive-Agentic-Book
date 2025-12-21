@@ -159,7 +159,7 @@ async def init_db() -> bool:
     try:
         async with engine.begin() as conn:
             # Import models to register them with Base
-            from backend.app.models import session, message, user, user_profile, translation  # noqa: F401
+            from app.models import session, message, user, user_profile, translation  # noqa: F401
             
             # Create all tables
             await conn.run_sync(Base.metadata.create_all)

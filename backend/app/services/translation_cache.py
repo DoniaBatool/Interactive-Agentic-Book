@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 from sqlalchemy.sql import func
 
-from backend.app.models.translation import TranslationCache
+from app.models.translation import TranslationCache
 
 logger = logging.getLogger(__name__)
 

@@ -10,9 +10,9 @@ from fastapi import APIRouter, Depends, HTTPException, Response, Cookie
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.core.database import get_db, is_db_available
-from backend.app.services import user as user_service
-from backend.app.services import auth as auth_service
+from app.core.database import get_db, is_db_available
+from app.services import user as user_service
+from app.services import auth as auth_service
 
 logger = logging.getLogger(__name__)
 

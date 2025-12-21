@@ -7,7 +7,7 @@ from typing import Optional
 from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, DECIMAL, Index
 from sqlalchemy.sql import func
 
-from backend.app.core.database import Base
+from app.core.database import Base
 
 
 class Translation(Base):

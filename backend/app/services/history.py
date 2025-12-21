@@ -9,9 +9,9 @@ from typing import List, Optional, Dict, Any
 from sqlalchemy import select, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.models.session import Session
-from backend.app.models.message import Message
-from backend.app.core.database import is_db_available
+from app.models.session import Session
+from app.models.message import Message
+from app.core.database import is_db_available
 
 logger = logging.getLogger(__name__)
 

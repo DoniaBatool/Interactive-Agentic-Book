@@ -2,7 +2,7 @@ from typing import List, Optional, Dict, Any
 
 from pydantic import BaseModel
 
-from backend.app.models.schemas.chunk import DocumentChunk
+from app.models.schemas.chunk import DocumentChunk
 
 
 class ChatFilters(BaseModel):

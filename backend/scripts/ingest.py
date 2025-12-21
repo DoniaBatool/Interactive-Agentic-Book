@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from backend.app.services.ingestion import ingest_docs
+from app.services.ingestion import ingest_docs
 
 
 def main():

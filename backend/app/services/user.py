@@ -10,9 +10,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from backend.app.models.user import User
-from backend.app.models.user_profile import UserProfile
-from backend.app.services.auth import hash_password, verify_password
+from app.models.user import User
+from app.models.user_profile import UserProfile
+from app.services.auth import hash_password, verify_password
 
 logger = logging.getLogger(__name__)
 
@@ -247,7 +247,7 @@ async def link_session_to_user(
         True if linked, False otherwise
     """
     try:
-        from backend.app.models.session import Session
+        from app.models.session import Session
         
         result = await db.execute(
             select(Session).where(Session.session_id == session_id)

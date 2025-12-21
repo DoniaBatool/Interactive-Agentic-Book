@@ -8,7 +8,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from openai import OpenAI
 
-from backend.app.core.config import get_settings
+from app.core.config import get_settings
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/personalize", tags=["personalize"])

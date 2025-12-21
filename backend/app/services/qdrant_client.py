@@ -3,8 +3,8 @@ from typing import Iterable, Optional, Sequence, Tuple
 from qdrant_client import QdrantClient
 from qdrant_client.http import models as qmodels
 
-from backend.app.core.config import get_settings
-from backend.app.models.schemas.chunk import DocumentChunk
+from app.core.config import get_settings
+from app.models.schemas.chunk import DocumentChunk
 
 
 settings = get_settings()

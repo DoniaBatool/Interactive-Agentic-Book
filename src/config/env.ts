@@ -17,10 +17,9 @@ export const AUTH_SERVER_URL = (() => {
       return (window as any).__AUTH_URL__;
     }
     
-    // Production URL - UPDATE THIS with your deployed auth server URL
+    // Production URL - Render auth server
     if (isProduction) {
-      // TODO: Replace with your actual auth server URL
-      return 'https://your-auth-server.railway.app';
+      return 'https://interactive-agentic-book.onrender.com';
     }
   }
   
@@ -36,8 +35,10 @@ export const BACKEND_URL = (() => {
     }
     
     if (isProduction) {
-      // TODO: Replace with your actual backend URL
-      return 'https://your-backend.railway.app';
+      // TODO: Replace with your actual backend URL when deployed to Render
+      // For now, using localhost as backend is not deployed yet
+      // When backend is deployed, update this to: 'https://your-backend.onrender.com'
+      return 'http://localhost:8000'; // TODO: Update to production URL when backend is deployed
     }
   }
   
