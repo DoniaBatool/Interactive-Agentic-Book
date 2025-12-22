@@ -59,8 +59,14 @@ app.get("/", async (req, res) => {
   const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
   
   if (error) {
+    // Check if it's our custom admin OAuth block error
+    let errorMessage = error as string;
+    if (errorMessage === 'ADMIN_OAUTH_BLOCKED' || errorMessage.includes('ADMIN_OAUTH_BLOCKED')) {
+      errorMessage = 'Admin accounts cannot sign in via OAuth. Please use email/password login.';
+    }
+    
     // OAuth error - redirect to frontend signin page with error
-    const redirectUrl = `${frontendUrl}/auth/signin?error=${encodeURIComponent(error as string)}`;
+    const redirectUrl = `${frontendUrl}/auth/signin?error=${encodeURIComponent(errorMessage)}`;
     res.redirect(redirectUrl);
     return;
   }
