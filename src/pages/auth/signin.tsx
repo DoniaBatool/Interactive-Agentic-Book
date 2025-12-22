@@ -4,8 +4,6 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from '../../lib/i18n';
-import { AUTH_SERVER_URL } from '../../config/env';
-import { authClient } from '../../lib/auth-client';
 
 export default function SigninPage(): React.JSX.Element {
   const { login, user, loading, error, clearError, refreshSession } = useAuth();
@@ -21,83 +19,6 @@ export default function SigninPage(): React.JSX.Element {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [oauthError, setOauthError] = useState<string | null>(null);
-
-  // Handle OAuth callback - check if we're returning from OAuth
-  useEffect(() => {
-    if (typeof window !== 'undefined' && !loading) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get('code');
-      const error = urlParams.get('error');
-      
-      // If OAuth error, show error message
-      if (error) {
-        setOauthError(`OAuth error: ${error}. Please try again.`);
-        // Clear error from URL
-        window.history.replaceState({}, '', window.location.pathname);
-        return;
-      }
-      
-      // If OAuth callback with code, refresh session and check if user is admin
-      if (code && !error) {
-        // Refresh session to get user data from BetterAuth
-        refreshSession().then(async () => {
-          // Check if the user is admin - if so, sign them out
-          try {
-            const userResponse = await fetch(`${AUTH_SERVER_URL}/api/auth/get-user`, {
-              credentials: 'include',
-            });
-            
-            if (userResponse.ok) {
-              const userData = await userResponse.json();
-              if (userData.user) {
-                const isAdmin = !!(userData.user.isAdmin) || userData.user.role === 'admin';
-                
-                if (isAdmin) {
-                  // Admin users cannot sign in via OAuth - sign them out immediately
-                  try {
-                    // Call a custom endpoint to delete session and OAuth account link
-                    await fetch(`${AUTH_SERVER_URL}/api/auth/block-admin-oauth`, {
-                      method: 'POST',
-                      credentials: 'include',
-                    });
-                  } catch (err) {
-                    console.error('Error blocking admin OAuth:', err);
-                  }
-                  
-                  // Also call standard sign-out
-                  await fetch(`${AUTH_SERVER_URL}/api/auth/sign-out`, {
-                    method: 'POST',
-                    credentials: 'include',
-                  });
-                  
-                  setOauthError('Admin accounts cannot sign in via OAuth. Please use email/password login.');
-                  // Clear the code from URL
-                  window.history.replaceState({}, '', window.location.pathname);
-                  return;
-                }
-              }
-            }
-          } catch (err) {
-            console.error('Error checking admin status:', err);
-            // Continue with normal flow if check fails
-          }
-          
-          // Wait a bit for session to be set, then redirect to home
-          setTimeout(() => {
-            const isProd =
-              typeof window !== 'undefined' &&
-              window.location.hostname === 'doniabatool.github.io';
-            const target = isProd ? '/Interactive-Agentic-Book/' : '/';
-            window.location.href = target;
-          }, 1500); // Increased timeout to ensure session is set
-        }).catch((err) => {
-          console.error('OAuth callback error:', err);
-          setOauthError('Failed to complete sign-in. Please try again.');
-        });
-      }
-    }
-  }, [loading, refreshSession, history]);
 
   // Redirect if already logged in
   useEffect(() => {
