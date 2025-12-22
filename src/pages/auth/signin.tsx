@@ -34,11 +34,8 @@ export default function SigninPage(): React.JSX.Element {
         refreshSession().then(() => {
           // Wait a bit for session to be set, then redirect to home
           setTimeout(() => {
-            const isProd =
-              typeof window !== 'undefined' &&
-              window.location.hostname === 'doniabatool.github.io';
-            const target = isProd ? '/Interactive-Agentic-Book/' : '/';
-            window.location.href = target;
+            // Use Docusaurus router so React state (user) stays in memory
+            history.push('/');
           }, 1000);
         });
       }
@@ -77,12 +74,9 @@ export default function SigninPage(): React.JSX.Element {
     if (success) {
       // Small delay to ensure user state is set before redirect
       setTimeout(() => {
-        // Redirect to home, handling GitHub Pages baseUrl in production
-        const isProd =
-          typeof window !== 'undefined' &&
-          window.location.hostname === 'doniabatool.github.io';
-        const target = isProd ? '/Interactive-Agentic-Book/' : '/';
-        window.location.href = target;
+        // Redirect to previous page or home using Docusaurus router
+        const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/';
+        history.push(redirectUrl);
       }, 100);
     }
   };
