@@ -83,24 +83,52 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Check session on mount
   const refreshSession = useCallback(async () => {
     try {
-      const response = await fetch(`${authUrl}/api/auth/get-session`, {
+      // First try BetterAuth's get-session
+      const sessionResponse = await fetch(`${authUrl}/api/auth/get-session`, {
         credentials: 'include',
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        if (data.session && data.user) {
+      if (sessionResponse.ok) {
+        const sessionData = await sessionResponse.json();
+        if (sessionData.session && sessionData.user) {
+          // Get full user data including admin fields from our custom endpoint
+          try {
+            const userResponse = await fetch(`${authUrl}/api/auth/get-user`, {
+              credentials: 'include',
+            });
+            
+            if (userResponse.ok) {
+              const userData = await userResponse.json();
+              if (userData.user) {
+                const fullUserData = {
+                  ...userData.user,
+                  profile: userToProfile(userData.user),
+                };
+                // Debug: Log user data to check admin fields
+                console.log('🔍 User session data (with admin fields):', {
+                  email: fullUserData.email,
+                  isAdmin: (fullUserData as any).isAdmin,
+                  role: (fullUserData as any).role,
+                  fullUser: fullUserData
+                });
+                setUser(fullUserData);
+                try {
+                  localStorage.setItem('auth_user', JSON.stringify(fullUserData));
+                } catch (e) {
+                  console.debug('Failed to store auth_user in localStorage:', e);
+                }
+                return;
+              }
+            }
+          } catch (err) {
+            console.debug('Failed to fetch full user data, using session data:', err);
+          }
+          
+          // Fallback to session data if custom endpoint fails
           const userData = {
-            ...data.user,
-            profile: userToProfile(data.user),
+            ...sessionData.user,
+            profile: userToProfile(sessionData.user),
           };
-          // Debug: Log user data to check admin fields
-          console.log('🔍 User session data:', {
-            email: userData.email,
-            isAdmin: (userData as any).isAdmin,
-            role: (userData as any).role,
-            fullUser: userData
-          });
           setUser(userData);
           try {
             localStorage.setItem('auth_user', JSON.stringify(userData));

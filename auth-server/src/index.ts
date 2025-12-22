@@ -123,6 +123,38 @@ const checkAdmin = async (req: express.Request, res: express.Response, next: exp
   }
 };
 
+// Get current user with full details (including admin fields)
+app.get("/api/auth/get-user", async (req, res) => {
+  try {
+    const sessionToken = req.cookies?.['better-auth.session_token'] || 
+                         req.headers.cookie?.match(/better-auth\.session_token=([^;]+)/)?.[1];
+    
+    if (!sessionToken) {
+      return res.status(401).json({ error: 'Unauthorized: No session token' });
+    }
+    
+    const baseToken = sessionToken.split('.')[0];
+    
+    // Query user with all fields including admin fields
+    const result = await pool.query(
+      `SELECT u.* 
+       FROM "session" s 
+       JOIN "user" u ON s."userId" = u.id 
+       WHERE s.token = $1 AND s."expiresAt" > NOW()`,
+      [baseToken]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'Unauthorized: Invalid or expired session' });
+    }
+    
+    res.json({ user: result.rows[0] });
+  } catch (error: any) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Get all users (admin only)
 app.get("/api/auth/admin/users", checkAdmin, async (req, res) => {
   try {
