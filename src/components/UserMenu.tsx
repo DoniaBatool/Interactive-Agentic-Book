@@ -135,14 +135,24 @@ const UserMenu: React.FC = () => {
             {t('common.profile')}
           </Link>
           {(() => {
-            const isAdmin = (user as any).isAdmin || (user as any).role === 'admin';
-            // Debug: Log admin check
+            // Check multiple ways admin status might be stored
+            const isAdmin = 
+              (user as any).isAdmin === true || 
+              (user as any).isAdmin === 'true' ||
+              (user as any).role === 'admin' ||
+              (user as any).role === 'Admin';
+            
+            // Debug: Log admin check with full user object
             console.log('🔍 Admin check in UserMenu:', {
               email: user.email,
               isAdmin: (user as any).isAdmin,
+              isAdminType: typeof (user as any).isAdmin,
               role: (user as any).role,
+              roleType: typeof (user as any).role,
+              fullUser: user,
               result: isAdmin
             });
+            
             return isAdmin;
           })() && (
             <Link to="/auth/admin" className="user-menu-item" onClick={() => setIsOpen(false)}>
