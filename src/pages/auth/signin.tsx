@@ -20,6 +20,7 @@ export default function SigninPage(): React.JSX.Element {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [oauthError, setOauthError] = useState<string | null>(null);
 
   // Handle OAuth callback - check if we're returning from OAuth
   useEffect(() => {
@@ -27,6 +28,14 @@ export default function SigninPage(): React.JSX.Element {
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get('code');
       const error = urlParams.get('error');
+      
+      // If OAuth error, show error message
+      if (error) {
+        setOauthError(`OAuth error: ${error}. Please try again.`);
+        // Clear error from URL
+        window.history.replaceState({}, '', window.location.pathname);
+        return;
+      }
       
       // If OAuth callback with code, refresh session and redirect to home
       if (code && !error) {
@@ -39,7 +48,10 @@ export default function SigninPage(): React.JSX.Element {
               window.location.hostname === 'doniabatool.github.io';
             const target = isProd ? '/Interactive-Agentic-Book/' : '/';
             window.location.href = target;
-          }, 1000);
+          }, 1500); // Increased timeout to ensure session is set
+        }).catch((err) => {
+          console.error('OAuth callback error:', err);
+          setOauthError('Failed to complete sign-in. Please try again.');
         });
       }
     }
@@ -104,8 +116,8 @@ export default function SigninPage(): React.JSX.Element {
           </div>
 
           <form onSubmit={handleSubmit} className="auth-form">
-            {error && (
-              <div className="auth-error">{error}</div>
+            {(error || oauthError) && (
+              <div className="auth-error">{error || oauthError}</div>
             )}
 
             <div className="auth-field">

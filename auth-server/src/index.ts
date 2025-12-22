@@ -49,6 +49,21 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok", service: "better-auth-server" });
 });
 
+// Root route handler - redirect OAuth errors to frontend
+app.get("/", (req, res) => {
+  const error = req.query.error;
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+  
+  if (error) {
+    // OAuth error - redirect to frontend signin page with error
+    const redirectUrl = `${frontendUrl}/auth/signin?error=${encodeURIComponent(error as string)}`;
+    res.redirect(redirectUrl);
+  } else {
+    // No error - just redirect to frontend
+    res.redirect(frontendUrl);
+  }
+});
+
 // Middleware to check admin status
 const checkAdmin = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {

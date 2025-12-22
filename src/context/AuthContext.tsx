@@ -108,6 +108,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             console.debug('Failed to store auth_user in localStorage:', e);
           }
         } else {
+          // Only clear user if we're sure there's no session
+          // Don't clear if we have a cached user (might be a temporary network issue)
+          const cachedUser = localStorage.getItem('auth_user');
+          if (!cachedUser) {
+            setUser(null);
+            try {
+              localStorage.removeItem('auth_user');
+            } catch {
+              // ignore
+            }
+          }
+        }
+      } else {
+        // Only clear if status is 401/403 (unauthorized), not for other errors
+        if (response.status === 401 || response.status === 403) {
           setUser(null);
           try {
             localStorage.removeItem('auth_user');
@@ -115,17 +130,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             // ignore
           }
         }
-      } else {
-        setUser(null);
-        try {
-          localStorage.removeItem('auth_user');
-        } catch {
-          // ignore
-        }
+        // For other errors, keep cached user if available
       }
     } catch (err) {
       console.debug('Session check failed:', err);
-      setUser(null);
+      // Don't clear user on network errors - keep cached user
+      // Only clear if we're sure there's no valid session
     } finally {
       setLoading(false);
     }
