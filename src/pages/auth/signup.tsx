@@ -37,6 +37,7 @@ export default function SignupPage(): React.JSX.Element {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showVerificationMessage, setShowVerificationMessage] = useState(false);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -94,7 +95,8 @@ export default function SignupPage(): React.JSX.Element {
     setIsSubmitting(false);
 
     if (success) {
-      history.push('/');
+      // With email verification enabled, user needs to verify email before sign-in
+      setShowVerificationMessage(true);
     }
   };
 
