@@ -30,9 +30,9 @@ export default function SigninPage(): React.JSX.Element {
       if (code && !error) {
         // Refresh session to get user data from BetterAuth
         refreshSession().then(() => {
-          // Wait a bit for session to be set, then redirect
+          // Wait a bit for session to be set, then redirect to home with baseUrl
           setTimeout(() => {
-            history.push('/');
+            window.location.href = '/Interactive-Agentic-Book/';
           }, 1000);
         });
       }
