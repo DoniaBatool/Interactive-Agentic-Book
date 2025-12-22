@@ -189,13 +189,18 @@ export default function SigninPage(): React.JSX.Element {
                 onClick={async (e) => {
                   e.preventDefault();
                   try {
+                    // Detect if we're on GitHub Pages or Render
+                    const isGitHubPages = typeof window !== 'undefined' && window.location.hostname === 'doniabatool.github.io';
+                    const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
+                    const callbackURL = window.location.origin + basePath + '/auth/signin';
+                    
                     const response = await fetch(`${AUTH_SERVER_URL}/api/auth/sign-in/social`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
                       credentials: 'include',
                       body: JSON.stringify({
                         provider: 'google',
-                        callbackURL: window.location.origin + '/Interactive-Agentic-Book',
+                        callbackURL: callbackURL,
                       }),
                     });
                     const data = await response.json();
@@ -223,13 +228,18 @@ export default function SigninPage(): React.JSX.Element {
                 onClick={async (e) => {
                   e.preventDefault();
                   try {
+                    // Detect if we're on GitHub Pages or Render
+                    const isGitHubPages = typeof window !== 'undefined' && window.location.hostname === 'doniabatool.github.io';
+                    const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
+                    const callbackURL = window.location.origin + basePath + '/auth/signin';
+                    
                     const response = await fetch(`${AUTH_SERVER_URL}/api/auth/sign-in/social`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
                       credentials: 'include',
                       body: JSON.stringify({
                         provider: 'github',
-                        callbackURL: window.location.origin + '/Interactive-Agentic-Book/auth/signin',
+                        callbackURL: callbackURL,
                       }),
                     });
                     const data = await response.json();

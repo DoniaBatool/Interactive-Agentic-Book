@@ -325,6 +325,7 @@ export const auth = betterAuth({
     process.env.FRONTEND_URL || "",
     "https://doniabatool.github.io",
     "https://doniabatool.github.io/Interactive-Agentic-Book",
+    "https://interactive-agentic-book-frontend.onrender.com",
   ].filter(Boolean),
 });
 
