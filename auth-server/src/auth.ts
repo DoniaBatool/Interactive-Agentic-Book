@@ -284,8 +284,23 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       enabled: !!process.env.GOOGLE_CLIENT_ID,
-      // Ensure OAuth users get default role, not admin
+      // Prevent linking OAuth accounts to existing admin users
+      // Always create new user or link only to non-admin users
       mapProfileToUser: async (profile) => {
+        // Check if user with this email already exists
+        const existingUser = await pool.query(
+          'SELECT id, email, "isAdmin", role FROM "user" WHERE email = $1',
+          [profile.email]
+        );
+        
+        // If user exists and is admin, prevent linking - throw error
+        if (existingUser.rows.length > 0) {
+          const user = existingUser.rows[0];
+          if (user.isAdmin || user.role === 'admin') {
+            throw new Error('This email is already associated with an admin account. Please use email/password login or contact support.');
+          }
+        }
+        
         return {
           email: profile.email,
           name: profile.name,
@@ -302,8 +317,22 @@ export const auth = betterAuth({
       clientId: process.env.GITHUB_CLIENT_ID || "",
       clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
       enabled: !!process.env.GITHUB_CLIENT_ID,
-      // Ensure OAuth users get default role, not admin
+      // Prevent linking OAuth accounts to existing admin users
       mapProfileToUser: async (profile) => {
+        // Check if user with this email already exists
+        const existingUser = await pool.query(
+          'SELECT id, email, "isAdmin", role FROM "user" WHERE email = $1',
+          [profile.email]
+        );
+        
+        // If user exists and is admin, prevent linking - throw error
+        if (existingUser.rows.length > 0) {
+          const user = existingUser.rows[0];
+          if (user.isAdmin || user.role === 'admin') {
+            throw new Error('This email is already associated with an admin account. Please use email/password login or contact support.');
+          }
+        }
+        
         return {
           email: profile.email,
           name: profile.name,
