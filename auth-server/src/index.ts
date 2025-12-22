@@ -336,8 +336,91 @@ app.get("/api/auth/callback/github", async (req, res, next) => {
   }
 });
 
+// Custom OAuth callback handler to block admin users
+// This runs AFTER BetterAuth processes the callback
+app.get("/api/auth/callback/google", async (req, res, next) => {
+  // Let BetterAuth process the callback first
+  // We'll check after in the root route handler
+  next();
+});
+
+app.get("/api/auth/callback/github", async (req, res, next) => {
+  // Let BetterAuth process the callback first
+  // We'll check after in the root route handler
+  next();
+});
+
 // BetterAuth handles all /api/auth/* routes (must be AFTER admin routes)
-app.all("/api/auth/*", toNodeHandler(auth));
+// We wrap it to catch responses and check for admin users
+const authHandler = toNodeHandler(auth);
+app.all("/api/auth/*", async (req, res, next) => {
+  // Store original redirect function
+  const originalRedirect = res.redirect.bind(res);
+  
+  // Override redirect to check admin status before redirecting
+  res.redirect = function(url: string) {
+    // Only check for OAuth callbacks
+    if (req.path.includes('/callback/google') || req.path.includes('/callback/github')) {
+      // Check if user is admin after OAuth callback
+      setTimeout(async () => {
+        try {
+          const sessionToken = req.cookies?.['better-auth.session_token'] || 
+                               req.headers.cookie?.match(/better-auth\.session_token=([^;]+)/)?.[1];
+          
+          if (sessionToken) {
+            const baseToken = sessionToken.split('.')[0];
+            const sessionResult = await pool.query(
+              `SELECT s."userId", u."isAdmin", u.role, u.email, s."createdAt"
+               FROM "session" s 
+               JOIN "user" u ON s."userId" = u.id 
+               WHERE s.token = $1 AND s."expiresAt" > NOW()`,
+              [baseToken]
+            );
+            
+            if (sessionResult.rows.length > 0) {
+              const user = sessionResult.rows[0];
+              const isAdmin = user.isAdmin || user.role === 'admin';
+              
+              // Check if session was just created (within last 5 seconds)
+              const createdAt = new Date(user.createdAt);
+              const now = new Date();
+              const secondsSinceCreation = (now.getTime() - createdAt.getTime()) / 1000;
+              
+              if (secondsSinceCreation < 5 && isAdmin) {
+                console.log(`🚫 Blocking OAuth sign-in for admin user: ${user.email}`);
+                
+                // Delete the session
+                await pool.query('DELETE FROM "session" WHERE token = $1', [baseToken]);
+                
+                // Delete OAuth account link
+                await pool.query('DELETE FROM "account" WHERE "userId" = $1 AND "createdAt" > NOW() - INTERVAL \'5 seconds\'', [user.userId]);
+                
+                // Clear cookie
+                res.clearCookie('better-auth.session_token', {
+                  httpOnly: true,
+                  secure: isProduction,
+                  sameSite: isProduction ? 'none' : 'lax',
+                });
+                
+                // Redirect to signin with error
+                const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+                return originalRedirect(`${frontendUrl}/auth/signin?error=${encodeURIComponent('Admin accounts cannot sign in via OAuth. Please use email/password login.')}`);
+              }
+            }
+          }
+        } catch (error: any) {
+          console.error('Error checking admin status in OAuth callback:', error);
+        }
+      }, 100); // Small delay to ensure session is created
+    }
+    
+    // Normal redirect
+    return originalRedirect(url);
+  };
+  
+  // Call BetterAuth handler
+  authHandler(req, res, next);
+});
 
 // Start server
 app.listen(PORT, () => {
