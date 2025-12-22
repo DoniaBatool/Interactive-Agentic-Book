@@ -300,54 +300,163 @@ app.delete("/api/auth/admin/users/:userId", checkAdmin, async (req, res) => {
   }
 });
 
-// Custom endpoint to block admin OAuth sign-in
-// Called by frontend immediately after OAuth callback
-app.post("/api/auth/block-admin-oauth", async (req, res) => {
+// Intercept OAuth callbacks BEFORE BetterAuth processes them
+// Check if the email belongs to an admin user and block if so
+app.get("/api/auth/callback/google", async (req, res, next) => {
+  const code = req.query.code as string;
+  const state = req.query.state as string;
+  
+  if (!code) {
+    return next(); // No code, let BetterAuth handle error
+  }
+  
   try {
-    const sessionToken = req.cookies?.['better-auth.session_token'] || 
-                         req.headers.cookie?.match(/better-auth\.session_token=([^;]+)/)?.[1];
+    // Exchange code for access token from Google
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        code: code,
+        client_id: process.env.GOOGLE_CLIENT_ID || '',
+        client_secret: process.env.GOOGLE_CLIENT_SECRET || '',
+        redirect_uri: `${process.env.AUTH_SERVER_URL || 'http://localhost:8002'}/api/auth/callback/google`,
+        grant_type: 'authorization_code',
+      }),
+    });
     
-    if (!sessionToken) {
-      return res.json({ success: false, message: 'No session found' });
+    if (!tokenResponse.ok) {
+      console.error('Failed to exchange Google OAuth code:', await tokenResponse.text());
+      return next(); // Let BetterAuth handle the error
     }
     
-    const baseToken = sessionToken.split('.')[0];
-    const sessionResult = await pool.query(
-      `SELECT s."userId", u."isAdmin", u.role, u.email
-       FROM "session" s 
-       JOIN "user" u ON s."userId" = u.id 
-       WHERE s.token = $1 AND s."expiresAt" > NOW()`,
-      [baseToken]
-    );
+    const tokenData = await tokenResponse.json();
+    const accessToken = tokenData.access_token;
     
-    if (sessionResult.rows.length > 0) {
-      const user = sessionResult.rows[0];
-      const isAdmin = user.isAdmin || user.role === 'admin';
+    // Get user info from Google
+    const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: { 'Authorization': `Bearer ${accessToken}` },
+    });
+    
+    if (!userInfoResponse.ok) {
+      console.error('Failed to get Google user info:', await userInfoResponse.text());
+      return next(); // Let BetterAuth handle the error
+    }
+    
+    const userInfo = await userInfoResponse.json();
+    const email = userInfo.email;
+    
+    if (email) {
+      // Check if this email belongs to an admin user
+      const userResult = await pool.query(
+        'SELECT id, email, "isAdmin", role FROM "user" WHERE email = $1',
+        [email]
+      );
       
-      if (isAdmin) {
-        console.log(`🚫 Blocking OAuth sign-in for admin user: ${user.email}`);
+      if (userResult.rows.length > 0) {
+        const user = userResult.rows[0];
+        const isAdmin = user.isAdmin || user.role === 'admin';
         
-        // Delete the session
-        await pool.query('DELETE FROM "session" WHERE token = $1', [baseToken]);
-        
-        // Delete OAuth account link (any created in last minute)
-        await pool.query('DELETE FROM "account" WHERE "userId" = $1 AND "createdAt" > NOW() - INTERVAL \'1 minute\'', [user.userId]);
-        
-        // Clear cookie
-        res.clearCookie('better-auth.session_token', {
-          httpOnly: true,
-          secure: isProduction,
-          sameSite: isProduction ? 'none' : 'lax',
-        });
-        
-        return res.json({ success: true, blocked: true });
+        if (isAdmin) {
+          console.log(`🚫 Blocking OAuth sign-in for admin user: ${email}`);
+          const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+          return res.redirect(`${frontendUrl}/auth/signin?error=${encodeURIComponent('Admin accounts cannot sign in via OAuth. Please use email/password login.')}`);
+        }
       }
     }
     
-    res.json({ success: true, blocked: false });
+    // Not admin or new user - let BetterAuth process normally
+    next();
   } catch (error: any) {
-    console.error('Error blocking admin OAuth:', error);
-    res.status(500).json({ success: false, error: error.message });
+    console.error('Error checking admin status in Google OAuth callback:', error);
+    // On error, let BetterAuth handle it
+    next();
+  }
+});
+
+app.get("/api/auth/callback/github", async (req, res, next) => {
+  const code = req.query.code as string;
+  const state = req.query.state as string;
+  
+  if (!code) {
+    return next(); // No code, let BetterAuth handle error
+  }
+  
+  try {
+    // Exchange code for access token from GitHub
+    const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        client_id: process.env.GITHUB_CLIENT_ID || '',
+        client_secret: process.env.GITHUB_CLIENT_SECRET || '',
+        code: code,
+        redirect_uri: `${process.env.AUTH_SERVER_URL || 'http://localhost:8002'}/api/auth/callback/github`,
+      }),
+    });
+    
+    if (!tokenResponse.ok) {
+      console.error('Failed to exchange GitHub OAuth code:', await tokenResponse.text());
+      return next(); // Let BetterAuth handle the error
+    }
+    
+    const tokenData = await tokenResponse.json();
+    const accessToken = tokenData.access_token;
+    
+    // Get user info from GitHub
+    const userInfoResponse = await fetch('https://api.github.com/user', {
+      headers: { 'Authorization': `Bearer ${accessToken}` },
+    });
+    
+    if (!userInfoResponse.ok) {
+      console.error('Failed to get GitHub user info:', await userInfoResponse.text());
+      return next(); // Let BetterAuth handle the error
+    }
+    
+    const userInfo = await userInfoResponse.json();
+    // GitHub doesn't always return email in user endpoint, need to get from email endpoint
+    let email = userInfo.email;
+    
+    if (!email) {
+      // Try to get email from GitHub's email endpoint
+      const emailResponse = await fetch('https://api.github.com/user/emails', {
+        headers: { 'Authorization': `Bearer ${accessToken}` },
+      });
+      
+      if (emailResponse.ok) {
+        const emails = await emailResponse.json();
+        const primaryEmail = emails.find((e: any) => e.primary) || emails[0];
+        email = primaryEmail?.email;
+      }
+    }
+    
+    if (email) {
+      // Check if this email belongs to an admin user
+      const userResult = await pool.query(
+        'SELECT id, email, "isAdmin", role FROM "user" WHERE email = $1',
+        [email]
+      );
+      
+      if (userResult.rows.length > 0) {
+        const user = userResult.rows[0];
+        const isAdmin = user.isAdmin || user.role === 'admin';
+        
+        if (isAdmin) {
+          console.log(`🚫 Blocking OAuth sign-in for admin user: ${email}`);
+          const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+          return res.redirect(`${frontendUrl}/auth/signin?error=${encodeURIComponent('Admin accounts cannot sign in via OAuth. Please use email/password login.')}`);
+        }
+      }
+    }
+    
+    // Not admin or new user - let BetterAuth process normally
+    next();
+  } catch (error: any) {
+    console.error('Error checking admin status in GitHub OAuth callback:', error);
+    // On error, let BetterAuth handle it
+    next();
   }
 });
 
