@@ -158,9 +158,9 @@ export default function SigninPage(): React.JSX.Element {
           </div>
 
           <form onSubmit={handleSubmit} className="auth-form">
-            {(error || oauthError) && (
-              <div className="auth-error">{error || oauthError}</div>
-            )}
+              {error && (
+                <div className="auth-error">{error}</div>
+              )}
 
             <div className="auth-field">
               <label htmlFor="email">{t('auth.email')}</label>
