@@ -203,15 +203,10 @@ export default function SigninPage(): React.JSX.Element {
                   e.preventDefault();
                   try {
                     // Use BetterAuth client SDK for OAuth
-                    // Detect if we're on GitHub Pages or Render
-                    const isGitHubPages = typeof window !== 'undefined' && window.location.hostname === 'doniabatool.github.io';
-                    const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
-                    const callbackURL = window.location.origin + basePath + '/auth/signin';
-                    
-                    // Use BetterAuth client's signIn.social method
+                    // Don't pass callbackURL - let BetterAuth use default callback handling
+                    // BetterAuth will redirect to the auth server callback, then to frontend
                     const result = await authClient.signIn.social({
                       provider: 'google',
-                      callbackURL: callbackURL,
                     });
                     
                     // BetterAuth returns { data: { url: string } } or { error: ... }
@@ -245,15 +240,9 @@ export default function SigninPage(): React.JSX.Element {
                   e.preventDefault();
                   try {
                     // Use BetterAuth client SDK for OAuth
-                    // Detect if we're on GitHub Pages or Render
-                    const isGitHubPages = typeof window !== 'undefined' && window.location.hostname === 'doniabatool.github.io';
-                    const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
-                    const callbackURL = window.location.origin + basePath + '/auth/signin';
-                    
-                    // Use BetterAuth client's signIn.social method
+                    // Don't pass callbackURL - let BetterAuth use default callback handling
                     const result = await authClient.signIn.social({
                       provider: 'github',
-                      callbackURL: callbackURL,
                     });
                     
                     // BetterAuth returns { data: { url: string } } or { error: ... }

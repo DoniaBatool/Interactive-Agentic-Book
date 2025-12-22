@@ -340,6 +340,10 @@ export const auth = betterAuth({
     "https://doniabatool.github.io/Interactive-Agentic-Book",
     "https://interactive-agentic-book-frontend.onrender.com",
   ].filter(Boolean),
+  // Redirect configuration for OAuth callbacks
+  redirect: {
+    onSignIn: process.env.FRONTEND_URL || "http://localhost:3000",
+  },
 });
 
 export type Session = typeof auth.$Infer.Session;
