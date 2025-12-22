@@ -100,6 +100,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             if (userResponse.ok) {
               const userData = await userResponse.json();
               if (userData.user) {
+                // Don't set user if email is not verified
+                if (!userData.user.emailVerified) {
+                  setUser(null);
+                  try {
+                    localStorage.removeItem('auth_user');
+                  } catch (e) {
+                    // Ignore
+                  }
+                  return;
+                }
+                
                 const fullUserData = {
                   ...userData.user,
                   profile: userToProfile(userData.user),
@@ -125,6 +136,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           }
           
           // Fallback to session data if custom endpoint fails
+          // Don't set user if email is not verified
+          if (!sessionData.user.emailVerified) {
+            setUser(null);
+            try {
+              localStorage.removeItem('auth_user');
+            } catch (e) {
+              // Ignore
+            }
+            return;
+          }
+          
           const userData = {
             ...sessionData.user,
             profile: userToProfile(sessionData.user),
@@ -196,6 +218,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (response.ok) {
         const data = await response.json();
         if (data.user) {
+          // Check if email is verified before allowing sign-in
+          if (!data.user.emailVerified) {
+            setError('Please verify your email before signing in. Check your inbox for the verification link.');
+            setLoading(false);
+            return false;
+          }
+          
           const userData = {
             ...data.user,
             profile: userToProfile(data.user),
@@ -266,7 +295,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       if (response.ok) {
-        if (responseData.user) {
+        // If email verification is required, don't auto sign-in
+        // Only set user if email is already verified
+        if (responseData.user && responseData.user.emailVerified) {
           const userData = {
             ...responseData.user,
             profile: userToProfile(responseData.user),
@@ -276,6 +307,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             localStorage.setItem('auth_user', JSON.stringify(userData));
           } catch (e) {
             console.debug('Failed to store auth_user in localStorage after signup:', e);
+          }
+        } else {
+          // Email verification required - clear any session that might have been created
+          // Don't set user, they need to verify email first
+          setUser(null);
+          try {
+            localStorage.removeItem('auth_user');
+          } catch (e) {
+            // Ignore
           }
         }
         return true;
