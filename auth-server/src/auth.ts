@@ -285,7 +285,6 @@ export const auth = betterAuth({
         return {
           email: profile.email,
           name: profile.name,
-          image: profile.image,
           emailVerified: true,
           role: "user", // Explicitly set to user
           isAdmin: false, // Explicitly set to false
@@ -304,7 +303,6 @@ export const auth = betterAuth({
         return {
           email: profile.email,
           name: profile.name,
-          image: profile.image,
           emailVerified: true,
           role: "user", // Explicitly set to user
           isAdmin: false, // Explicitly set to false
