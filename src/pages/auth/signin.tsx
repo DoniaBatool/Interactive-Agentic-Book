@@ -38,10 +38,40 @@ export default function SigninPage(): React.JSX.Element {
         return;
       }
       
-      // If OAuth callback with code, refresh session and redirect to home
+      // If OAuth callback with code, refresh session and check if user is admin
       if (code && !error) {
         // Refresh session to get user data from BetterAuth
-        refreshSession().then(() => {
+        refreshSession().then(async () => {
+          // Check if the user is admin - if so, sign them out
+          try {
+            const userResponse = await fetch(`${AUTH_SERVER_URL}/api/auth/get-user`, {
+              credentials: 'include',
+            });
+            
+            if (userResponse.ok) {
+              const userData = await userResponse.json();
+              if (userData.user) {
+                const isAdmin = !!(userData.user.isAdmin) || userData.user.role === 'admin';
+                
+                if (isAdmin) {
+                  // Admin users cannot sign in via OAuth - sign them out
+                  await fetch(`${AUTH_SERVER_URL}/api/auth/sign-out`, {
+                    method: 'POST',
+                    credentials: 'include',
+                  });
+                  
+                  setOauthError('Admin accounts cannot sign in via OAuth. Please use email/password login.');
+                  // Clear the code from URL
+                  window.history.replaceState({}, '', window.location.pathname);
+                  return;
+                }
+              }
+            }
+          } catch (err) {
+            console.error('Error checking admin status:', err);
+            // Continue with normal flow if check fails
+          }
+          
           // Wait a bit for session to be set, then redirect to home
           setTimeout(() => {
             const isProd =
