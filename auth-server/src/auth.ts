@@ -81,6 +81,7 @@ const isProduction = process.env.AUTH_SERVER_URL?.startsWith('https://') ||
 export const auth = betterAuth({
   baseURL: process.env.AUTH_SERVER_URL || "http://localhost:8002",
   basePath: "/api/auth",
+  secret: process.env.AUTH_SECRET || process.env.BETTER_AUTH_SECRET || "change-this-secret-in-production",
   database: pool,
   // Cookie configuration for OAuth state management
   advanced: {
