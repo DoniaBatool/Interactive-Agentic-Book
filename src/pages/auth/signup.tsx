@@ -297,15 +297,10 @@ export default function SignupPage(): React.JSX.Element {
                 onClick={async (e) => {
                   e.preventDefault();
                   try {
-                    // Detect if we're on GitHub Pages or Render
-                    const isGitHubPages = typeof window !== 'undefined' && window.location.hostname === 'doniabatool.github.io';
-                    const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
-                    const callbackURL = window.location.origin + basePath + '/auth/signin';
-                    
                     // Use BetterAuth client SDK for OAuth
+                    // Don't pass callbackURL - let BetterAuth use default callback handling
                     const result = await authClient.signIn.social({
                       provider: 'google',
-                      callbackURL: callbackURL,
                     });
                     
                     // BetterAuth returns { data: { url: string } } or { error: ... }
@@ -335,15 +330,10 @@ export default function SignupPage(): React.JSX.Element {
                 onClick={async (e) => {
                   e.preventDefault();
                   try {
-                    // Detect if we're on GitHub Pages or Render
-                    const isGitHubPages = typeof window !== 'undefined' && window.location.hostname === 'doniabatool.github.io';
-                    const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
-                    const callbackURL = window.location.origin + basePath + '/auth/signin';
-                    
                     // Use BetterAuth client SDK for OAuth
+                    // Don't pass callbackURL - let BetterAuth use default callback handling
                     const result = await authClient.signIn.social({
                       provider: 'github',
-                      callbackURL: callbackURL,
                     });
                     
                     // BetterAuth returns { data: { url: string } } or { error: ... }
