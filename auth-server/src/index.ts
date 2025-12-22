@@ -49,8 +49,8 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok", service: "better-auth-server" });
 });
 
-// Root route handler - redirect OAuth errors to frontend
-app.get("/", (req, res) => {
+// Root route handler - redirect OAuth errors to frontend and check admin status
+app.get("/", async (req, res) => {
   const error = req.query.error;
   const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
   
@@ -58,10 +58,63 @@ app.get("/", (req, res) => {
     // OAuth error - redirect to frontend signin page with error
     const redirectUrl = `${frontendUrl}/auth/signin?error=${encodeURIComponent(error as string)}`;
     res.redirect(redirectUrl);
-  } else {
-    // No error - just redirect to frontend
-    res.redirect(frontendUrl);
+    return;
   }
+  
+  // Check if user just signed in via OAuth and is admin
+  try {
+    const sessionToken = req.cookies?.['better-auth.session_token'] || 
+                         req.headers.cookie?.match(/better-auth\.session_token=([^;]+)/)?.[1];
+    
+    if (sessionToken) {
+      const baseToken = sessionToken.split('.')[0];
+      const sessionResult = await pool.query(
+        `SELECT s."userId", u."isAdmin", u.role, u.email 
+         FROM "session" s 
+         JOIN "user" u ON s."userId" = u.id 
+         WHERE s.token = $1 AND s."expiresAt" > NOW()`,
+        [baseToken]
+      );
+      
+      if (sessionResult.rows.length > 0) {
+        const user = sessionResult.rows[0];
+        const isAdmin = user.isAdmin || user.role === 'admin';
+        
+        // Check if this session was just created (within last 5 seconds)
+        // This indicates a fresh OAuth sign-in
+        const sessionCreated = await pool.query(
+          `SELECT "createdAt" FROM "session" WHERE token = $1`,
+          [baseToken]
+        );
+        
+        if (sessionCreated.rows.length > 0) {
+          const createdAt = new Date(sessionCreated.rows[0].createdAt);
+          const now = new Date();
+          const secondsSinceCreation = (now.getTime() - createdAt.getTime()) / 1000;
+          
+          // If session was created within last 10 seconds and user is admin, sign them out
+          if (secondsSinceCreation < 10 && isAdmin) {
+            // Delete the session to sign out the admin
+            await pool.query('DELETE FROM "session" WHERE token = $1', [baseToken]);
+            
+            // Clear the cookie
+            res.clearCookie('better-auth.session_token');
+            
+            // Redirect to signin with error
+            const redirectUrl = `${frontendUrl}/auth/signin?error=${encodeURIComponent('Admin accounts cannot sign in via OAuth. Please use email/password login.')}`;
+            res.redirect(redirectUrl);
+            return;
+          }
+        }
+      }
+    }
+  } catch (error: any) {
+    console.error('Error checking admin status in root route:', error);
+    // Continue to redirect if there's an error
+  }
+  
+  // No error - just redirect to frontend
+  res.redirect(frontendUrl);
 });
 
 // Middleware to check admin status

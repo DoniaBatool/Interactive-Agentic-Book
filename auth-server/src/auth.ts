@@ -284,23 +284,8 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       enabled: !!process.env.GOOGLE_CLIENT_ID,
-      // Prevent linking OAuth accounts to existing admin users
-      // Always create new user or link only to non-admin users
+      // Ensure OAuth users get default role, not admin
       mapProfileToUser: async (profile) => {
-        // Check if user with this email already exists
-        const existingUser = await pool.query(
-          'SELECT id, email, "isAdmin", role FROM "user" WHERE email = $1',
-          [profile.email]
-        );
-        
-        // If user exists and is admin, prevent linking - throw error
-        if (existingUser.rows.length > 0) {
-          const user = existingUser.rows[0];
-          if (user.isAdmin || user.role === 'admin') {
-            throw new Error('This email is already associated with an admin account. Please use email/password login or contact support.');
-          }
-        }
-        
         return {
           email: profile.email,
           name: profile.name,
@@ -317,22 +302,8 @@ export const auth = betterAuth({
       clientId: process.env.GITHUB_CLIENT_ID || "",
       clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
       enabled: !!process.env.GITHUB_CLIENT_ID,
-      // Prevent linking OAuth accounts to existing admin users
+      // Ensure OAuth users get default role, not admin
       mapProfileToUser: async (profile) => {
-        // Check if user with this email already exists
-        const existingUser = await pool.query(
-          'SELECT id, email, "isAdmin", role FROM "user" WHERE email = $1',
-          [profile.email]
-        );
-        
-        // If user exists and is admin, prevent linking - throw error
-        if (existingUser.rows.length > 0) {
-          const user = existingUser.rows[0];
-          if (user.isAdmin || user.role === 'admin') {
-            throw new Error('This email is already associated with an admin account. Please use email/password login or contact support.');
-          }
-        }
-        
         return {
           email: profile.email,
           name: profile.name,
@@ -391,19 +362,19 @@ export const auth = betterAuth({
       },
     },
   },
-  trustedOrigins: [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    process.env.FRONTEND_URL || "",
-    "https://doniabatool.github.io",
-    "https://doniabatool.github.io/Interactive-Agentic-Book",
-    "https://interactive-agentic-book-frontend.onrender.com",
-  ].filter(Boolean),
-  // Redirect configuration for OAuth callbacks
-  redirect: {
-    onSignIn: process.env.FRONTEND_URL || "http://localhost:3000",
-  },
-});
+      trustedOrigins: [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        process.env.FRONTEND_URL || "",
+        "https://doniabatool.github.io",
+        "https://doniabatool.github.io/Interactive-Agentic-Book",
+        "https://interactive-agentic-book-frontend.onrender.com",
+      ].filter(Boolean),
+      // Redirect configuration for OAuth callbacks
+      redirect: {
+        onSignIn: process.env.FRONTEND_URL || "http://localhost:3000",
+      },
+    });
 
 export type Session = typeof auth.$Infer.Session;
 export type User = typeof auth.$Infer.Session.user;
