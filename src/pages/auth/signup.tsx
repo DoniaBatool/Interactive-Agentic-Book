@@ -108,6 +108,37 @@ export default function SignupPage(): React.JSX.Element {
     );
   }
 
+  // Show verification message if signup was successful
+  if (showVerificationMessage) {
+    return (
+      <Layout title="Verify Your Email" description="Email verification required">
+        <div className="auth-container">
+          <div className="auth-card">
+            <div className="auth-header">
+              <h1>Check Your Email</h1>
+              <p>We've sent a verification link to your email address</p>
+            </div>
+            <div style={{ padding: '20px', textAlign: 'center' }}>
+              <div style={{ marginBottom: '20px', color: '#4CAF50', fontSize: '48px' }}>📧</div>
+              <p style={{ marginBottom: '20px', color: '#666' }}>
+                Please check your inbox at <strong>{formData.email}</strong> and click the verification link to activate your account.
+              </p>
+              <p style={{ marginBottom: '20px', color: '#999', fontSize: '14px' }}>
+                Didn't receive the email? Check your spam folder or{' '}
+                <a href="/auth/signup" onClick={() => setShowVerificationMessage(false)} style={{ color: '#4CAF50' }}>
+                  try signing up again
+                </a>
+              </p>
+              <a href="/auth/signin" className="auth-submit" style={{ display: 'inline-block', textDecoration: 'none', marginTop: '20px' }}>
+                Go to Sign In
+              </a>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout title="Sign Up" description="Create your account">
       <div className="auth-container">
