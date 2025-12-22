@@ -300,6 +300,120 @@ app.delete("/api/auth/admin/users/:userId", checkAdmin, async (req, res) => {
   }
 });
 
+// Middleware to block admin users from OAuth sign-in
+// This runs AFTER BetterAuth processes the callback but before redirect
+app.use("/api/auth/callback/google", async (req, res, next) => {
+  // Let BetterAuth process first, then check
+  const originalEnd = res.end.bind(res);
+  const originalRedirect = res.redirect.bind(res);
+  
+  // Override end to check admin status before sending response
+  res.end = function(chunk?: any, encoding?: any) {
+    checkAndBlockAdmin(req, res, originalEnd, originalRedirect, chunk, encoding);
+  };
+  
+  // Override redirect to check admin status before redirecting
+  res.redirect = function(url: string | number, url2?: string) {
+    const finalUrl = typeof url === 'number' ? url2! : url;
+    checkAndBlockAdmin(req, res, originalEnd, originalRedirect, null, null, finalUrl);
+  };
+  
+  next();
+});
+
+app.use("/api/auth/callback/github", async (req, res, next) => {
+  // Same for GitHub
+  const originalEnd = res.end.bind(res);
+  const originalRedirect = res.redirect.bind(res);
+  
+  res.end = function(chunk?: any, encoding?: any) {
+    checkAndBlockAdmin(req, res, originalEnd, originalRedirect, chunk, encoding);
+  };
+  
+  res.redirect = function(url: string | number, url2?: string) {
+    const finalUrl = typeof url === 'number' ? url2! : url;
+    checkAndBlockAdmin(req, res, originalEnd, originalRedirect, null, null, finalUrl);
+  };
+  
+  next();
+});
+
+// Helper function to check and block admin users
+async function checkAndBlockAdmin(
+  req: express.Request,
+  res: express.Response,
+  originalEnd: (chunk?: any, encoding?: any) => void,
+  originalRedirect: (url: string) => void,
+  chunk?: any,
+  encoding?: any,
+  redirectUrl?: string
+) {
+  try {
+    // Small delay to ensure BetterAuth has created the session
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    const sessionToken = req.cookies?.['better-auth.session_token'] || 
+                         req.headers.cookie?.match(/better-auth\.session_token=([^;]+)/)?.[1];
+    
+    if (sessionToken) {
+      const baseToken = sessionToken.split('.')[0];
+      const sessionResult = await pool.query(
+        `SELECT s."userId", u."isAdmin", u.role, u.email, s."createdAt"
+         FROM "session" s 
+         JOIN "user" u ON s."userId" = u.id 
+         WHERE s.token = $1 AND s."expiresAt" > NOW()`,
+        [baseToken]
+      );
+      
+      if (sessionResult.rows.length > 0) {
+        const user = sessionResult.rows[0];
+        const isAdmin = user.isAdmin || user.role === 'admin';
+        
+        // Check if session was just created (within last 30 seconds)
+        const createdAt = new Date(user.createdAt);
+        const now = new Date();
+        const secondsSinceCreation = (now.getTime() - createdAt.getTime()) / 1000;
+        
+        if (secondsSinceCreation < 30 && isAdmin) {
+          console.log(`🚫 Blocking OAuth sign-in for admin user: ${user.email}`);
+          
+          // Delete the session
+          await pool.query('DELETE FROM "session" WHERE token = $1', [baseToken]);
+          
+          // Delete OAuth account link
+          await pool.query('DELETE FROM "account" WHERE "userId" = $1 AND "createdAt" > NOW() - INTERVAL \'30 seconds\'', [user.userId]);
+          
+          // Clear cookie
+          res.clearCookie('better-auth.session_token', {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
+          });
+          
+          // Redirect to signin with error
+          const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+          return originalRedirect(`${frontendUrl}/auth/signin?error=${encodeURIComponent('Admin accounts cannot sign in via OAuth. Please use email/password login.')}`);
+        }
+      }
+    }
+    
+    // If not admin or not blocking, proceed with original response
+    if (redirectUrl) {
+      originalRedirect(redirectUrl);
+    } else {
+      originalEnd(chunk, encoding);
+    }
+  } catch (error: any) {
+    console.error('Error checking admin status in OAuth callback:', error);
+    // On error, proceed with original response
+    if (redirectUrl) {
+      originalRedirect(redirectUrl);
+    } else {
+      originalEnd(chunk, encoding);
+    }
+  }
+}
+
 // BetterAuth handles all /api/auth/* routes (must be AFTER admin routes)
 app.all("/api/auth/*", toNodeHandler(auth));
 
