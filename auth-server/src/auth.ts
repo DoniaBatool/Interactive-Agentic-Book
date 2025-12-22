@@ -74,10 +74,22 @@ export const pool = new Pool({
     : false,
 });
 
+// Determine if we're in production (HTTPS)
+const isProduction = process.env.AUTH_SERVER_URL?.startsWith('https://') || 
+                     process.env.NODE_ENV === 'production';
+
 export const auth = betterAuth({
   baseURL: process.env.AUTH_SERVER_URL || "http://localhost:8002",
   basePath: "/api/auth",
   database: pool,
+  // Cookie configuration for OAuth state management
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: isProduction ? "none" : "lax", // 'none' for cross-site in production
+      secure: isProduction, // HTTPS only in production
+      httpOnly: true,
+    },
+  },
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
