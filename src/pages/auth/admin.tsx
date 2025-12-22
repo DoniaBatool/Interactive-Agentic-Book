@@ -179,7 +179,8 @@ export default function AdminPage(): React.JSX.Element {
                     <td>{u.isAdmin ? 'Admin' : 'User'}</td>
                     <td>{new Date(u.createdAt).toLocaleDateString()}</td>
                     <td>
-                      {u.email !== 'donia1510aptech@gmail.com' && (
+                      {/* Hide Remove Admin button for primary admin and current logged-in admin */}
+                      {u.email !== 'donia1510aptech@gmail.com' && u.id !== user.id && (
                         <button
                           onClick={() => toggleAdmin(u.id, u.isAdmin)}
                           className="auth-submit"
@@ -188,9 +189,15 @@ export default function AdminPage(): React.JSX.Element {
                           {u.isAdmin ? 'Remove Admin' : 'Make Admin'}
                         </button>
                       )}
+                      {/* Show protected label for primary admin */}
                       {u.email === 'donia1510aptech@gmail.com' && (
                         <span style={{ color: '#666', fontSize: '12px' }}>Protected Admin</span>
                       )}
+                      {/* Show protected label for current logged-in admin (if they try to remove themselves) */}
+                      {u.id === user.id && u.email !== 'donia1510aptech@gmail.com' && u.isAdmin && (
+                        <span style={{ color: '#666', fontSize: '12px' }}>You (Admin)</span>
+                      )}
+                      {/* Delete button - hide for primary admin and current user */}
                       {u.id !== user.id && u.email !== 'donia1510aptech@gmail.com' && (
                         <button
                           onClick={() => deleteUser(u.id)}

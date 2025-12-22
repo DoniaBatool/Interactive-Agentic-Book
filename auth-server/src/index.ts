@@ -172,6 +172,9 @@ app.post("/api/auth/admin/users/:userId/toggle-admin", checkAdmin, async (req, r
     const { userId } = req.params;
     const { isAdmin } = req.body;
     
+    // Get current admin's user ID from session
+    const currentAdminId = (req as any).user?.id;
+    
     // Get user email to check if it's the protected admin
     const userResult = await pool.query('SELECT email FROM "user" WHERE id = $1', [userId]);
     if (userResult.rows.length === 0) {
@@ -184,6 +187,11 @@ app.post("/api/auth/admin/users/:userId/toggle-admin", checkAdmin, async (req, r
     // Prevent removing admin status from protected admin
     if (userEmail === PROTECTED_ADMIN_EMAIL && !isAdmin) {
       return res.status(403).json({ error: 'Cannot remove admin status from the primary admin account' });
+    }
+    
+    // Prevent admin from removing their own admin status
+    if (currentAdminId && userId === currentAdminId && !isAdmin) {
+      return res.status(403).json({ error: 'You cannot remove your own admin status' });
     }
     
     await pool.query('UPDATE "user" SET "isAdmin" = $1, role = $2 WHERE id = $3', [
