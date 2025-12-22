@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from '@docusaurus/router';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from '../../lib/i18n';
@@ -9,6 +10,7 @@ export default function SigninPage(): React.JSX.Element {
   const { login, user, loading, error, clearError, refreshSession } = useAuth();
   const { t } = useTranslation();
   const history = useHistory();
+  const { siteConfig } = useDocusaurusContext();
   
   const [formData, setFormData] = useState({
     email: '',
@@ -32,7 +34,11 @@ export default function SigninPage(): React.JSX.Element {
         refreshSession().then(() => {
           // Wait a bit for session to be set, then redirect to home
           setTimeout(() => {
-            history.push('/');
+            const isProd =
+              typeof window !== 'undefined' &&
+              window.location.hostname === 'doniabatool.github.io';
+            const target = isProd ? '/Interactive-Agentic-Book/' : '/';
+            window.location.href = target;
           }, 1000);
         });
       }
@@ -71,9 +77,12 @@ export default function SigninPage(): React.JSX.Element {
     if (success) {
       // Small delay to ensure user state is set before redirect
       setTimeout(() => {
-        // Redirect to previous page or home using Docusaurus router
-        const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/';
-        history.push(redirectUrl);
+        // Redirect to home, handling GitHub Pages baseUrl in production
+        const isProd =
+          typeof window !== 'undefined' &&
+          window.location.hostname === 'doniabatool.github.io';
+        const target = isProd ? '/Interactive-Agentic-Book/' : '/';
+        window.location.href = target;
       }, 100);
     }
   };
