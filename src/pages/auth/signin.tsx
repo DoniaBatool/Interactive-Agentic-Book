@@ -71,7 +71,12 @@ export default function SigninPage(): React.JSX.Element {
     if (success) {
       // Redirect to previous page or home
       const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/';
-      history.push(redirectUrl);
+      // Use window.location for full page reload to ensure proper baseUrl handling
+      if (redirectUrl === '/') {
+        window.location.href = '/Interactive-Agentic-Book/';
+      } else {
+        history.push(redirectUrl);
+      }
     }
   };
 

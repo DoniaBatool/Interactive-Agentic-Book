@@ -23,19 +23,22 @@ const UserMenu: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  if (loading) {
-    return (
-      <div className="user-menu-loading">
-        <span className="user-menu-spinner"></span>
-      </div>
-    );
-  }
-
+  // Show sign in/sign up buttons immediately if no user (even during loading)
+  // This ensures buttons are visible on first page load
   if (!user) {
     return (
       <div className="user-menu-auth-links">
         <Link to="/auth/signin" className="user-menu-link">{t('common.signIn')}</Link>
         <Link to="/auth/signup" className="user-menu-link user-menu-link-primary">{t('common.signUp')}</Link>
+      </div>
+    );
+  }
+
+  // Show loading spinner only if we have a user and still loading
+  if (loading && user) {
+    return (
+      <div className="user-menu-loading">
+        <span className="user-menu-spinner"></span>
       </div>
     );
   }
