@@ -88,7 +88,11 @@ export const auth = betterAuth({
       sameSite: isProduction ? "none" : "lax", // 'none' for cross-site in production
       secure: isProduction, // HTTPS only in production
       httpOnly: true,
+      // Don't set domain - let browser handle it automatically
+      // Setting domain explicitly can cause issues with OAuth redirects
     },
+    // Generate secure state for OAuth
+    generateId: () => crypto.randomUUID(),
   },
   emailAndPassword: {
     enabled: true,
