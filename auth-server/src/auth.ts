@@ -280,11 +280,39 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       enabled: !!process.env.GOOGLE_CLIENT_ID,
+      // Ensure OAuth users get default role, not admin
+      mapProfileToUser: async (profile) => {
+        return {
+          email: profile.email,
+          name: profile.name,
+          image: profile.image,
+          emailVerified: true,
+          role: "user", // Explicitly set to user
+          isAdmin: false, // Explicitly set to false
+          softwareLevel: "beginner",
+          hardwareLevel: "none",
+          technologies: "{}",
+        };
+      },
     },
     github: {
       clientId: process.env.GITHUB_CLIENT_ID || "",
       clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
       enabled: !!process.env.GITHUB_CLIENT_ID,
+      // Ensure OAuth users get default role, not admin
+      mapProfileToUser: async (profile) => {
+        return {
+          email: profile.email,
+          name: profile.name,
+          image: profile.image,
+          emailVerified: true,
+          role: "user", // Explicitly set to user
+          isAdmin: false, // Explicitly set to false
+          softwareLevel: "beginner",
+          hardwareLevel: "none",
+          technologies: "{}",
+        };
+      },
     },
   },
   session: {
