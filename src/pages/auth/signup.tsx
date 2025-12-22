@@ -4,6 +4,7 @@ import Layout from '@theme/Layout';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from '../../lib/i18n';
 import { AUTH_SERVER_URL } from '../../config/env';
+import { authClient } from '../../lib/auth-client';
 
 const TECHNOLOGIES = [
   { key: 'python', label: 'Python' },
@@ -301,20 +302,19 @@ export default function SignupPage(): React.JSX.Element {
                     const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
                     const callbackURL = window.location.origin + basePath + '/auth/signin';
                     
-                    const response = await fetch(`${AUTH_SERVER_URL}/api/auth/sign-in/social`, {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      credentials: 'include',
-                      body: JSON.stringify({
-                        provider: 'google',
-                        callbackURL: callbackURL,
-                      }),
+                    // Use BetterAuth client SDK for OAuth
+                    const result = await authClient.signIn.social({
+                      provider: 'google',
+                      callbackURL: callbackURL,
                     });
-                    const data = await response.json();
-                    if (data.url) {
-                      window.location.href = data.url;
+                    
+                    // BetterAuth returns { data: { url: string } } or { error: ... }
+                    if ('data' in result && result.data && 'url' in result.data && result.data.url) {
+                      window.location.href = result.data.url;
+                    } else if ('error' in result) {
+                      console.error('OAuth error:', result.error);
                     } else {
-                      console.error('No redirect URL in response:', data);
+                      console.error('Unexpected response:', result);
                     }
                   } catch (error) {
                     console.error('OAuth error:', error);
@@ -340,20 +340,19 @@ export default function SignupPage(): React.JSX.Element {
                     const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
                     const callbackURL = window.location.origin + basePath + '/auth/signin';
                     
-                    const response = await fetch(`${AUTH_SERVER_URL}/api/auth/sign-in/social`, {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      credentials: 'include',
-                      body: JSON.stringify({
-                        provider: 'github',
-                        callbackURL: callbackURL,
-                      }),
+                    // Use BetterAuth client SDK for OAuth
+                    const result = await authClient.signIn.social({
+                      provider: 'github',
+                      callbackURL: callbackURL,
                     });
-                    const data = await response.json();
-                    if (data.url) {
-                      window.location.href = data.url;
+                    
+                    // BetterAuth returns { data: { url: string } } or { error: ... }
+                    if ('data' in result && result.data && 'url' in result.data && result.data.url) {
+                      window.location.href = result.data.url;
+                    } else if ('error' in result) {
+                      console.error('OAuth error:', result.error);
                     } else {
-                      console.error('No redirect URL in response:', data);
+                      console.error('Unexpected response:', result);
                     }
                   } catch (error) {
                     console.error('OAuth error:', error);
