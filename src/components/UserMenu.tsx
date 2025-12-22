@@ -25,7 +25,30 @@ const UserMenu: React.FC = () => {
 
   // Show sign in/sign up buttons immediately if no user (even during loading)
   // This ensures buttons are visible on first page load
+  // Only show loading if we have a cached user from localStorage (to avoid flash)
   if (!user) {
+    // If loading and no cached user, show buttons immediately
+    // If loading with cached user, wait a bit for session check
+    if (loading) {
+      // Check if there's cached user data
+      const hasCachedUser = typeof window !== 'undefined' && localStorage.getItem('auth_user');
+      if (!hasCachedUser) {
+        // No cached user, show buttons immediately
+        return (
+          <div className="user-menu-auth-links">
+            <Link to="/auth/signin" className="user-menu-link">{t('common.signIn')}</Link>
+            <Link to="/auth/signup" className="user-menu-link user-menu-link-primary">{t('common.signUp')}</Link>
+          </div>
+        );
+      }
+      // Has cached user, show loading briefly
+      return (
+        <div className="user-menu-loading">
+          <span className="user-menu-spinner"></span>
+        </div>
+      );
+    }
+    // Not loading and no user, show buttons
     return (
       <div className="user-menu-auth-links">
         <Link to="/auth/signin" className="user-menu-link">{t('common.signIn')}</Link>
