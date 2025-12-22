@@ -15,10 +15,14 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://doniabatool.github.io',
+  // Dynamic baseUrl: Render uses '/', GitHub Pages uses '/Interactive-Agentic-Book/'
+  // Check for DEPLOYMENT_TARGET env var (set in Render build command) or RENDER env var
+  const isRenderDeployment = process.env.DEPLOYMENT_TARGET === 'render' || process.env.RENDER === 'true';
+  url: isRenderDeployment ? 'https://interactive-agentic-book-frontend.onrender.com' : 'https://doniabatool.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/Interactive-Agentic-Book/',
+  // For Render (root domain), use '/'
+  baseUrl: isRenderDeployment ? '/' : '/Interactive-Agentic-Book/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
