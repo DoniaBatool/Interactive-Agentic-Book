@@ -202,23 +202,15 @@ export default function SigninPage(): React.JSX.Element {
                 onClick={async (e) => {
                   e.preventDefault();
                   try {
-                    // Use BetterAuth client SDK for OAuth
-                    // Don't pass callbackURL - let BetterAuth use default callback handling
-                    // BetterAuth will redirect to the auth server callback, then to frontend
-                    const result = await authClient.signIn.social({
-                      provider: 'google',
-                    });
+                    // Detect if we're on GitHub Pages or Render
+                    const isGitHubPages = typeof window !== 'undefined' && window.location.hostname === 'doniabatool.github.io';
+                    const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
+                    const callbackURL = window.location.origin + basePath + '/auth/signin';
                     
-                    // BetterAuth returns { data: { url: string } } or { error: ... }
-                    if ('data' in result && result.data && 'url' in result.data && result.data.url) {
-                      window.location.href = result.data.url;
-                    } else if ('error' in result) {
-                      console.error('OAuth error:', result.error);
-                      setOauthError('Failed to initiate sign-in. Please try again.');
-                    } else {
-                      console.error('Unexpected response:', result);
-                      setOauthError('Failed to initiate sign-in. Please try again.');
-                    }
+                    // Direct redirect to BetterAuth OAuth endpoint
+                    // This approach works better for OAuth state management
+                    const oauthUrl = `${AUTH_SERVER_URL}/api/auth/sign-in/social?provider=google&callbackURL=${encodeURIComponent(callbackURL)}`;
+                    window.location.href = oauthUrl;
                   } catch (error) {
                     console.error('OAuth error:', error);
                     setOauthError('Failed to initiate sign-in. Please try again.');
@@ -239,22 +231,15 @@ export default function SigninPage(): React.JSX.Element {
                 onClick={async (e) => {
                   e.preventDefault();
                   try {
-                    // Use BetterAuth client SDK for OAuth
-                    // Don't pass callbackURL - let BetterAuth use default callback handling
-                    const result = await authClient.signIn.social({
-                      provider: 'github',
-                    });
+                    // Detect if we're on GitHub Pages or Render
+                    const isGitHubPages = typeof window !== 'undefined' && window.location.hostname === 'doniabatool.github.io';
+                    const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
+                    const callbackURL = window.location.origin + basePath + '/auth/signin';
                     
-                    // BetterAuth returns { data: { url: string } } or { error: ... }
-                    if ('data' in result && result.data && 'url' in result.data && result.data.url) {
-                      window.location.href = result.data.url;
-                    } else if ('error' in result) {
-                      console.error('OAuth error:', result.error);
-                      setOauthError('Failed to initiate sign-in. Please try again.');
-                    } else {
-                      console.error('Unexpected response:', result);
-                      setOauthError('Failed to initiate sign-in. Please try again.');
-                    }
+                    // Direct redirect to BetterAuth OAuth endpoint
+                    // This approach works better for OAuth state management
+                    const oauthUrl = `${AUTH_SERVER_URL}/api/auth/sign-in/social?provider=github&callbackURL=${encodeURIComponent(callbackURL)}`;
+                    window.location.href = oauthUrl;
                   } catch (error) {
                     console.error('OAuth error:', error);
                     setOauthError('Failed to initiate sign-in. Please try again.');

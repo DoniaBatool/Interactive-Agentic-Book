@@ -297,20 +297,14 @@ export default function SignupPage(): React.JSX.Element {
                 onClick={async (e) => {
                   e.preventDefault();
                   try {
-                    // Use BetterAuth client SDK for OAuth
-                    // Don't pass callbackURL - let BetterAuth use default callback handling
-                    const result = await authClient.signIn.social({
-                      provider: 'google',
-                    });
+                    // Detect if we're on GitHub Pages or Render
+                    const isGitHubPages = typeof window !== 'undefined' && window.location.hostname === 'doniabatool.github.io';
+                    const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
+                    const callbackURL = window.location.origin + basePath + '/auth/signin';
                     
-                    // BetterAuth returns { data: { url: string } } or { error: ... }
-                    if ('data' in result && result.data && 'url' in result.data && result.data.url) {
-                      window.location.href = result.data.url;
-                    } else if ('error' in result) {
-                      console.error('OAuth error:', result.error);
-                    } else {
-                      console.error('Unexpected response:', result);
-                    }
+                    // Direct redirect to BetterAuth OAuth endpoint
+                    const oauthUrl = `${AUTH_SERVER_URL}/api/auth/sign-in/social?provider=google&callbackURL=${encodeURIComponent(callbackURL)}`;
+                    window.location.href = oauthUrl;
                   } catch (error) {
                     console.error('OAuth error:', error);
                   }
@@ -330,20 +324,14 @@ export default function SignupPage(): React.JSX.Element {
                 onClick={async (e) => {
                   e.preventDefault();
                   try {
-                    // Use BetterAuth client SDK for OAuth
-                    // Don't pass callbackURL - let BetterAuth use default callback handling
-                    const result = await authClient.signIn.social({
-                      provider: 'github',
-                    });
+                    // Detect if we're on GitHub Pages or Render
+                    const isGitHubPages = typeof window !== 'undefined' && window.location.hostname === 'doniabatool.github.io';
+                    const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
+                    const callbackURL = window.location.origin + basePath + '/auth/signin';
                     
-                    // BetterAuth returns { data: { url: string } } or { error: ... }
-                    if ('data' in result && result.data && 'url' in result.data && result.data.url) {
-                      window.location.href = result.data.url;
-                    } else if ('error' in result) {
-                      console.error('OAuth error:', result.error);
-                    } else {
-                      console.error('Unexpected response:', result);
-                    }
+                    // Direct redirect to BetterAuth OAuth endpoint
+                    const oauthUrl = `${AUTH_SERVER_URL}/api/auth/sign-in/social?provider=github&callbackURL=${encodeURIComponent(callbackURL)}`;
+                    window.location.href = oauthUrl;
                   } catch (error) {
                     console.error('OAuth error:', error);
                   }
