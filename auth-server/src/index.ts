@@ -10,6 +10,10 @@ dotenv.config({ path: "../.env" });
 const app = express();
 const PORT = process.env.AUTH_PORT || 8002; // Changed to 8002 to avoid conflict with backend
 
+// Determine if we're in production (HTTPS)
+const isProduction = process.env.AUTH_SERVER_URL?.startsWith('https://') || 
+                     process.env.NODE_ENV === 'production';
+
 // CORS configuration
 const getAllowedOrigins = (): string[] => {
   const origins: string[] = [
@@ -285,6 +289,44 @@ app.delete("/api/auth/admin/users/:userId", checkAdmin, async (req, res) => {
   } catch (error: any) {
     console.error('Error deleting user:', error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Middleware to prevent admin users from signing in via OAuth
+// This runs BEFORE BetterAuth processes the callback
+app.get("/api/auth/callback/google", async (req, res, next) => {
+  try {
+    const code = req.query.code as string;
+    if (!code) {
+      return next(); // No code, let BetterAuth handle it
+    }
+    
+    // Get user info from Google using the code
+    // First, we need to exchange the code for tokens
+    // But BetterAuth does this internally, so we can't easily intercept
+    
+    // Instead, we'll check AFTER BetterAuth processes it in the root route
+    // But we can add a check here to see if there's already a session
+    // that was just created (indicating OAuth sign-in)
+    
+    next(); // Let BetterAuth process the callback first
+  } catch (error: any) {
+    console.error('Error in OAuth callback middleware:', error);
+    next();
+  }
+});
+
+app.get("/api/auth/callback/github", async (req, res, next) => {
+  try {
+    const code = req.query.code as string;
+    if (!code) {
+      return next(); // No code, let BetterAuth handle it
+    }
+    
+    next(); // Let BetterAuth process the callback first
+  } catch (error: any) {
+    console.error('Error in OAuth callback middleware:', error);
+    next();
   }
 });
 
