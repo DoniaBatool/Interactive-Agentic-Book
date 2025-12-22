@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { Pool } from "pg";
 import dotenv from "dotenv";
+import crypto from "crypto";
 
 dotenv.config({ path: "../.env" });
 
