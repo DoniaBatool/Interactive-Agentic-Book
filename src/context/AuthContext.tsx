@@ -135,10 +135,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             profile: userToProfile(data.user),
           };
           setUser(userData);
+          // Ensure loading is false after setting user
+          setLoading(false);
           return true;
         }
         // Refresh session to get user data
         await refreshSession();
+        setLoading(false);
         return true;
       } else {
         const errorData = await response.json().catch(() => ({}));

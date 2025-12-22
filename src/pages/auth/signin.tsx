@@ -30,9 +30,9 @@ export default function SigninPage(): React.JSX.Element {
       if (code && !error) {
         // Refresh session to get user data from BetterAuth
         refreshSession().then(() => {
-          // Wait a bit for session to be set, then redirect to home with baseUrl
+          // Wait a bit for session to be set, then redirect to home
           setTimeout(() => {
-            window.location.href = '/Interactive-Agentic-Book/';
+            history.push('/');
           }, 1000);
         });
       }
@@ -69,14 +69,12 @@ export default function SigninPage(): React.JSX.Element {
     setIsSubmitting(false);
 
     if (success) {
-      // Redirect to previous page or home
-      const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/';
-      // Use window.location for full page reload to ensure proper baseUrl handling
-      if (redirectUrl === '/') {
-        window.location.href = '/Interactive-Agentic-Book/';
-      } else {
+      // Small delay to ensure user state is set before redirect
+      setTimeout(() => {
+        // Redirect to previous page or home using Docusaurus router
+        const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/';
         history.push(redirectUrl);
-      }
+      }, 100);
     }
   };
 
