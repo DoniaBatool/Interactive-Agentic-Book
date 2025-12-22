@@ -302,7 +302,7 @@ export default function SignupPage(): React.JSX.Element {
                       credentials: 'include',
                       body: JSON.stringify({
                         provider: 'google',
-                        callbackURL: window.location.origin + '/Interactive-Agentic-Book',
+                        callbackURL: window.location.origin + '/Interactive-Agentic-Book/auth/signup',
                       }),
                     });
                     const data = await response.json();
@@ -336,7 +336,7 @@ export default function SignupPage(): React.JSX.Element {
                       credentials: 'include',
                       body: JSON.stringify({
                         provider: 'github',
-                        callbackURL: window.location.origin + '/Interactive-Agentic-Book',
+                        callbackURL: window.location.origin + '/Interactive-Agentic-Book/auth/signup',
                       }),
                     });
                     const data = await response.json();

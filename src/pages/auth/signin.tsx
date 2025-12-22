@@ -19,6 +19,23 @@ export default function SigninPage(): React.JSX.Element {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // Handle OAuth callback - check if we're returning from OAuth
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const error = urlParams.get('error');
+      
+      // If OAuth callback with code, refresh session and redirect to home
+      if (code && !error) {
+        // Wait for BetterAuth to process the callback, then redirect
+        setTimeout(() => {
+          history.push('/');
+        }, 1500);
+      }
+    }
+  }, [history]);
+
   // Redirect if already logged in
   useEffect(() => {
     if (user && !loading) {
@@ -198,7 +215,7 @@ export default function SigninPage(): React.JSX.Element {
                       credentials: 'include',
                       body: JSON.stringify({
                         provider: 'github',
-                        callbackURL: window.location.origin + '/Interactive-Agentic-Book',
+                        callbackURL: window.location.origin + '/Interactive-Agentic-Book/auth/signin',
                       }),
                     });
                     const data = await response.json();
