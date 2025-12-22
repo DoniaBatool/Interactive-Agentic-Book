@@ -61,7 +61,20 @@ const userToProfile = (user: User): UserProfile => {
 };
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  // Initialize user from localStorage so that user info is immediately available
+  // after a full page reload (e.g., after redirects on GitHub Pages)
+  const [user, setUser] = useState<User | null>(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const stored = localStorage.getItem('auth_user');
+      if (stored) {
+        return JSON.parse(stored) as User;
+      }
+    } catch (e) {
+      console.debug('Failed to read auth_user from localStorage:', e);
+    }
+    return null;
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -89,11 +102,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             fullUser: userData
           });
           setUser(userData);
+          try {
+            localStorage.setItem('auth_user', JSON.stringify(userData));
+          } catch (e) {
+            console.debug('Failed to store auth_user in localStorage:', e);
+          }
         } else {
           setUser(null);
+          try {
+            localStorage.removeItem('auth_user');
+          } catch {
+            // ignore
+          }
         }
       } else {
         setUser(null);
+        try {
+          localStorage.removeItem('auth_user');
+        } catch {
+          // ignore
+        }
       }
     } catch (err) {
       console.debug('Session check failed:', err);
@@ -135,6 +163,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             profile: userToProfile(data.user),
           };
           setUser(userData);
+          try {
+            localStorage.setItem('auth_user', JSON.stringify(userData));
+          } catch (e) {
+            console.debug('Failed to store auth_user in localStorage after login:', e);
+          }
           // Ensure loading is false after setting user
           setLoading(false);
           return true;
@@ -201,6 +234,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             profile: userToProfile(responseData.user),
           };
           setUser(userData);
+          try {
+            localStorage.setItem('auth_user', JSON.stringify(userData));
+          } catch (e) {
+            console.debug('Failed to store auth_user in localStorage after signup:', e);
+          }
         }
         return true;
       } else {
