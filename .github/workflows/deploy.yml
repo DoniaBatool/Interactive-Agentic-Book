@@ -27,6 +27,11 @@ jobs:
       - name: Build website
         run: npm run build
 
+      - name: Create redirect page for GitHub Pages
+        run: |
+          cp static/redirect.html build/index.html
+          echo "Redirect page created for GitHub Pages"
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         if: github.ref == 'refs/heads/main'
