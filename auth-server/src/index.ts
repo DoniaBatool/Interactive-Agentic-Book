@@ -72,6 +72,9 @@ app.get("/", async (req, res) => {
   }
   
   // Check if user just signed in via OAuth and is admin
+  // Wait a bit to ensure BetterAuth has completed the OAuth flow
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
   try {
     const sessionToken = req.cookies?.['better-auth.session_token'] || 
                          req.headers.cookie?.match(/better-auth\.session_token=([^;]+)/)?.[1];
@@ -79,7 +82,7 @@ app.get("/", async (req, res) => {
     if (sessionToken) {
       const baseToken = sessionToken.split('.')[0];
       const sessionResult = await pool.query(
-        `SELECT s."userId", u."isAdmin", u.role, u.email 
+        `SELECT s."userId", u."isAdmin", u.role, u.email, s."createdAt"
          FROM "session" s 
          JOIN "user" u ON s."userId" = u.id 
          WHERE s.token = $1 AND s."expiresAt" > NOW()`,
@@ -90,21 +93,28 @@ app.get("/", async (req, res) => {
         const user = sessionResult.rows[0];
         const isAdmin = user.isAdmin || user.role === 'admin';
         
-        // Check if this session was just created (within last 20 seconds)
-        // This indicates a fresh OAuth sign-in
+        // Check if this session was just created (within last 30 seconds)
         const createdAt = new Date(user.createdAt);
         const now = new Date();
         const secondsSinceCreation = (now.getTime() - createdAt.getTime()) / 1000;
         
-        // If session was created within last 20 seconds and user is admin, sign them out
-        if (secondsSinceCreation < 20 && isAdmin) {
+        // Also check if an OAuth account was just linked (within last 30 seconds)
+        const accountCheck = await pool.query(
+          `SELECT "createdAt" FROM "account" WHERE "userId" = $1 AND "createdAt" > NOW() - INTERVAL '30 seconds' ORDER BY "createdAt" DESC LIMIT 1`,
+          [user.userId]
+        );
+        
+        const hasRecentOAuthLink = accountCheck.rows.length > 0;
+        
+        // If session was created within last 30 seconds, user is admin, and OAuth account was just linked
+        if (secondsSinceCreation < 30 && isAdmin && hasRecentOAuthLink) {
           console.log(`🚫 Blocking OAuth sign-in for admin user: ${user.email}`);
           
           // Delete the session to sign out the admin
           await pool.query('DELETE FROM "session" WHERE token = $1', [baseToken]);
           
           // Delete OAuth account link that was just created
-          await pool.query('DELETE FROM "account" WHERE "userId" = $1 AND "createdAt" > NOW() - INTERVAL \'20 seconds\'', [user.userId]);
+          await pool.query('DELETE FROM "account" WHERE "userId" = $1 AND "createdAt" > NOW() - INTERVAL \'30 seconds\'', [user.userId]);
           
           // Clear the cookie
           res.clearCookie('better-auth.session_token', {
