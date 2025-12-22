@@ -6,7 +6,7 @@ import { useTranslation } from '../../lib/i18n';
 import { AUTH_SERVER_URL } from '../../config/env';
 
 export default function SigninPage(): React.JSX.Element {
-  const { login, user, loading, error, clearError } = useAuth();
+  const { login, user, loading, error, clearError, refreshSession } = useAuth();
   const { t } = useTranslation();
   const history = useHistory();
   
@@ -21,20 +21,23 @@ export default function SigninPage(): React.JSX.Element {
 
   // Handle OAuth callback - check if we're returning from OAuth
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && !loading) {
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get('code');
       const error = urlParams.get('error');
       
       // If OAuth callback with code, refresh session and redirect to home
       if (code && !error) {
-        // Wait for BetterAuth to process the callback, then redirect
-        setTimeout(() => {
-          history.push('/');
-        }, 1500);
+        // Refresh session to get user data from BetterAuth
+        refreshSession().then(() => {
+          // Wait a bit for session to be set, then redirect
+          setTimeout(() => {
+            history.push('/');
+          }, 1000);
+        });
       }
     }
-  }, [history]);
+  }, [loading, refreshSession, history]);
 
   // Redirect if already logged in
   useEffect(() => {
