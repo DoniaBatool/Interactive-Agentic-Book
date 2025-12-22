@@ -284,8 +284,25 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       enabled: !!process.env.GOOGLE_CLIENT_ID,
-      // Ensure OAuth users get default role, not admin
+      // Prevent linking OAuth accounts to existing admin users
       mapProfileToUser: async (profile) => {
+        // Check if user with this email already exists and is admin
+        const existingUser = await pool.query(
+          'SELECT id, email, "isAdmin", role FROM "user" WHERE email = $1',
+          [profile.email]
+        );
+        
+        // If user exists and is admin, prevent OAuth sign-in by returning null
+        // This will cause BetterAuth to throw an error instead of linking
+        if (existingUser.rows.length > 0) {
+          const user = existingUser.rows[0];
+          if (user.isAdmin || user.role === 'admin') {
+            // Throw error to prevent account linking
+            throw new Error('ADMIN_OAUTH_BLOCKED');
+          }
+        }
+        
+        // For new users, set default role
         return {
           email: profile.email,
           name: profile.name,
@@ -302,8 +319,25 @@ export const auth = betterAuth({
       clientId: process.env.GITHUB_CLIENT_ID || "",
       clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
       enabled: !!process.env.GITHUB_CLIENT_ID,
-      // Ensure OAuth users get default role, not admin
+      // Prevent linking OAuth accounts to existing admin users
       mapProfileToUser: async (profile) => {
+        // Check if user with this email already exists and is admin
+        const existingUser = await pool.query(
+          'SELECT id, email, "isAdmin", role FROM "user" WHERE email = $1',
+          [profile.email]
+        );
+        
+        // If user exists and is admin, prevent OAuth sign-in by returning null
+        // This will cause BetterAuth to throw an error instead of linking
+        if (existingUser.rows.length > 0) {
+          const user = existingUser.rows[0];
+          if (user.isAdmin || user.role === 'admin') {
+            // Throw error to prevent account linking
+            throw new Error('ADMIN_OAUTH_BLOCKED');
+          }
+        }
+        
+        // For new users, set default role
         return {
           email: profile.email,
           name: profile.name,
