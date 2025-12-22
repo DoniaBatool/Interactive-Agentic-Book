@@ -150,7 +150,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
       } else {
         // Only clear if status is 401/403 (unauthorized), not for other errors
-        if (response.status === 401 || response.status === 403) {
+        if (sessionResponse.status === 401 || sessionResponse.status === 403) {
           setUser(null);
           try {
             localStorage.removeItem('auth_user');
