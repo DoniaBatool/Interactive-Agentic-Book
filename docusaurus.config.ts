@@ -4,6 +4,14 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
+// Detect if we are building on Render (frontend) vs GitHub Pages
+// process.env is safe here because this file runs in Node at build time
+const isRenderDeployment = 
+  process.env.DEPLOYMENT_TARGET === 'render' || 
+  process.env.RENDER === 'true' ||
+  !!process.env.RENDER_SERVICE_NAME ||
+  !!process.env.RENDER_EXTERNAL_URL;
+
 const config: Config = {
   title: 'Physical AI & Humanoid Robotics',
   tagline: 'Build embodied intelligence with ROS 2, Gazebo, Isaac, and VLA',
@@ -16,13 +24,6 @@ const config: Config = {
 
   // Set the production url of your site here
   // Dynamic baseUrl: Render uses '/', GitHub Pages uses '/Interactive-Agentic-Book/'
-  // Check for DEPLOYMENT_TARGET env var (set in Render build command) or RENDER env var
-  // Also check for Render-specific env vars that Render sets automatically
-  const isRenderDeployment = 
-    process.env.DEPLOYMENT_TARGET === 'render' || 
-    process.env.RENDER === 'true' ||
-    !!process.env.RENDER_SERVICE_NAME ||
-    !!process.env.RENDER_EXTERNAL_URL;
   url: isRenderDeployment ? 'https://interactive-agentic-book-frontend.onrender.com' : 'https://doniabatool.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
