@@ -54,7 +54,18 @@ export default function SigninPage(): React.JSX.Element {
                 const isAdmin = !!(userData.user.isAdmin) || userData.user.role === 'admin';
                 
                 if (isAdmin) {
-                  // Admin users cannot sign in via OAuth - sign them out
+                  // Admin users cannot sign in via OAuth - sign them out immediately
+                  try {
+                    // Call a custom endpoint to delete session and OAuth account link
+                    await fetch(`${AUTH_SERVER_URL}/api/auth/block-admin-oauth`, {
+                      method: 'POST',
+                      credentials: 'include',
+                    });
+                  } catch (err) {
+                    console.error('Error blocking admin OAuth:', err);
+                  }
+                  
+                  // Also call standard sign-out
                   await fetch(`${AUTH_SERVER_URL}/api/auth/sign-out`, {
                     method: 'POST',
                     credentials: 'include',
