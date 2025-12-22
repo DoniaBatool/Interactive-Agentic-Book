@@ -302,9 +302,23 @@ export default function SignupPage(): React.JSX.Element {
                     const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
                     const callbackURL = window.location.origin + basePath + '/auth/signin';
                     
-                    // Direct redirect to BetterAuth OAuth endpoint
-                    const oauthUrl = `${AUTH_SERVER_URL}/api/auth/sign-in/social?provider=google&callbackURL=${encodeURIComponent(callbackURL)}`;
-                    window.location.href = oauthUrl;
+                    // Use POST to get OAuth redirect URL from BetterAuth
+                    const response = await fetch(`${AUTH_SERVER_URL}/api/auth/sign-in/social`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      credentials: 'include',
+                      body: JSON.stringify({
+                        provider: 'google',
+                        callbackURL: callbackURL,
+                      }),
+                    });
+                    
+                    const data = await response.json();
+                    if (data.url) {
+                      window.location.href = data.url;
+                    } else {
+                      console.error('No redirect URL in response:', data);
+                    }
                   } catch (error) {
                     console.error('OAuth error:', error);
                   }
@@ -329,9 +343,23 @@ export default function SignupPage(): React.JSX.Element {
                     const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
                     const callbackURL = window.location.origin + basePath + '/auth/signin';
                     
-                    // Direct redirect to BetterAuth OAuth endpoint
-                    const oauthUrl = `${AUTH_SERVER_URL}/api/auth/sign-in/social?provider=github&callbackURL=${encodeURIComponent(callbackURL)}`;
-                    window.location.href = oauthUrl;
+                    // Use POST to get OAuth redirect URL from BetterAuth
+                    const response = await fetch(`${AUTH_SERVER_URL}/api/auth/sign-in/social`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      credentials: 'include',
+                      body: JSON.stringify({
+                        provider: 'github',
+                        callbackURL: callbackURL,
+                      }),
+                    });
+                    
+                    const data = await response.json();
+                    if (data.url) {
+                      window.location.href = data.url;
+                    } else {
+                      console.error('No redirect URL in response:', data);
+                    }
                   } catch (error) {
                     console.error('OAuth error:', error);
                   }

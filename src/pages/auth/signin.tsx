@@ -207,10 +207,25 @@ export default function SigninPage(): React.JSX.Element {
                     const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
                     const callbackURL = window.location.origin + basePath + '/auth/signin';
                     
-                    // Direct redirect to BetterAuth OAuth endpoint
-                    // This approach works better for OAuth state management
-                    const oauthUrl = `${AUTH_SERVER_URL}/api/auth/sign-in/social?provider=google&callbackURL=${encodeURIComponent(callbackURL)}`;
-                    window.location.href = oauthUrl;
+                    // Use POST to get OAuth redirect URL from BetterAuth
+                    const response = await fetch(`${AUTH_SERVER_URL}/api/auth/sign-in/social`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      credentials: 'include',
+                      body: JSON.stringify({
+                        provider: 'google',
+                        callbackURL: callbackURL,
+                      }),
+                    });
+                    
+                    const data = await response.json();
+                    if (data.url) {
+                      // Redirect to OAuth provider
+                      window.location.href = data.url;
+                    } else {
+                      console.error('No redirect URL in response:', data);
+                      setOauthError('Failed to initiate sign-in. Please try again.');
+                    }
                   } catch (error) {
                     console.error('OAuth error:', error);
                     setOauthError('Failed to initiate sign-in. Please try again.');
@@ -236,10 +251,25 @@ export default function SigninPage(): React.JSX.Element {
                     const basePath = isGitHubPages ? '/Interactive-Agentic-Book' : '';
                     const callbackURL = window.location.origin + basePath + '/auth/signin';
                     
-                    // Direct redirect to BetterAuth OAuth endpoint
-                    // This approach works better for OAuth state management
-                    const oauthUrl = `${AUTH_SERVER_URL}/api/auth/sign-in/social?provider=github&callbackURL=${encodeURIComponent(callbackURL)}`;
-                    window.location.href = oauthUrl;
+                    // Use POST to get OAuth redirect URL from BetterAuth
+                    const response = await fetch(`${AUTH_SERVER_URL}/api/auth/sign-in/social`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      credentials: 'include',
+                      body: JSON.stringify({
+                        provider: 'github',
+                        callbackURL: callbackURL,
+                      }),
+                    });
+                    
+                    const data = await response.json();
+                    if (data.url) {
+                      // Redirect to OAuth provider
+                      window.location.href = data.url;
+                    } else {
+                      console.error('No redirect URL in response:', data);
+                      setOauthError('Failed to initiate sign-in. Please try again.');
+                    }
                   } catch (error) {
                     console.error('OAuth error:', error);
                     setOauthError('Failed to initiate sign-in. Please try again.');
