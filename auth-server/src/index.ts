@@ -140,6 +140,20 @@ app.post("/api/auth/admin/users/:userId/toggle-admin", checkAdmin, async (req, r
     const { userId } = req.params;
     const { isAdmin } = req.body;
     
+    // Get user email to check if it's the protected admin
+    const userResult = await pool.query('SELECT email FROM "user" WHERE id = $1', [userId]);
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const userEmail = userResult.rows[0].email;
+    const PROTECTED_ADMIN_EMAIL = 'donia1510aptech@gmail.com';
+    
+    // Prevent removing admin status from protected admin
+    if (userEmail === PROTECTED_ADMIN_EMAIL && !isAdmin) {
+      return res.status(403).json({ error: 'Cannot remove admin status from the primary admin account' });
+    }
+    
     await pool.query('UPDATE "user" SET "isAdmin" = $1, role = $2 WHERE id = $3', [
       isAdmin,
       isAdmin ? 'admin' : 'user',
@@ -157,6 +171,20 @@ app.post("/api/auth/admin/users/:userId/toggle-admin", checkAdmin, async (req, r
 app.delete("/api/auth/admin/users/:userId", checkAdmin, async (req, res) => {
   try {
     const { userId } = req.params;
+    
+    // Get user email to check if it's the protected admin
+    const userResult = await pool.query('SELECT email FROM "user" WHERE id = $1', [userId]);
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const userEmail = userResult.rows[0].email;
+    const PROTECTED_ADMIN_EMAIL = 'donia1510aptech@gmail.com';
+    
+    // Prevent deletion of protected admin
+    if (userEmail === PROTECTED_ADMIN_EMAIL) {
+      return res.status(403).json({ error: 'Cannot delete the primary admin account' });
+    }
     
     await pool.query('DELETE FROM "user" WHERE id = $1', [userId]);
     

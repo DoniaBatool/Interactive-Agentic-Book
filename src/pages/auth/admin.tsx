@@ -93,7 +93,8 @@ export default function AdminPage(): React.JSX.Element {
       if (response.ok) {
         fetchUsers(); // Refresh list
       } else {
-        setError('Failed to update user');
+        const errorData = await response.json().catch(() => ({}));
+        setError(errorData.error || 'Failed to update user');
       }
     } catch (err) {
       setError('Network error');
@@ -114,7 +115,8 @@ export default function AdminPage(): React.JSX.Element {
       if (response.ok) {
         fetchUsers(); // Refresh list
       } else {
-        setError('Failed to delete user');
+        const errorData = await response.json().catch(() => ({}));
+        setError(errorData.error || 'Failed to delete user');
       }
     } catch (err) {
       setError('Network error');
@@ -177,14 +179,19 @@ export default function AdminPage(): React.JSX.Element {
                     <td>{u.isAdmin ? 'Admin' : 'User'}</td>
                     <td>{new Date(u.createdAt).toLocaleDateString()}</td>
                     <td>
-                      <button
-                        onClick={() => toggleAdmin(u.id, u.isAdmin)}
-                        className="auth-submit"
-                        style={{ marginRight: '8px', padding: '4px 12px', fontSize: '14px' }}
-                      >
-                        {u.isAdmin ? 'Remove Admin' : 'Make Admin'}
-                      </button>
-                      {u.id !== user.id && (
+                      {u.email !== 'donia1510aptech@gmail.com' && (
+                        <button
+                          onClick={() => toggleAdmin(u.id, u.isAdmin)}
+                          className="auth-submit"
+                          style={{ marginRight: '8px', padding: '4px 12px', fontSize: '14px' }}
+                        >
+                          {u.isAdmin ? 'Remove Admin' : 'Make Admin'}
+                        </button>
+                      )}
+                      {u.email === 'donia1510aptech@gmail.com' && (
+                        <span style={{ color: '#666', fontSize: '12px' }}>Protected Admin</span>
+                      )}
+                      {u.id !== user.id && u.email !== 'donia1510aptech@gmail.com' && (
                         <button
                           onClick={() => deleteUser(u.id)}
                           className="auth-submit"
