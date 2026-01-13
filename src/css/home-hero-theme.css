@@ -1,0 +1,111 @@
+/* ============================================
+   Home Page Hero Theme (Light/Dark)
+   - Fixes "home stays dark even in light mode" by avoiding hardcoded dark colors
+   - Uses theme-aware CSS variables and minimal overrides
+   ============================================ */
+
+:root {
+  --home-hero-bg:
+    radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.16), transparent 28%),
+    radial-gradient(circle at 80% 0%, rgba(16, 185, 129, 0.14), transparent 34%),
+    linear-gradient(135deg, #ffffff 0%, #f8fafc 55%, #f1f5f9 100%);
+  --home-hero-subtitle: rgba(15, 23, 42, 0.78);
+
+  --home-hero-metric-bg: rgba(255, 255, 255, 0.9);
+  --home-hero-metric-border: rgba(15, 23, 42, 0.08);
+  --home-hero-metric-label: rgba(15, 118, 110, 0.95);
+  --home-hero-metric-value: #0f172a;
+
+  --home-visual-bg: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+  --home-visual-card-bg: rgba(255, 255, 255, 0.92);
+  --home-visual-card-border: rgba(15, 23, 42, 0.08);
+  --home-visual-header: var(--ifm-color-primary-dark);
+  --home-visual-text: rgba(15, 23, 42, 0.86);
+  --home-visual-media-bg: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.12), transparent 60%);
+  --home-visual-media-shadow: 0 12px 36px rgba(15, 23, 42, 0.12);
+  --home-visual-pulse-glow: rgba(99, 242, 209, 0.18);
+}
+
+[data-theme='dark'] {
+  --home-hero-bg:
+    radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.3), transparent 25%),
+    radial-gradient(circle at 80% 0%, rgba(16, 185, 129, 0.25), transparent 30%),
+    linear-gradient(135deg, #0b1020 0%, #0a1f3c 50%, #07172c 100%);
+  --home-hero-subtitle: rgba(255, 255, 255, 0.85);
+
+  --home-hero-metric-bg: rgba(15, 23, 42, 0.85);
+  --home-hero-metric-border: rgba(99, 242, 209, 0.3);
+  --home-hero-metric-label: rgba(99, 242, 209, 0.8);
+  --home-hero-metric-value: #ffffff;
+
+  --home-visual-bg: linear-gradient(180deg, #0b1020 0%, #0a172c 100%);
+  --home-visual-card-bg: rgba(15, 23, 42, 0.9);
+  --home-visual-card-border: rgba(99, 242, 209, 0.25);
+  --home-visual-header: var(--ifm-color-primary-lightest);
+  --home-visual-text: rgba(255, 255, 255, 0.9);
+  --home-visual-media-bg: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.2), transparent 60%);
+  --home-visual-media-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  --home-visual-pulse-glow: rgba(99, 242, 209, 0.25);
+}
+
+/* Apply theme-aware variables to existing home hero styles */
+.hero--tech {
+  background: var(--home-hero-bg);
+}
+
+.hero__subtitle {
+  color: var(--home-hero-subtitle);
+}
+
+.metric-card {
+  background: var(--home-hero-metric-bg);
+  border-color: var(--home-hero-metric-border);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+}
+
+.metric-label {
+  color: var(--home-hero-metric-label);
+}
+
+.metric-value {
+  color: var(--home-hero-metric-value);
+}
+
+.hero-visual {
+  background: var(--home-visual-bg);
+}
+
+.hero-visual__card {
+  background: var(--home-visual-card-bg);
+  border-color: var(--home-visual-card-border);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.14);
+}
+
+.hero-visual__header {
+  color: var(--home-visual-header);
+}
+
+.hero-visual__card ul {
+  color: var(--home-visual-text);
+}
+
+.hero-visual__image img,
+.hero-visual__svg {
+  box-shadow: var(--home-visual-media-shadow);
+  background: var(--home-visual-media-bg);
+}
+
+@keyframes robotPulse {
+  0% {
+    transform: translateY(0) scale(1);
+    box-shadow: var(--home-visual-media-shadow);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: var(--home-visual-media-shadow), 0 0 18px var(--home-visual-pulse-glow);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    box-shadow: var(--home-visual-media-shadow);
+  }
+}

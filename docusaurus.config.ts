@@ -65,7 +65,7 @@ const config: Config = {
         },
         blog: false,
         theme: {
-          customCss: ['./src/css/custom.css', './src/css/scroll-animations.css'],
+          customCss: ['./src/css/custom.css', './src/css/home-hero-theme.css', './src/css/scroll-animations.css'],
         },
       } satisfies Preset.Options,
     ],
