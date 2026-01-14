@@ -11,6 +11,41 @@ from app.services.qdrant_client import get_qdrant_client, search_chunks
 settings = get_settings()
 
 
+def _normalize_chapter_filter(chapter: str) -> str:
+    """
+    Normalize frontend "display" chapter names to match the chapter names stored in Qdrant.
+
+    Today our ingestion stores `metadata.chapter` as `Path(stem).title()`.
+    Example: `docs/modules/vla-capstone.md` -> "Vla Capstone"
+
+    The frontend, however, uses human-friendly titles (e.g. "Vision-Language-Action Capstone").
+    This normalizer keeps filtering working without requiring a full re-ingest.
+    """
+    raw = (chapter or "").strip()
+    if not raw:
+        return raw
+
+    aliases = {
+        # Frontend display names -> ingestion-derived names
+        "introduction to physical ai": "Intro",
+        "ros 2 nervous system": "Ros2",
+        "gazebo & unity digital twin": "Gazebo Unity",
+        "nvidia isaac ai brain": "Nvidia Isaac",
+        "vision-language-action capstone": "Vla Capstone",
+        # Common variants / abbreviations
+        "vla capstone": "Vla Capstone",
+        "vla": "Vla Capstone",
+        "course overview": "Course Overview",
+    }
+
+    lowered = raw.lower()
+    if lowered in aliases:
+        return aliases[lowered]
+
+    # If the user passes the ingestion-style title already, keep it.
+    return raw
+
+
 def embed_question(client: OpenAI, question: str) -> List[float]:
     emb = client.embeddings.create(model=settings.embedding_model, input=question)
     return emb.data[0].embedding
@@ -28,7 +63,7 @@ def retrieve_chunks(question: str, filters: Optional[ChatFilters], top_k: int) -
     filter_dict = {}
     if filters:
         if filters.chapter:
-            filter_dict["chapter"] = filters.chapter
+            filter_dict["chapter"] = _normalize_chapter_filter(filters.chapter)
         if filters.section:
             filter_dict["section"] = filters.section
 
