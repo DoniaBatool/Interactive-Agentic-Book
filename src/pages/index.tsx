@@ -1,10 +1,9 @@
-import { useEffect, useRef, type ReactNode } from 'react';
+import type {ReactNode} from 'react';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
-import gsap from 'gsap';
-import RobotImg1 from '../../static/img/robot_img1.png';
+import RobotHero from '../../static/img/robot-hero.svg';
 import ScrollAnimate from '../components/ScrollAnimate';
 import { useTranslation } from '../lib/i18n';
 
@@ -51,36 +50,6 @@ function HomepageHeader() {
 
 export default function Home(): ReactNode {
   const { t } = useTranslation();
-  const robotRef = useRef<HTMLImageElement | null>(null);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const el = robotRef.current;
-    if (!el) return;
-
-    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-    if (reduceMotion) return;
-
-    const ctx = gsap.context(() => {
-      gsap.set(el, { transformOrigin: '50% 50%' });
-      gsap.fromTo(
-        el,
-        { opacity: 0, y: 16, scale: 0.98 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power2.out' }
-      );
-
-      // Gentle float loop
-      gsap.to(el, {
-        y: -10,
-        duration: 3.2,
-        ease: 'sine.inOut',
-        yoyo: true,
-        repeat: -1,
-      });
-    });
-
-    return () => ctx.revert();
-  }, []);
 
   return (
     <Layout description="Physical AI & Humanoid Robotics textbook built with Docusaurus">
@@ -99,14 +68,7 @@ export default function Home(): ReactNode {
         </ScrollAnimate>
         <ScrollAnimate animation="fade-right" delay={500}>
           <div className="hero-visual__image">
-            <img
-              ref={robotRef}
-              src={RobotImg1}
-              className="hero-visual__svg"
-              alt="Humanoid robotics illustration"
-              loading="eager"
-              decoding="async"
-            />
+            <RobotHero className="hero-visual__svg" role="img" aria-label="Humanoid robotics architecture illustration" />
           </div>
         </ScrollAnimate>
       </main>
