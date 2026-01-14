@@ -16,7 +16,8 @@ type TranslationKey =
   | `profile.${string}`
   | `translation.${string}`
   | `chat.${string}`
-  | `admin.${string}`;
+  | `admin.${string}`
+  | `home.${string}`;
 
 /**
  * Hook to get translated text based on current language

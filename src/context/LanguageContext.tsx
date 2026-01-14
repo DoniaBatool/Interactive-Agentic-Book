@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { useLocation } from '@docusaurus/router';
 
 // Types
 interface LanguageContextType {
@@ -23,6 +24,7 @@ const getBackendUrl = (): string => {
 };
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const location = useLocation();
   const [currentLanguage, setCurrentLanguage] = useState<'en' | 'ur'>('en');
   const [isTranslating, setIsTranslating] = useState(false);
   const [translationError, setTranslationError] = useState<string | null>(null);
@@ -41,6 +43,16 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       document.documentElement.classList.remove('rtl-mode');
     }
   }, []);
+
+  // IMPORTANT: Reset language on every route change.
+  // Docusaurus navigates client-side between pages, so state would otherwise persist.
+  // Requirement: each page should default to English until the user toggles Urdu for that page.
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentLanguage('en');
+      setTranslationError(null);
+    }
+  }, [location.key]);
 
   // Update document attributes when language changes
   // Don't save to localStorage - each page should default to English

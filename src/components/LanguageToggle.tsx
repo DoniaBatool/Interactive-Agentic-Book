@@ -1,12 +1,10 @@
 import React from 'react';
-import { useLocation } from '@docusaurus/router';
 import { useLanguage } from '../context/LanguageContext';
 import { useTranslation } from '../lib/i18n';
 
 export const LanguageToggle: React.FC = () => {
   const { currentLanguage, toggleLanguage, isTranslating } = useLanguage();
   const { t } = useTranslation();
-  const location = useLocation();
 
   return (
     <button

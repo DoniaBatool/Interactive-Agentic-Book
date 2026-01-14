@@ -84,6 +84,19 @@
   },
   "admin": {
     "adminPanel": "ایڈمن پینل"
+  },
+  "home": {
+    "tagline": "ROS 2، Gazebo، Isaac، اور VLA کے ساتھ مجسم ذہانت بنائیں",
+    "startCourse": "کورس شروع کریں",
+    "seeCapstone": "کیپ اسٹون دیکھیں",
+    "stackLabel": "اسٹیک",
+    "stackValue": "ROS 2 • Gazebo • Isaac • VLA",
+    "focusLabel": "فوکس",
+    "focusValue": "مجسم AI اور ہیومینائیڈ روبوٹکس",
+    "embodiedArchitectureTitle": "مجسم معماریت",
+    "embodiedArchitectureItem1": "ROS 2 کنٹرول پلین: نوڈز، ٹاپکس، اور سروسز کے ساتھ",
+    "embodiedArchitectureItem2": "Gazebo/Unity ڈیجیٹل ٹوئن: فزکس اور ویژولائزیشن کے لیے",
+    "embodiedArchitectureItem3": "NVIDIA Isaac: پرسیپشن، VSLAM، اور نیویگیشن کے لیے",
+    "embodiedArchitectureItem4": "ویژن-لینگویج-ایکشن: آواز سے ایکشن اور پلاننگ"
   }
 }
-

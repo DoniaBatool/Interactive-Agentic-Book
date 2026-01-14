@@ -10,6 +10,7 @@
     radial-gradient(circle at 80% 0%, rgba(16, 185, 129, 0.14), transparent 34%),
     linear-gradient(135deg, #ffffff 0%, #f8fafc 55%, #f1f5f9 100%);
   --home-hero-subtitle: rgba(15, 23, 42, 0.78);
+  --home-hero-title: #0f172a;
 
   --home-hero-metric-bg: rgba(255, 255, 255, 0.9);
   --home-hero-metric-border: rgba(15, 23, 42, 0.08);
@@ -32,6 +33,7 @@
     radial-gradient(circle at 80% 0%, rgba(16, 185, 129, 0.25), transparent 30%),
     linear-gradient(135deg, #0b1020 0%, #0a1f3c 50%, #07172c 100%);
   --home-hero-subtitle: rgba(255, 255, 255, 0.85);
+  --home-hero-title: #ffffff;
 
   --home-hero-metric-bg: rgba(15, 23, 42, 0.85);
   --home-hero-metric-border: rgba(99, 242, 209, 0.3);
@@ -51,6 +53,13 @@
 /* Apply theme-aware variables to existing home hero styles */
 .hero--tech {
   background: var(--home-hero-bg);
+  /* Docusaurus hero uses these variables for text color */
+  --ifm-hero-text-color: var(--home-hero-title);
+  --ifm-hero-subtitle-text-color: var(--home-hero-subtitle);
+}
+
+.hero--tech .hero__title {
+  color: var(--home-hero-title);
 }
 
 .hero__subtitle {

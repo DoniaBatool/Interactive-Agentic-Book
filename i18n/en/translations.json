@@ -84,6 +84,19 @@
   },
   "admin": {
     "adminPanel": "Admin Panel"
+  },
+  "home": {
+    "tagline": "Build embodied intelligence with ROS 2, Gazebo, Isaac, and VLA",
+    "startCourse": "Start the Course",
+    "seeCapstone": "See the Capstone",
+    "stackLabel": "Stack",
+    "stackValue": "ROS 2 • Gazebo • Isaac • VLA",
+    "focusLabel": "Focus",
+    "focusValue": "Embodied AI & Humanoid Robotics",
+    "embodiedArchitectureTitle": "Embodied Architecture",
+    "embodiedArchitectureItem1": "ROS 2 control plane with nodes, topics, and services",
+    "embodiedArchitectureItem2": "Gazebo/Unity digital twin for physics + visualization",
+    "embodiedArchitectureItem3": "NVIDIA Isaac for perception, VSLAM, and navigation",
+    "embodiedArchitectureItem4": "Vision-Language-Action: voice-to-action and planning"
   }
 }
-
