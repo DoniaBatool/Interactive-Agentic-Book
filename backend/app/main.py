@@ -54,7 +54,10 @@ def health_check():
     return {
         "status": "ok",
         "service": settings.app_name,
-        "database": "connected" if is_db_available() else "not configured"
+        "database": "connected" if is_db_available() else "not configured",
+        "openai_configured": bool(settings.openai_api_key),
+        "qdrant_configured": bool(settings.qdrant_url),
+        "qdrant_collection": settings.qdrant_collection,
     }
 
 

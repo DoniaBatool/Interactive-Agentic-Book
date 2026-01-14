@@ -224,7 +224,9 @@ export const RagChat: React.FC<RagChatProps> = ({
 
       // Add timeout and better error handling
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
+      // Render (especially free plans) can cold-start; OpenAI calls can also take time.
+      // Use a longer timeout to avoid false "timeout" errors during wake-up.
+      const timeoutId = setTimeout(() => controller.abort(), 120000); // 120 second timeout
       
       // Use /chat/agent for agent mode, /chat for basic RAG mode
       const endpoint = mode === 'agent' ? '/chat/agent' : '/chat';
@@ -335,7 +337,8 @@ export const RagChat: React.FC<RagChatProps> = ({
       
       // Check for specific error types
       if (e.name === 'AbortError') {
-        errorMsg = 'Request timed out. The backend might be slow. Please try again.';
+        errorMsg =
+          'Request timed out. The backend may be waking up (Render cold start) or temporarily slow. Please try again in 10–30 seconds.';
       } else if (e.name === 'TypeError' && (e.message?.includes('Failed to fetch') || e.message?.includes('ERR_EMPTY_RESPONSE'))) {
         errorMsg = `Cannot connect to backend at ${backendUrl}. Please check:\n1. Backend is running (curl ${backendUrl}/health)\n2. CORS is configured\n3. No firewall blocking the connection\n\nError: ${e.message}`;
       } else if (e.message?.includes('NetworkError') || e.message?.includes('Network request failed')) {
