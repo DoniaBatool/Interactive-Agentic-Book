@@ -1,6 +1,7 @@
 from typing import List, Optional, Tuple
 
 from openai import OpenAI
+from qdrant_client.http.exceptions import UnexpectedResponse
 
 from app.core.config import get_settings
 from app.models.schemas.chat import ChatFilters
@@ -67,13 +68,22 @@ def retrieve_chunks(question: str, filters: Optional[ChatFilters], top_k: int) -
         if filters.section:
             filter_dict["section"] = filters.section
 
-    results = search_chunks(
-        client=client,
-        collection=settings.qdrant_collection,
-        query_vector=query_vector,
-        top_k=top_k,
-        filters=filter_dict if filter_dict else None,
-    )
+    try:
+        results = search_chunks(
+            client=client,
+            collection=settings.qdrant_collection,
+            query_vector=query_vector,
+            top_k=top_k,
+            filters=filter_dict if filter_dict else None,
+        )
+    except UnexpectedResponse as exc:
+        status_code = getattr(exc, "status_code", None)
+        content = getattr(exc, "content", None)
+        extra = f" (HTTP {status_code})" if status_code else ""
+        details = f" response={content!r}" if content else ""
+        raise RuntimeError(
+            f"Qdrant search failed{extra}. Check QDRANT_URL/QDRANT_COLLECTION.{details}"
+        ) from exc
 
     extracted: List[Tuple[str, str, Optional[str], str, float]] = []
     for r in results:

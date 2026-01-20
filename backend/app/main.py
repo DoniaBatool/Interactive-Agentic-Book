@@ -12,6 +12,7 @@ from app.api import auth as auth_api
 from app.api import personalize as personalize_api
 from app.api import translation as translation_api
 from app.core.database import init_db, is_db_available
+from app.services.qdrant_client import get_effective_qdrant_url, get_qdrant_client
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -51,13 +52,35 @@ app.add_middleware(
 
 @app.get("/health")
 def health_check():
+    qdrant_reachable = False
+    qdrant_error = None
+    qdrant_collections = None
+    qdrant_collection_exists = None
+
+    effective_qdrant_url = get_effective_qdrant_url()
+
+    if settings.qdrant_url:
+        try:
+            qclient = get_qdrant_client()
+            cols = qclient.get_collections().collections
+            qdrant_reachable = True
+            qdrant_collections = [c.name for c in cols][:25]
+            qdrant_collection_exists = any(c.name == settings.qdrant_collection for c in cols)
+        except Exception as exc:
+            qdrant_error = str(exc)
+
     return {
         "status": "ok",
         "service": settings.app_name,
         "database": "connected" if is_db_available() else "not configured",
         "openai_configured": bool(settings.openai_api_key),
         "qdrant_configured": bool(settings.qdrant_url),
+        "qdrant_url_effective": effective_qdrant_url,
+        "qdrant_reachable": qdrant_reachable,
+        "qdrant_error": qdrant_error,
+        "qdrant_collections": qdrant_collections,
         "qdrant_collection": settings.qdrant_collection,
+        "qdrant_collection_exists": qdrant_collection_exists,
     }
 
 

@@ -1,4 +1,5 @@
 from typing import Iterable, Optional, Sequence, Tuple
+from urllib.parse import urlsplit, urlunsplit
 
 from qdrant_client import QdrantClient
 from qdrant_client.http import models as qmodels
@@ -10,11 +11,42 @@ from app.models.schemas.chunk import DocumentChunk
 settings = get_settings()
 
 
-def get_qdrant_client() -> QdrantClient:
+def get_effective_qdrant_url() -> Optional[str]:
+    """
+    Return the URL we should actually use for Qdrant.
+
+    Common production footgun: Qdrant Cloud REST endpoint requires port 6333.
+    If someone configures `https://<cluster>.cloud.qdrant.io` (no port), many setups
+    respond with a plain-text 404 ("404 page not found").
+    """
     if not settings.qdrant_url:
+        return None
+
+    raw = str(settings.qdrant_url)
+    parts = urlsplit(raw)
+    host = parts.hostname
+    if not host:
+        return raw
+
+    # If a path is configured, don't try to "fix" it automatically.
+    # QdrantClient expects the base URL, and an unexpected path can break requests.
+    if parts.path not in ("", "/"):
+        return raw
+
+    # Heuristic: Qdrant Cloud uses port 6333 for REST.
+    if parts.port is None and host.endswith("cloud.qdrant.io"):
+        netloc = f"{host}:6333"
+        return urlunsplit((parts.scheme, netloc, "", "", ""))
+
+    return raw
+
+
+def get_qdrant_client() -> QdrantClient:
+    effective_url = get_effective_qdrant_url()
+    if not effective_url:
         raise RuntimeError("QDRANT_URL is not set")
     # Ensure we pass a plain string URL to QdrantClient
-    return QdrantClient(url=str(settings.qdrant_url), api_key=settings.qdrant_api_key)
+    return QdrantClient(url=effective_url, api_key=settings.qdrant_api_key)
 
 
 def ensure_collection(client: QdrantClient, name: str, vector_size: int) -> None:
