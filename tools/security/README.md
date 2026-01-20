@@ -39,13 +39,7 @@ Install a scheduled task that runs every 15 minutes:
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\security\install_guardian_task.ps1
 ```
 
-If your AV quarantines/blocks that file, use:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\security\install_guardian_task_safe.ps1
-```
-
-Or (alternative) use the CMD installer:
+Use the CMD installer (recommended when AV is strict):
 
 ```bat
 .\tools\security\install_guardian_task.cmd
