@@ -1,0 +1,288 @@
+﻿{
+    "generatedAtUtc":  "2026-01-20T09:33:07.0025174Z",
+    "machine":  "DESKTOP-KT970M4",
+    "user":  "Leo",
+    "proxy":  {
+                  "userProxyEnabled":  0,
+                  "userProxyServer":  null,
+                  "autoConfigUrl":  null,
+                  "winhttp":  "Current WinHTTP proxy settings:\r\n\r\n    Direct access (no proxy server)."
+              },
+    "dns":  [
+                {
+                    "interfaceAlias":  "Local Area Connection 2",
+                    "serverAddresses":  [
+
+                                        ]
+                },
+                {
+                    "interfaceAlias":  "Ethernet",
+                    "serverAddresses":  [
+                                            "8.8.8.8",
+                                            "8.8.4.4"
+                                        ]
+                },
+                {
+                    "interfaceAlias":  "Loopback Pseudo-Interface 1",
+                    "serverAddresses":  [
+
+                                        ]
+                },
+                {
+                    "interfaceAlias":  "Teredo Tunneling Pseudo-Interface",
+                    "serverAddresses":  [
+
+                                        ]
+                },
+                {
+                    "interfaceAlias":  "vEthernet (Default Switch)",
+                    "serverAddresses":  [
+
+                                        ]
+                },
+                {
+                    "interfaceAlias":  "vEthernet (WSL (Hyper-V firewall))",
+                    "serverAddresses":  [
+
+                                        ]
+                }
+            ],
+    "hosts":  {
+                  "path":  "C:\\WINDOWS\\System32\\drivers\\etc\\hosts",
+                  "exists":  true,
+                  "lastWriteTimeUtc":  "\/Date(1749966133345)\/",
+                  "suspiciousLines":  [
+                                          "192.168.1.10 host.docker.internal",
+                                          "192.168.1.10 gateway.docker.internal"
+                                      ]
+              },
+    "browser":  {
+                    "chrome":  {
+                                   "extensionsPath":  "C:\\Users\\Leo\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions",
+                                   "extensions":  [
+                                                      {
+                                                          "id":  "gcgdbnfebnhdbffnohjibaomkiepmfnb",
+                                                          "versions":  [
+                                                                           "3.0.0_0"
+                                                                       ],
+                                                          "path":  "C:\\Users\\Leo\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\gcgdbnfebnhdbffnohjibaomkiepmfnb",
+                                                          "lastWriteTimeUtc":  "\/Date(1768815829033)\/"
+                                                      },
+                                                      {
+                                                          "id":  "nmmhkkegccagdldgiimedpiccmgmieda",
+                                                          "versions":  [
+                                                                           "1.0.0.6_0"
+                                                                       ],
+                                                          "path":  "C:\\Users\\Leo\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\nmmhkkegccagdldgiimedpiccmgmieda",
+                                                          "lastWriteTimeUtc":  "\/Date(1768815831137)\/"
+                                                      },
+                                                      {
+                                                          "id":  "Temp",
+                                                          "versions":  [
+
+                                                                       ],
+                                                          "path":  "C:\\Users\\Leo\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\Temp",
+                                                          "lastWriteTimeUtc":  "\/Date(1768815831138)\/"
+                                                      }
+                                                  ],
+                                   "policyHKLM":  {
+
+                                                  },
+                                   "policyHKCU":  {
+
+                                                  }
+                               },
+                    "edge":  {
+                                 "extensionsPath":  "C:\\Users\\Leo\\AppData\\Local\\Microsoft\\Edge\\User Data\\Default\\Extensions",
+                                 "extensions":  [
+                                                    {
+                                                        "id":  "bhghoamapcdpbohphigoooaddinpkbai",
+                                                        "versions":  [
+                                                                         "8.0.1_0"
+                                                                     ],
+                                                        "path":  "C:\\Users\\Leo\\AppData\\Local\\Microsoft\\Edge\\User Data\\Default\\Extensions\\bhghoamapcdpbohphigoooaddinpkbai",
+                                                        "lastWriteTimeUtc":  "\/Date(1747837125541)\/"
+                                                    },
+                                                    {
+                                                        "id":  "ghbmnnjooekpmoecnnnilnnbdlolhkhi",
+                                                        "versions":  [
+                                                                         "1.100.1_0"
+                                                                     ],
+                                                        "path":  "C:\\Users\\Leo\\AppData\\Local\\Microsoft\\Edge\\User Data\\Default\\Extensions\\ghbmnnjooekpmoecnnnilnnbdlolhkhi",
+                                                        "lastWriteTimeUtc":  "\/Date(1768888147583)\/"
+                                                    },
+                                                    {
+                                                        "id":  "jmjflgjpcpepeafmmgdpfkogkghcpiha",
+                                                        "versions":  [
+                                                                         "1.2.1_0"
+                                                                     ],
+                                                        "path":  "C:\\Users\\Leo\\AppData\\Local\\Microsoft\\Edge\\User Data\\Default\\Extensions\\jmjflgjpcpepeafmmgdpfkogkghcpiha",
+                                                        "lastWriteTimeUtc":  "\/Date(1768888147284)\/"
+                                                    },
+                                                    {
+                                                        "id":  "mdlnjfcpdiaclglfbdkbleiamdafilil",
+                                                        "versions":  [
+                                                                         "1.3.8_0"
+                                                                     ],
+                                                        "path":  "C:\\Users\\Leo\\AppData\\Local\\Microsoft\\Edge\\User Data\\Default\\Extensions\\mdlnjfcpdiaclglfbdkbleiamdafilil",
+                                                        "lastWriteTimeUtc":  "\/Date(1760383264183)\/"
+                                                    }
+                                                ],
+                                 "policyHKLM":  {
+
+                                                },
+                                 "policyHKCU":  {
+
+                                                }
+                             }
+                },
+    "startup":  [
+                    {
+                        "name":  "Voice.ai - Voice Changer",
+                        "command":  "Voice.ai - Voice Changer.lnk",
+                        "location":  "Startup",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "OneDrive",
+                        "command":  "\"C:\\Program Files\\Microsoft OneDrive\\OneDrive.exe\" /background",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "EpicGamesLauncher",
+                        "command":  "\"C:\\Program Files (x86)\\Epic Games\\Launcher\\Portal\\Binaries\\Win64\\EpicGamesLauncher.exe\" -silent -launchcontext=boot",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "Mental Mentor",
+                        "command":  "\"C:\\Users\\Leo\\mentalmentor\\mentalmentor.exe\" silent",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "Opera GX Stable",
+                        "command":  "C:\\Users\\Leo\\AppData\\Local\\Programs\\Opera GX\\opera.exe",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "Discord",
+                        "command":  "\"C:\\Users\\Leo\\AppData\\Local\\Discord\\Update.exe\" --processStart Discord.exe",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "Lively",
+                        "command":  "\"D:\\Lively Wallpaper\\Lively.exe\"",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "Opera GX Browser Assistant",
+                        "command":  "C:\\Users\\Leo\\AppData\\Local\\Programs\\Opera GX\\assistant\\browser_assistant.exe",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "Free Download Manager",
+                        "command":  "\"C:\\Program Files\\Softdeluxe\\Free Download Manager\\fdm.exe\" --hidden",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "Lunar Client",
+                        "command":  "\"C:\\Users\\Leo\\AppData\\Local\\Programs\\Lunar Client\\Lunar Client.exe\" --hidden",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "MicrosoftEdgeAutoLaunch_ED2562EAE13438FF273BC6C6040CC2E7",
+                        "command":  "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --no-startup-window --win-session-start",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "ScreenRec",
+                        "command":  "C:\\Users\\Leo\\AppData\\Local\\StreamingVideoProvider\\ScreenRec_app\\screenrec.exe",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "BingWallpaperDaemon",
+                        "command":  "C:\\Users\\Leo\\AppData\\Local\\Temp\\bwpc3672428-a69f-4bc4-937b-35abac5c6476\\UnInstDaemon.exe",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "VoicemodV3",
+                        "command":  "\"C:\\Program Files\\Voicemod V3\\Voicemod.exe\" --boot",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "Docker Desktop",
+                        "command":  "C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "Claude",
+                        "command":  "\"C:\\Users\\Leo\\AppData\\Local\\AnthropicClaude\\claude.exe\" --startup",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "Steam",
+                        "command":  "\"D:\\Steam\\steam.exe\" -silent",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "Medal",
+                        "command":  "\"C:\\Users\\Leo\\AppData\\Local\\Medal\\update.exe\" --processStart \"Medal.exe\"",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "svchost",
+                        "command":  "C:\\Users\\Leo\\AppData\\Local\\Microsoft\\Windows\\0\\svchost.exe",
+                        "location":  "HKU\\S-1-5-21-2526815381-1984787524-345012222-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "DESKTOP-KT970M4\\Leo"
+                    },
+                    {
+                        "name":  "Cloudflare WARP",
+                        "command":  "C:\\PROGRA~1\\CLOUDF~1\\CLOUDF~1\\CLOUDF~1.EXE ",
+                        "location":  "Common Startup",
+                        "user":  "Public"
+                    },
+                    {
+                        "name":  "SecurityHealth",
+                        "command":  "%windir%\\system32\\SecurityHealthSystray.exe",
+                        "location":  "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "Public"
+                    },
+                    {
+                        "name":  "RtkAudUService",
+                        "command":  "\"C:\\WINDOWS\\System32\\RtkAudUService64.exe\" -background",
+                        "location":  "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "Public"
+                    },
+                    {
+                        "name":  "XMouseButtonControl",
+                        "command":  "C:\\Program Files\\Highresolution Enterprises\\X-Mouse Button Control\\XMouseButtonControl.exe /notportable /delay",
+                        "location":  "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "Public"
+                    },
+                    {
+                        "name":  "UrbanVPN",
+                        "command":  "\"C:\\Program Files (x86)\\UrbanVPN\\Urban Vpn Updater.exe\" /checknow -minuseractions -restartapp \"C:\\Program Files (x86)\\UrbanVPN\\bin\\urban-vpn-app.exe\" -restartappcmd \"--tray-minimized\"",
+                        "location":  "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                        "user":  "Public"
+                    }
+                ],
+    "redFlags":  [
+                     "Hosts file has non-localhost mappings. Review suspiciousLines."
+                 ]
+}
