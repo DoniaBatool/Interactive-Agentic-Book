@@ -1,6 +1,10 @@
 # Browser Session Guardian - Windows Audit Script (Defensive)
 # Outputs a JSON report to tools/security/reports/browser_audit_latest.json
 
+param(
+  [switch]$Quiet
+)
+
 $ErrorActionPreference = "Continue"
 
 function Ensure-Dir($path) {
@@ -39,19 +43,75 @@ function Get-ExtensionList($baseDir) {
       Get-ChildItem -LiteralPath $baseDir -Directory | ForEach-Object {
         $id = $_.Name
         $versions = @()
+        $manifestInfo = @()
+
         Get-ChildItem -LiteralPath $_.FullName -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+          $verDir = $_.FullName
           $versions += $_.Name
+
+          $manifestPath = Join-Path $verDir "manifest.json"
+          if (Test-Path -LiteralPath $manifestPath) {
+            try {
+              $manifestJson = Get-Content -LiteralPath $manifestPath -Raw -ErrorAction Stop | ConvertFrom-Json
+              $rawName = $manifestJson.name
+              $resolvedName = $rawName
+
+              # Resolve __MSG_key__ names when possible via _locales/*/messages.json
+              if ($rawName -and ($rawName -match "^__MSG_(.+)__$")) {
+                $key = $Matches[1]
+                $localesDir = Join-Path $verDir "_locales"
+                if (Test-Path -LiteralPath $localesDir) {
+                  $preferred = @("en", "en_US", "en-GB")
+                  $localeCandidates = @()
+                  foreach ($p in $preferred) {
+                    $localeCandidates += (Join-Path (Join-Path $localesDir $p) "messages.json")
+                  }
+                  # fallback: first locale folder
+                  $firstLocale = Get-ChildItem -LiteralPath $localesDir -Directory -ErrorAction SilentlyContinue | Select-Object -First 1
+                  if ($firstLocale) {
+                    $localeCandidates += (Join-Path $firstLocale.FullName "messages.json")
+                  }
+
+                  foreach ($cand in $localeCandidates) {
+                    if (Test-Path -LiteralPath $cand) {
+                      try {
+                        $msgs = Get-Content -LiteralPath $cand -Raw -ErrorAction Stop | ConvertFrom-Json
+                        if ($msgs.$key -and $msgs.$key.message) {
+                          $resolvedName = $msgs.$key.message
+                          break
+                        }
+                      } catch {}
+                    }
+                  }
+                }
+              }
+
+              $manifestInfo += [pscustomobject]@{
+                versionDir = $_.Name
+                manifestVersion = $manifestJson.manifest_version
+                name = $resolvedName
+                nameRaw = $rawName
+                version = $manifestJson.version
+                permissions = $manifestJson.permissions
+                host_permissions = $manifestJson.host_permissions
+                update_url = $manifestJson.update_url
+              }
+            } catch {}
+          }
         }
+
         $exts += [pscustomobject]@{
           id = $id
           versions = $versions
           path = $_.FullName
           lastWriteTimeUtc = $_.LastWriteTimeUtc
+          manifests = $manifestInfo
         }
       }
     }
   } catch {}
-  return $exts
+  # Always return an array (even if empty or single item) so JSON shape is stable.
+  return @($exts)
 }
 
 function Get-HostsInfo() {
@@ -146,13 +206,13 @@ $report = [pscustomobject]@{
   browser = [pscustomobject]@{
     chrome = [pscustomobject]@{
       extensionsPath = $chromeDefault
-      extensions = (Get-ExtensionList $chromeDefault)
+      extensions = @((Get-ExtensionList $chromeDefault))
       policyHKLM = (Get-PolicyValues $chromePolicyHKLM)
       policyHKCU = (Get-PolicyValues $chromePolicyHKCU)
     }
     edge = [pscustomobject]@{
       extensionsPath = $edgeDefault
-      extensions = (Get-ExtensionList $edgeDefault)
+      extensions = @((Get-ExtensionList $edgeDefault))
       policyHKLM = (Get-PolicyValues $edgePolicyHKLM)
       policyHKCU = (Get-PolicyValues $edgePolicyHKCU)
     }
@@ -177,7 +237,7 @@ if ($report.proxy.winhttp) {
   }
 }
 if ($report.hosts.suspiciousLines.Count -gt 0) {
-  $report.redFlags += "Hosts file has non-localhost mappings. Review suspiciousLines."
+  $report.redFlags += "Hosts file has custom mappings. If you don't use Docker/dev tooling, review suspiciousLines."
 }
 if (($report.browser.chrome.policyHKLM.Count + $report.browser.chrome.policyHKCU.Count) -gt 0) {
   $report.redFlags += "Chrome policies are present. Review for forced extensions or proxy settings."
@@ -186,26 +246,37 @@ if (($report.browser.edge.policyHKLM.Count + $report.browser.edge.policyHKCU.Cou
   $report.redFlags += "Edge policies are present. Review for forced extensions or proxy settings."
 }
 
+# Startup high-risk patterns
+foreach ($si in $report.startup) {
+  try {
+    if ($si.name -eq "svchost" -and ($si.command -match "AppData\\\\Local\\\\Microsoft\\\\Windows\\\\0\\\\svchost\\.exe")) {
+      $report.redFlags += "Startup entry 'svchost' points to user profile path (highly suspicious). Investigate/remove and run Defender Offline Scan."
+    }
+  } catch {}
+}
+
 $outPath = "tools/security/reports/browser_audit_latest.json"
 $json = $report | ConvertTo-Json -Depth 8
 Set-Content -LiteralPath $outPath -Value $json -Encoding UTF8
 
-Write-Host ""
-Write-Host "Browser Session Guardian - Audit Complete"
-Write-Host ("Report: {0}" -f $outPath)
-Write-Host ""
+if (-not $Quiet) {
+  Write-Host ""
+  Write-Host "Browser Session Guardian - Audit Complete"
+  Write-Host ("Report: {0}" -f $outPath)
+  Write-Host ""
 
-if ($report.redFlags.Count -gt 0) {
-  Write-Host "RED FLAGS:"
-  $report.redFlags | ForEach-Object { Write-Host ("- " + $_) }
-  Write-Host ""
-} else {
-  Write-Host "No red flags detected by basic heuristics."
-  Write-Host ""
+  if ($report.redFlags.Count -gt 0) {
+    Write-Host "RED FLAGS:"
+    $report.redFlags | ForEach-Object { Write-Host ("- " + $_) }
+    Write-Host ""
+  } else {
+    Write-Host "No red flags detected by basic heuristics."
+    Write-Host ""
+  }
+
+  Write-Host "Next steps (recommended):"
+  Write-Host "- Run Microsoft Defender Offline Scan (Windows Security)"
+  Write-Host "- Remove unknown browser extensions; reset browser profile if needed"
+  Write-Host "- Rotate passwords + enable MFA/security key (especially email + LinkedIn)"
 }
-
-Write-Host "Next steps (recommended):"
-Write-Host "- Run Microsoft Defender Offline Scan (Windows Security)"
-Write-Host "- Remove unknown browser extensions; reset browser profile if needed"
-Write-Host "- Rotate passwords + enable MFA/security key (especially email + LinkedIn)"
 

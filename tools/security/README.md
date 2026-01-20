@@ -32,6 +32,18 @@ Outputs:
 - `tools/security/reports/browser_audit_latest.json`
 - A console summary with red flags.
 
+## Optional: run continuously (while PC is ON)
+Install a scheduled task that runs every 15 minutes:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\security\install_guardian_task.ps1
+```
+
+It writes a drift/alert summary here:
+- `tools/security/reports/guardian_alert_latest.txt`
+
+**Note**: no script can run when the PC is fully powered off. This can run while ON, and can wake from sleep/hibernate if enabled.
+
 ## Next steps if you see red flags
 - Remove unknown browser extensions
 - Reset browser settings / create a fresh profile
