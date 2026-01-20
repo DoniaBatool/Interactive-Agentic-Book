@@ -1,419 +1,162 @@
-# 🤖 Physical AI & Humanoid Robotics Textbook
+# Physical AI & Humanoid Robotics — Interactive Textbook
 
-An interactive, multilingual textbook for learning Physical AI and Humanoid Robotics, built with modern web technologies. This project combines Docusaurus for content delivery, BetterAuth for authentication, and FastAPI for backend services.
+Interactive, multilingual (English + Urdu) course site built on **Docusaurus** with:
+- **Auth server** (Express + BetterAuth) for sign-in/sign-up + admin panel
+- **RAG backend** (FastAPI) for chat + translation + optional persistence
 
-## ✨ Features
+### Live deployments (current defaults in code)
+- **Frontend (Docusaurus)**: `https://interactive-agentic-book-frontend.onrender.com`
+- **Auth server (BetterAuth)**: `https://interactive-agentic-book.onrender.com`
+- **Backend (FastAPI)**: `https://interactive-agentic-book-backend.onrender.com`
 
-### 🔐 Authentication & User Management
-- **Email/Password Authentication**: Secure sign-up and sign-in with email verification
-- **Social Login**: OAuth integration with Google and GitHub
-- **Password Reset**: Forgot password functionality with email reset links
-- **Session Management**: Secure session handling with BetterAuth
-- **Admin Panel**: Role-based access control for administrators
+## Features (what exists in this repo)
+- **Course content**: Docusaurus docs in `docs/`
+- **i18n**: English + Urdu (`i18n/`), RTL support
+- **Per-page Urdu toggle**: language **defaults back to English on navigation** (does not persist)
+- **Auth**: email/password + optional Google/GitHub OAuth, email verification, password reset
+- **Admin panel**: user management at `/auth/admin`
+- **AI**:
+  - **RAG chat** (OpenAI + Qdrant)
+  - **Chapter translation** endpoint in backend
+- **Testing**: course-structure checks + TypeScript typecheck (`npm test`)
 
-### 🌍 Internationalization (i18n)
-- **Multi-language Support**: English and Urdu (اردو) translations
-- **RTL Support**: Right-to-left layout for Urdu content
-- **Language Toggle**: Easy switching between languages
-- **Dynamic Content Translation**: Real-time translation of course content
-
-### 🎨 User Experience
-- **Scroll Animations**: Smooth fade, slide, and scale animations on scroll
-- **Responsive Design**: Mobile-first, works on all screen sizes
-- **Modern UI/UX**: Clean, professional interface with smooth interactions
-- **Personalization**: User profile customization with learning goals
-
-### 📚 Course Features
-- **Interactive Content**: Markdown-based course modules
-- **Course Overview**: Comprehensive course structure and outcomes
-- **Module-based Learning**: Organized into logical learning modules
-- **RAG Chat**: AI-powered chat for course-related queries
-
-## 🛠️ Tech Stack
-
+## Tech stack (actual)
 ### Frontend
-- **Docusaurus v3**: React-based static site generator
-- **TypeScript**: Type-safe development
-- **React 19**: Modern React with latest features
-- **CSS Modules**: Scoped styling
-- **Prism**: Syntax highlighting for code blocks
+- **Docusaurus 3** + **React 19** + **TypeScript**
+- Custom theme/components in `src/`
+- Docusaurus i18n + custom Urdu toggle logic
 
-### Backend Services
-- **BetterAuth Server** (Port 8002): Authentication and user management
-  - Express.js
-  - PostgreSQL for user data
-  - Email services (SendGrid/Nodemailer)
-- **FastAPI Backend** (Port 8000): RAG, chat, and personalization
-  - Python 3.11+
-  - PostgreSQL for chat history
-  - Qdrant for vector search
+### Auth server (`auth-server/`)
+- **Node.js** (ESM) + **Express**
+- **better-auth**
+- **PostgreSQL** (`pg`)
+- Email providers supported in code: **SendGrid** or **Gmail SMTP** (plus `resend` dependency)
 
-### Database
-- **PostgreSQL**: Primary database for users, sessions, and chat history
+### Backend (`backend/`)
+- **FastAPI** + **Uvicorn**
+- **OpenAI** (chat + embeddings)
+- **Qdrant** (vector search)
+- Optional **PostgreSQL** persistence (async SQLAlchemy/asyncpg)
 
-### Development Tools
-- **TypeScript**: Type checking
-- **Playwright**: End-to-end testing
-- **ESBuild**: Fast bundling
+## Prerequisites
+- **Node.js >= 18**
+- **Python 3.11+**
+- Optional: **PostgreSQL** (needed for auth; backend DB is optional)
 
-## 📋 Prerequisites
-
-Before you begin, ensure you have the following installed:
-
-- **Node.js** ≥ 18.0 (recommended: use [nvm](https://github.com/nvm-sh/nvm))
-- **npm** (bundled with Node.js)
-- **Python** 3.11+ (for FastAPI backend)
-- **PostgreSQL** 14+ (for database)
-- **Git** (for version control)
-
-### Optional (for production)
-- **SendGrid API Key** (for email services)
-- **Google OAuth Credentials** (for Google sign-in)
-- **GitHub OAuth Credentials** (for GitHub sign-in)
-
-## 🚀 Installation
-
-### 1. Clone the Repository
-
-```bash
-git clone <repository-url>
-cd interactive-agentic-book
-```
-
-### 2. Install Frontend Dependencies
-
+## Local development
+### 1) Install dependencies
+Frontend (repo root):
 ```bash
 npm install
 ```
 
-### 3. Install Auth Server Dependencies
-
+Auth server:
 ```bash
 cd auth-server
 npm install
 cd ..
 ```
 
-### 4. Install Backend Dependencies
-
+Backend (create venv + install):
 ```bash
-# Create virtual environment (Windows)
 python -m venv venv
-.\venv\Scripts\Activate
 
-# Or (Linux/WSL)
-python3 -m venv venv
+# Windows PowerShell:
+.\venv\Scripts\Activate.ps1
+# Windows CMD:
+.\venv\Scripts\activate.bat
+# Linux/WSL:
 source venv/bin/activate
 
-# Install Python dependencies
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 ```
 
-### 5. Set Up Database
+### 2) Environment variables
+Both `auth-server/` and `backend/` load env from a **root `.env`** when you run from the project root.
 
-Create a PostgreSQL database:
-
-```sql
-CREATE DATABASE textbook_db;
-```
-
-Run migrations (if available) or use the SQL scripts in `auth-server/`:
-- `create-tables.sql`: Create initial tables
-- `add-role-columns.sql`: Add admin role columns
-- `make-admin.sql`: Make a user admin (optional)
-
-## ⚙️ Environment Setup
-
-### Frontend Environment
-
-Create a `.env` file in the root directory (if needed):
-
+Create `.env` in the repo root:
 ```env
-# Frontend URL
+# --- URLs (dev) ---
 FRONTEND_URL=http://localhost:3000
-```
+AUTH_SERVER_URL=http://localhost:8002
 
-### Auth Server Environment
-
-Create `auth-server/.env`:
-
-```env
-# Server Configuration
+# --- Auth server ---
 AUTH_PORT=8002
-BETTER_AUTH_URL=http://localhost:8002
-BETTER_AUTH_SECRET=your-secret-key-here-min-32-chars
+DATABASE_URL=postgresql://USER:PASSWORD@localhost:5432/textbook_db
+AUTH_SECRET=change-this-in-production-min-32-chars
 
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/textbook_db
+# Optional OAuth (enable by setting IDs/secrets)
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
 
-# Frontend URL (for CORS)
-FRONTEND_URL=http://localhost:3000
+# Optional email (for verification + password reset)
+SENDGRID_API_KEY=
+SENDGRID_FROM_EMAIL=
+GMAIL_USER=
+GMAIL_APP_PASSWORD=
 
-# Email Service (Choose one)
-# Option 1: SendGrid
-SENDGRID_API_KEY=your-sendgrid-api-key
-SENDGRID_FROM_EMAIL=noreply@example.com
+# --- Backend (RAG) ---
+OPENAI_API_KEY=
+QDRANT_URL=
+QDRANT_API_KEY=
+QDRANT_COLLECTION=textbook-chunks
 
-# Option 2: Gmail SMTP (for development)
-GMAIL_USER=your-email@gmail.com
-GMAIL_APP_PASSWORD=your-app-password
+# Optional (backend persistence)
+# DATABASE_URL can be reused (same Postgres)
 
-# OAuth Providers (Optional)
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-GITHUB_CLIENT_ID=your-github-client-id
-GITHUB_CLIENT_SECRET=your-github-client-secret
+# Optional: allow additional frontends in dev/prod (comma-separated)
+ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 ```
 
-### Backend Environment
-
-Create `backend/.env` (if applicable):
-
-```env
-DATABASE_URL=postgresql://user:password@localhost:5432/textbook_db
-QDRANT_URL=http://localhost:6333
-```
-
-## 🏃 Running the Project
-
-### Development Mode
-
-You need **3 separate terminals** to run all services:
-
-#### Terminal 1: Frontend (Docusaurus)
-
+### 3) Run services (3 terminals)
+Frontend (Docusaurus):
 ```bash
 npm start
 ```
+Runs at `http://localhost:3000`
 
-Frontend will be available at `http://localhost:3000`
-
-#### Terminal 2: Auth Server (BetterAuth)
-
+Auth server (BetterAuth):
 ```bash
 cd auth-server
 npm run dev
 ```
+Runs at `http://localhost:8002`
 
-Auth server will be available at `http://localhost:8002`
-
-#### Terminal 3: Backend (FastAPI)
-
-**Windows:**
+Backend (FastAPI):
 ```bash
-.\venv\Scripts\Activate
 uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8000
 ```
+API docs at `http://localhost:8000/docs` and health at `http://localhost:8000/health`
 
-**Linux/WSL:**
+## Ingestion (RAG)
+To ingest docs into Qdrant (requires OpenAI + Qdrant env vars):
 ```bash
-source venv/bin/activate
-uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
+python backend/scripts/ingest.py --docs-dir docs
 ```
 
-Backend will be available at `http://localhost:8000/docs`
-
-### Quick Start Scripts
-
-For convenience, you can use the scripts in `scripts/` directory (if available).
-
-## 📁 Project Structure
-
-```
-interactive-agentic-book/
-├── auth-server/              # BetterAuth authentication server
-│   ├── src/
-│   │   ├── auth.ts          # BetterAuth configuration
-│   │   └── index.ts         # Express server setup
-│   ├── package.json
-│   └── .env                 # Auth server environment variables
-│
-├── backend/                  # FastAPI backend (RAG, chat)
-│   ├── app/
-│   │   └── main.py
-│   └── requirements.txt
-│
-├── docs/                     # Course content (Markdown)
-│   ├── course-overview.md
-│   └── modules/
-│
-├── src/                      # Frontend source code
-│   ├── components/          # React components
-│   │   ├── LanguageToggle.tsx
-│   │   ├── TranslatableContent.tsx
-│   │   ├── ScrollAnimate.tsx
-│   │   ├── UserMenu.tsx
-│   │   └── ...
-│   ├── context/             # React contexts
-│   │   ├── AuthContext.tsx
-│   │   └── LanguageContext.tsx
-│   ├── pages/               # Custom pages
-│   │   ├── index.tsx       # Homepage
-│   │   └── auth/           # Auth pages (signup, signin, etc.)
-│   ├── css/                # Global styles
-│   └── theme/              # Docusaurus theme overrides
-│
-├── i18n/                    # Internationalization
-│   ├── en/                 # English translations
-│   └── ur/                 # Urdu translations
-│
-├── static/                  # Static assets (images, etc.)
-├── docusaurus.config.ts    # Docusaurus configuration
-├── sidebars.ts             # Sidebar navigation
-├── package.json
-└── README.md
-```
-
-## 🔑 Key Features Explained
-
-### Authentication Flow
-
-1. **Sign Up**: User creates account with email/password or OAuth
-2. **Email Verification**: Verification link sent to email (if enabled)
-3. **Sign In**: User logs in with credentials
-4. **Session**: BetterAuth manages secure sessions
-5. **Admin Access**: Admins can access admin panel
-
-### Internationalization
-
-- **Default Language**: English (en)
-- **Supported Languages**: English, Urdu (اردو)
-- **Translation Files**: Located in `i18n/en/` and `i18n/ur/`
-- **RTL Support**: Automatic right-to-left layout for Urdu
-- **Language Persistence**: User preference saved in localStorage
-
-### Scroll Animations
-
-The homepage features smooth scroll-triggered animations:
-- **Fade Up**: Elements fade in from bottom
-- **Fade Left/Right**: Elements slide in from sides
-- **Intersection Observer**: Efficient scroll detection
-
-## 🧪 Testing
-
-### Type Checking
-
-```bash
-npm run typecheck
-```
-
-### Content Structure Validation
-
+## Testing
+Runs course-structure checks + TS typecheck:
 ```bash
 npm test
 ```
 
-This runs:
-- Course structure validation (`tests/check-course-structure.mjs`)
-- TypeScript type checking
-
-### End-to-End Testing
-
-```bash
-# Install Playwright browsers (first time)
-npx playwright install
-
-# Run tests (if available)
-npx playwright test
+## Project layout
+```
+.
+├── docs/                 # Course content
+├── src/                  # Docusaurus custom pages/components/theme
+├── i18n/                 # English + Urdu strings
+├── auth-server/          # Express + BetterAuth server (Postgres)
+├── backend/              # FastAPI RAG/translation service (OpenAI/Qdrant)
+└── tests/                # Course structure validation
 ```
 
-## 🏗️ Building for Production
+## Deployment (what this repo is configured for)
+- **Frontend**: Render (root `/`) and GitHub Pages (baseUrl `/Interactive-Agentic-Book/`) via `docusaurus.config.ts`
+- **Backend/Auth**: Render web services (URLs above are the defaults used in `src/config/env.ts`)
 
-### Build Frontend
-
-```bash
-npm run build
-```
-
-Output will be in `build/` directory.
-
-### Serve Production Build
-
-```bash
-npm run serve
-```
-
-### Build Auth Server
-
-```bash
-cd auth-server
-npm run build
-npm run start
-```
-
-## 🚢 Deployment
-
-### Frontend Deployment
-
-The frontend can be deployed to:
-- **Vercel**: Connect GitHub repo, auto-deploy
-- **Netlify**: Connect GitHub repo, auto-deploy
-- **GitHub Pages**: Use `npm run deploy`
-- **Any static hosting**: Upload `build/` folder
-
-### Auth Server Deployment
-
-Deploy the auth server to:
-- **Railway**: Connect GitHub, set environment variables
-- **Render**: Connect GitHub, set environment variables
-- **Heroku**: Use Procfile, set environment variables
-- **VPS**: Use PM2 or systemd for process management
-
-### Environment Variables for Production
-
-Update all environment variables with production URLs:
-- `BETTER_AUTH_URL`: Production auth server URL
-- `FRONTEND_URL`: Production frontend URL
-- `DATABASE_URL`: Production database URL
-- OAuth redirect URIs: Update in Google/GitHub OAuth apps
-
-## 👥 Admin Setup
-
-To make a user an admin, run this SQL query:
-
-```sql
-UPDATE "user" 
-SET 
-    "isAdmin" = TRUE,
-    "role" = 'admin'
-WHERE "email" = 'your-email@example.com';
-```
-
-Or use the script: `auth-server/make-admin.sql`
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Guidelines
-
-- Follow TypeScript best practices
-- Use meaningful commit messages
-- Test your changes locally
-- Update documentation if needed
-- Ensure translations are added for new UI text
-
-## 📝 License
-
-[Add your license here]
-
-## 🙏 Acknowledgments
-
-- [Docusaurus](https://docusaurus.io/) for the documentation framework
-- [BetterAuth](https://better-auth.com/) for authentication
-- [FastAPI](https://fastapi.tiangolo.com/) for the backend framework
-
-## 📞 Support
-
-For issues and questions:
-- Open an issue on GitHub
-- Check the documentation in `docs/`
-- Review `START-SERVERS.md` for server setup help
-
----
-
-**Built with ❤️ for Physical AI & Humanoid Robotics education**
+## Admin
+- Admin UI: `/<site>/auth/admin`
+- Admin privileges are stored in Postgres on the auth server tables; helper SQL lives in `auth-server/*.sql`.
