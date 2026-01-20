@@ -35,7 +35,7 @@ const UserMenu: React.FC = () => {
       if (!hasCachedUser) {
         // No cached user, show buttons immediately
         return (
-          <div className="user-menu-auth-links">
+          <div className="navbar__item user-menu-auth-links">
             <Link to="/auth/signin" className="user-menu-link">{t('common.signIn')}</Link>
             <Link to="/auth/signup" className="user-menu-link user-menu-link-primary">{t('common.signUp')}</Link>
           </div>
@@ -43,14 +43,14 @@ const UserMenu: React.FC = () => {
       }
       // Has cached user, show loading briefly
       return (
-        <div className="user-menu-loading">
+        <div className="navbar__item user-menu-loading">
           <span className="user-menu-spinner"></span>
         </div>
       );
     }
     // Not loading and no user, show buttons
     return (
-      <div className="user-menu-auth-links">
+      <div className="navbar__item user-menu-auth-links">
         <Link to="/auth/signin" className="user-menu-link">{t('common.signIn')}</Link>
         <Link to="/auth/signup" className="user-menu-link user-menu-link-primary">{t('common.signUp')}</Link>
       </div>
@@ -60,7 +60,7 @@ const UserMenu: React.FC = () => {
   // Show loading spinner only if we have a user and still loading
   if (loading && user) {
     return (
-      <div className="user-menu-loading">
+      <div className="navbar__item user-menu-loading">
         <span className="user-menu-spinner"></span>
       </div>
     );
@@ -85,7 +85,7 @@ const UserMenu: React.FC = () => {
   const initials = displayName.slice(0, 2).toUpperCase();
 
   return (
-    <div className="user-menu" ref={menuRef}>
+    <div className="navbar__item user-menu" ref={menuRef}>
       <button
         className="user-menu-trigger"
         onClick={() => setIsOpen(!isOpen)}
