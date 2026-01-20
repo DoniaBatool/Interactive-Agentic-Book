@@ -29,7 +29,9 @@ function Normalize-Extensions($exts) {
     try {
       if ($e.manifests -and $e.manifests.Count -gt 0) { $name = $e.manifests[0].name }
     } catch {}
-    $out += ("{0}::{1}" -f $e.id, ($name ? $name : ""))
+    $namePart = ""
+    if ($name) { $namePart = $name }
+    $out += ("{0}::{1}" -f $e.id, $namePart)
   }
   return ($out | Sort-Object -Unique)
 }

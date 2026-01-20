@@ -39,10 +39,33 @@ Install a scheduled task that runs every 15 minutes:
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\security\install_guardian_task.ps1
 ```
 
+If your AV quarantines/blocks that file, use:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\security\install_guardian_task_safe.ps1
+```
+
+Or (alternative) use the CMD installer:
+
+```bat
+.\tools\security\install_guardian_task.cmd
+```
+
 It writes a drift/alert summary here:
 - `tools/security/reports/guardian_alert_latest.txt`
 
 **Note**: no script can run when the PC is fully powered off. This can run while ON, and can wake from sleep/hibernate if enabled.
+
+## If your antivirus flags the scripts (RAV/others)
+Some endpoint products flag *any* PowerShell that reads `hosts` / registry as “suspicious” (heuristics). These scripts are **defensive** and only **read** configuration + write local JSON reports, but AV may still block/quarantine them.
+
+Recommended safest path:
+- Prefer **Microsoft Defender Offline Scan** for cleanup.
+- If you don’t explicitly need RAV Endpoint Protection, consider uninstalling it and using Microsoft Defender.
+
+If you choose to keep RAV:
+- Only allow/run these scripts **after you personally review them** (they should not modify `hosts`).
+- You may need to add a **trusted exclusion** for your guardian folder so RAV doesn’t quarantine `install_guardian_task.ps1` or block scheduled runs.
 
 ## Next steps if you see red flags
 - Remove unknown browser extensions

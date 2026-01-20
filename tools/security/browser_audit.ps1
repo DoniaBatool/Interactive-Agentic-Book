@@ -186,6 +186,25 @@ function Get-StartupItems() {
   return $items
 }
 
+function Get-RunKeyItems($regPath) {
+  # Returns an array of { name, value, path }
+  $items = @()
+  try {
+    if (Test-Path -LiteralPath $regPath) {
+      $props = Get-ItemProperty -LiteralPath $regPath -ErrorAction SilentlyContinue
+      foreach ($p in $props.PSObject.Properties) {
+        if ($p.Name -in @("PSPath","PSParentPath","PSChildName","PSDrive","PSProvider")) { continue }
+        $items += [pscustomobject]@{
+          name = $p.Name
+          value = [string]$p.Value
+          path = $regPath
+        }
+      }
+    }
+  } catch {}
+  return @($items)
+}
+
 Ensure-Dir "tools/security/reports"
 
 $chromeDefault = Join-Path $env:LOCALAPPDATA "Google\Chrome\User Data\Default\Extensions"
@@ -218,6 +237,10 @@ $report = [pscustomobject]@{
     }
   }
   startup = (Get-StartupItems)
+  runKeys = [pscustomobject]@{
+    hkcu = @((Get-RunKeyItems "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"))
+    hklm = @((Get-RunKeyItems "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run"))
+  }
   redFlags = @()
 }
 
@@ -249,11 +272,52 @@ if (($report.browser.edge.policyHKLM.Count + $report.browser.edge.policyHKCU.Cou
 # Startup high-risk patterns
 foreach ($si in $report.startup) {
   try {
-    if ($si.name -eq "svchost" -and ($si.command -match "AppData\\\\Local\\\\Microsoft\\\\Windows\\\\0\\\\svchost\\.exe")) {
+    if ($si.name -eq "svchost" -and ($si.command -match '(?i)\\AppData\\Local\\Microsoft\\Windows\\0\\svchost\.exe')) {
       $report.redFlags += "Startup entry 'svchost' points to user profile path (highly suspicious). Investigate/remove and run Defender Offline Scan."
     }
   } catch {}
 }
+
+# Run-key persistence patterns (more reliable than Win32_StartupCommand alone)
+foreach ($rk in @($report.runKeys.hkcu)) {
+  try {
+    if ($null -eq $rk) { continue }
+    $val = ""
+    if ($null -ne $rk.value) { $val = [string]$rk.value }
+
+    if ($val -match '(?i)\\AppData\\Local\\Microsoft\\Windows\\0\\svchost\.exe') {
+      $report.redFlags += ("Run key '{0}' points to C:\\Users\\...\\AppData\\Local\\Microsoft\\Windows\\0\\svchost.exe (highly suspicious). Remove Run entry, delete file, run Defender Offline Scan." -f $rk.name)
+    }
+
+    # Temp-based autoruns are a common persistence pattern.
+    if ($val -match '(?i)\\AppData\\Local\\Temp\\') {
+      $report.redFlags += ("Run key '{0}' points to a Temp path. This is suspicious persistence; remove if you didn't intentionally install it. Value: {1}" -f $rk.name, $val)
+    }
+  } catch {}
+}
+foreach ($rk in @($report.runKeys.hklm)) {
+  try {
+    if ($null -eq $rk) { continue }
+    $val = ""
+    if ($null -ne $rk.value) { $val = [string]$rk.value }
+
+    if ($val -match '(?i)\\AppData\\Local\\Microsoft\\Windows\\0\\svchost\.exe') {
+      $report.redFlags += ("Run key '{0}' (HKLM) points to C:\\Users\\...\\AppData\\Local\\Microsoft\\Windows\\0\\svchost.exe (highly suspicious). Remove Run entry, delete file, run Defender Offline Scan." -f $rk.name)
+    }
+
+    if ($val -match '(?i)\\AppData\\Local\\Temp\\') {
+      $report.redFlags += ("Run key '{0}' (HKLM) points to a Temp path. This is suspicious persistence; remove if you didn't intentionally install it. Value: {1}" -f $rk.name, $val)
+    }
+  } catch {}
+}
+
+# File existence check for known-bad svchost location
+try {
+  $susSvchost = "C:\Users\Leo\AppData\Local\Microsoft\Windows\0\svchost.exe"
+  if (Test-Path -LiteralPath $susSvchost) {
+    $report.redFlags += "Suspicious svchost.exe exists at C:\\Users\\Leo\\AppData\\Local\\Microsoft\\Windows\\0\\svchost.exe (highly suspicious)."
+  }
+} catch {}
 
 $outPath = "tools/security/reports/browser_audit_latest.json"
 $json = $report | ConvertTo-Json -Depth 8
