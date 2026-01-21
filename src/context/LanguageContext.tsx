@@ -140,6 +140,12 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
         errorMessage = 'Translation timed out. Please try again.';
       } else if (error.message?.includes('fetch') || error.message?.includes('Network')) {
         errorMessage = 'Network error. Check if backend is running.';
+      } else if (
+        error.message?.includes('429') ||
+        error.message?.toLowerCase?.().includes('insufficient_quota') ||
+        error.message?.toLowerCase?.().includes('quota exceeded')
+      ) {
+        errorMessage = 'AI translation is temporarily unavailable (API quota exceeded). Please update your OpenAI billing/API key and try again.';
       } else if (error.message?.includes('500')) {
         errorMessage = 'Server error. Please try again later.';
       } else if (error.message?.includes('400')) {

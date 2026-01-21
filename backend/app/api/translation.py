@@ -113,6 +113,19 @@ async def translate_chapter(
         raise
     except Exception as e:
         logger.error(f"Translation error for {request.chapter_path}: {e}")
+        msg = str(e)
+        # OpenAI quota / billing issues should surface as a clear 429 to the client,
+        # otherwise the frontend looks like it is "stuck loading".
+        if (
+            "insufficient_quota" in msg
+            or "You exceeded your current quota" in msg
+            or "Error code: 429" in msg
+            or "429" in msg and "quota" in msg.lower()
+        ):
+            raise HTTPException(
+                status_code=429,
+                detail="AI translation is temporarily unavailable (OpenAI quota exceeded). Please update billing / API key and try again.",
+            )
         raise HTTPException(
             status_code=500,
             detail=f"Translation failed: {str(e)}"

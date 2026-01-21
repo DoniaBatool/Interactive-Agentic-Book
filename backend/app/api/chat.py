@@ -69,6 +69,17 @@ async def chat_endpoint(payload: ChatRequest):
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         logger.exception(f"Exception in chat endpoint: {e}")
+        msg = str(e)
+        if (
+            "insufficient_quota" in msg
+            or "You exceeded your current quota" in msg
+            or "Error code: 429" in msg
+            or ("429" in msg and "quota" in msg.lower())
+        ):
+            raise HTTPException(
+                status_code=429,
+                detail="AI chat is temporarily unavailable (OpenAI quota exceeded). Please update billing / API key and try again.",
+            )
         raise HTTPException(status_code=500, detail="Chat service error")
 
 
@@ -138,5 +149,16 @@ async def agent_chat_endpoint(
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         logger.exception(f"Exception in agent chat endpoint: {e}")
+        msg = str(e)
+        if (
+            "insufficient_quota" in msg
+            or "You exceeded your current quota" in msg
+            or "Error code: 429" in msg
+            or ("429" in msg and "quota" in msg.lower())
+        ):
+            raise HTTPException(
+                status_code=429,
+                detail="AI agent chat is temporarily unavailable (OpenAI quota exceeded). Please update billing / API key and try again.",
+            )
         raise HTTPException(status_code=500, detail="Agent chat service error")
 

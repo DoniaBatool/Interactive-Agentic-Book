@@ -339,6 +339,13 @@ export const RagChat: React.FC<RagChatProps> = ({
       if (e.name === 'AbortError') {
         errorMsg =
           'Request timed out. The backend may be waking up (Render cold start) or temporarily slow. Please try again in 10–30 seconds.';
+      } else if (
+        e.message?.includes('429') ||
+        e.message?.toLowerCase?.().includes('insufficient_quota') ||
+        e.message?.toLowerCase?.().includes('quota exceeded')
+      ) {
+        errorMsg =
+          'AI chat is temporarily unavailable (API quota exceeded). Please update your OpenAI billing/API key and try again.';
       } else if (e.name === 'TypeError' && (e.message?.includes('Failed to fetch') || e.message?.includes('ERR_EMPTY_RESPONSE'))) {
         errorMsg = `Cannot connect to backend at ${backendUrl}. Please check:\n1. Backend is running (curl ${backendUrl}/health)\n2. CORS is configured\n3. No firewall blocking the connection\n\nError: ${e.message}`;
       } else if (e.message?.includes('NetworkError') || e.message?.includes('Network request failed')) {
