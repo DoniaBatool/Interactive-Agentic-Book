@@ -94,16 +94,16 @@ export const TranslatableContent: React.FC<TranslatableContentProps> = ({
         }
         
         // Try multiple selectors for different page types (docs pages)
+        // IMPORTANT: Avoid extracting <main> for docs pages because it can include
+        // non-doc UI (e.g., Personalize panel), which would then appear twice after translation.
         const selectors = [
           'article.markdown',
-          'article',
-          '.markdown',
-          'main article',
-          '[role="main"] article',
+          'main article.markdown',
+          '[role="main"] article.markdown',
           '.theme-doc-markdown',
-          'main .markdown',
           '.theme-doc-markdown article',
-          '[itemprop="articleBody"]'
+          '[itemprop="articleBody"]',
+          'article'
         ];
         
         let articleElement: Element | null = null;
@@ -116,7 +116,13 @@ export const TranslatableContent: React.FC<TranslatableContentProps> = ({
         }
         
         if (articleElement) {
-          const content = articleElement.innerHTML;
+          // Safety: strip UI blocks that should never be translated/injected as raw HTML
+          // (prevents duplicates like Personalize panel showing twice).
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = articleElement.innerHTML;
+          tempDiv.querySelectorAll('.personalize-container').forEach((el) => el.remove());
+
+          const content = tempDiv.innerHTML;
           if (content && content.trim().length > 0) {
             setOriginalContent(content);
             console.log(`Content extracted for ${chapterPath}: ${content.length} chars`);
@@ -125,15 +131,7 @@ export const TranslatableContent: React.FC<TranslatableContentProps> = ({
           }
         } else {
           console.warn(`No article element found for ${chapterPath}. Selectors tried:`, selectors);
-          // Try to find any content element as last resort
-          const anyContent = document.querySelector('main, [role="main"]');
-          if (anyContent) {
-            const content = anyContent.innerHTML;
-            if (content && content.trim().length > 0) {
-              setOriginalContent(content);
-              console.log(`Fallback: Content extracted from main element for ${chapterPath}: ${content.length} chars`);
-            }
-          }
+          // Do not fall back to extracting <main> for docs pages (causes duplicated UI after translation).
         }
       };
       

@@ -276,6 +276,16 @@
   align-items: flex-start;
 }
 
+.rtl-mode .rag-chat-message-user,
+[dir="rtl"] .rag-chat-message-user {
+  align-items: flex-start;
+}
+
+.rtl-mode .rag-chat-message-assistant,
+[dir="rtl"] .rag-chat-message-assistant {
+  align-items: flex-end;
+}
+
 .rag-chat-message-content {
   padding: 0.875rem 1.125rem;
   border-radius: 12px;
@@ -294,6 +304,19 @@
   background: var(--rag-message-assistant-bg);
   color: var(--rag-message-assistant-text);
   border-bottom-left-radius: 4px;
+}
+
+/* In RTL, flip bubble "tail" corners so assistant appears on the right */
+.rtl-mode .rag-chat-message-user .rag-chat-message-content,
+[dir="rtl"] .rag-chat-message-user .rag-chat-message-content {
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 4px;
+}
+
+.rtl-mode .rag-chat-message-assistant .rag-chat-message-content,
+[dir="rtl"] .rag-chat-message-assistant .rag-chat-message-content {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 4px;
 }
 
 .rag-chat-citations {

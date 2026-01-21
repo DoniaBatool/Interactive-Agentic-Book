@@ -84,7 +84,9 @@ export const auth = betterAuth({
   secret: process.env.AUTH_SECRET || process.env.BETTER_AUTH_SECRET || "change-this-secret-in-production",
   database: pool,
   // Cookie configuration for OAuth state management
-  advanced: {
+  // NOTE: BetterAuth types have changed across versions. We keep runtime behavior the same
+  // while relaxing TypeScript here to avoid type errors during builds.
+  advanced: ({
     defaultCookieAttributes: {
       sameSite: isProduction ? "none" : "lax", // 'none' for cross-site in production
       secure: isProduction, // HTTPS only in production
@@ -94,12 +96,13 @@ export const auth = betterAuth({
     },
     // Generate secure state for OAuth
     generateId: () => crypto.randomUUID(),
-  },
+  } as any),
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
     requireEmailVerification: true, // Email verification required before sign-in
-    sendResetPassword: async ({ user, url, token }: { user: { email: string; name?: string }; url: string; token: string }) => {
+    sendResetPassword: async (data: any) => {
+      const { user, token } = data ?? {};
       await initializeEmailService();
       
       // Use custom reset URL (frontend route) instead of auth server URL
@@ -158,7 +161,8 @@ export const auth = betterAuth({
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
       return `${frontendUrl}/auth/verify-email?token=${token}`;
     },
-    sendVerificationEmail: async ({ user, url, token }: { user: { email: string; name?: string }; url: string; token: string }) => {
+    sendVerificationEmail: async (data: any) => {
+      const { user, token } = data ?? {};
       await initializeEmailService();
       
       // Use custom verification URL (frontend route) instead of auth server URL
@@ -229,7 +233,8 @@ export const auth = betterAuth({
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
       return `${frontendUrl}/auth/reset-password?token=${token}`;
     },
-    sendResetEmail: async ({ user, url, token }: { user: { email: string; name?: string }; url: string; token: string }) => {
+    sendResetEmail: async (data: any) => {
+      const { user, token } = data ?? {};
       await initializeEmailService();
       
       // Use custom reset URL (frontend route) instead of auth server URL
