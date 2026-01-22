@@ -14,12 +14,11 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/personalize", tags=["personalize"])
 
 settings = get_settings()
-openai_client = OpenAI(api_key=settings.openai_api_key)
 
 
 class PersonalizeRequest(BaseModel):
     """Request to personalize content"""
-    content: str = Field(..., description="Markdown content to personalize")
+    content: str = Field(..., description="HTML content to personalize (already-rendered chapter body)")
     software_level: str = Field(
         default="beginner",
         description="User's software experience level: beginner, intermediate, advanced"
@@ -40,9 +39,26 @@ class PersonalizeRequest(BaseModel):
 
 class PersonalizeResponse(BaseModel):
     """Response with personalized content"""
-    content: str = Field(..., description="Personalized markdown content")
+    content: str = Field(..., description="Personalized HTML content")
     level_summary: str = Field(..., description="Summary of personalization applied")
     success: bool = True
+
+
+def _strip_code_fences(text: str) -> str:
+    """
+    Models sometimes wrap output in ``` or ```html fences.
+    Since the frontend injects HTML directly, strip those fences.
+    """
+    t = (text or "").strip()
+    if not t.startswith("```"):
+        return t
+
+    lines = t.splitlines()
+    if lines and lines[0].lstrip().startswith("```"):
+        lines = lines[1:]
+    if lines and lines[-1].strip() == "```":
+        lines = lines[:-1]
+    return "\n".join(lines).strip()
 
 
 def get_personalization_prompt(
@@ -76,7 +92,10 @@ def get_personalization_prompt(
     
     return f"""You are an expert educational content personalizer for a Physical AI & Humanoid Robotics textbook.
 
-Your task is to adapt the provided content to match the reader's skill level while preserving all technical accuracy and key concepts.
+Your task is to adapt the provided HTML content to match the reader's skill level while preserving all technical accuracy and key concepts.
+
+You will receive the CURRENTLY RENDERED chapter body as an HTML fragment.
+Return an HTML fragment back. Do NOT return Markdown and do NOT wrap your output in triple backticks.
 
 READER PROFILE:
 - Software Experience: {software_level} ({software_desc})
@@ -112,15 +131,15 @@ For hardware level adjustments:
 - EXTENSIVE: Include advanced hardware configuration, calibration, real-world deployment
 
 IMPORTANT RULES:
-1. Keep the same markdown structure and headings
-2. Preserve all code blocks (adjust complexity inside them)
+1. Keep the same overall structure and headings (as HTML)
+2. Preserve all code blocks (adjust complexity inside them, but keep them as code blocks)
 3. Don't remove any critical technical information
 4. Add helpful annotations and explanations as needed
 5. If content references unknown technologies, add brief explanations
 6. Maintain a friendly, encouraging tone
 7. Keep the personalized content roughly the same length (+/- 30%)
 
-Output the personalized markdown content directly, no explanations needed."""
+Output ONLY the personalized HTML content, no explanations needed."""
 
 
 @router.post("/content", response_model=PersonalizeResponse)
@@ -128,7 +147,7 @@ async def personalize_content(request: PersonalizeRequest) -> PersonalizeRespons
     """
     Personalize chapter content based on user's skill level.
     
-    This endpoint takes markdown content and adapts it to match the user's
+    This endpoint takes HTML content and adapts it to match the user's
     software and hardware experience levels.
     """
     try:
@@ -158,8 +177,12 @@ async def personalize_content(request: PersonalizeRequest) -> PersonalizeRespons
             f"hw={request.hardware_level}, chapter={request.chapter_title}"
         )
         
+        if not settings.openai_api_key:
+            raise HTTPException(status_code=500, detail="OPENAI_API_KEY is not set")
+
         # Call OpenAI to personalize
-        response = openai_client.chat.completions.create(
+        client = OpenAI(api_key=settings.openai_api_key)
+        response = client.chat.completions.create(
             model=settings.chat_model,
             messages=[
                 {"role": "system", "content": system_prompt},
@@ -169,7 +192,7 @@ async def personalize_content(request: PersonalizeRequest) -> PersonalizeRespons
             max_tokens=4000,
         )
         
-        personalized_content = response.choices[0].message.content
+        personalized_content = _strip_code_fences(response.choices[0].message.content or "")
         
         # Generate level summary
         level_summary = f"Content adapted for {request.software_level} software level"

@@ -71,11 +71,16 @@ def get_settings() -> Settings:
     # Set allowed_origins as a regular attribute (not a pydantic field)
     # to avoid parsing issues with ALLOWED_ORIGINS in .env
     # Use object.__setattr__ to bypass pydantic's field validation
-    # Allow both localhost:3000 and 127.0.0.1:3000 for development
+    # Allow both localhost and 127.0.0.1 for development.
+    # Note: In this repo, dev servers commonly run:
+    # - Docusaurus frontend on 3001 (because auth often uses 3000)
+    # - Docusaurus sometimes on 3000 as well (default)
     # Remove trailing slashes to match browser requests
     origins = [
         str(AnyHttpUrl("http://localhost:3000")).rstrip('/'),
         str(AnyHttpUrl("http://127.0.0.1:3000")).rstrip('/'),
+        str(AnyHttpUrl("http://localhost:3001")).rstrip('/'),
+        str(AnyHttpUrl("http://127.0.0.1:3001")).rstrip('/'),
     ]
     
     # Add production URL from environment variable if set

@@ -15,6 +15,32 @@ const getBackendUrl = (): string => {
   return BACKEND_URL;
 };
 
+/**
+ * Find the actual doc content element to replace.
+ *
+ * Important: Personalize UI is rendered inside the doc page layout, so replacing
+ * the whole <article> will delete the UI (including the Restore button).
+ * We only replace the markdown body container.
+ */
+const findDocContentElement = (): HTMLElement | null => {
+  if (typeof document === 'undefined') return null;
+
+  const article =
+    (document.querySelector('main article') as HTMLElement | null) ??
+    (document.querySelector('article') as HTMLElement | null);
+  if (!article) return null;
+
+  // Docusaurus typically renders the doc body here
+  const themeMarkdown =
+    (article.querySelector('.theme-doc-markdown.markdown') as HTMLElement | null) ??
+    (article.querySelector('[itemprop="articleBody"]') as HTMLElement | null);
+  if (themeMarkdown) return themeMarkdown;
+
+  // Fallback (less specific)
+  const markdown = article.querySelector('.markdown') as HTMLElement | null;
+  return markdown;
+};
+
 export const PersonalizeContent: React.FC<PersonalizeContentProps> = ({ chapterTitle }) => {
   const { user } = useAuth();
   const [isPersonalizing, setIsPersonalizing] = useState(false);
@@ -60,24 +86,24 @@ export const PersonalizeContent: React.FC<PersonalizeContentProps> = ({ chapterT
       return;
     }
 
-    // Get the article content
-    const articleElement = document.querySelector('article.markdown, .markdown, main article');
-    if (!articleElement) {
+    // Get the doc content (markdown body) to replace
+    const contentElement = findDocContentElement();
+    if (!contentElement) {
       setError('Could not find chapter content to personalize');
       return;
     }
 
     // Save original content for restore
     if (!originalContent) {
-      setOriginalContent(articleElement.innerHTML);
+      setOriginalContent(contentElement.innerHTML);
     }
 
     setIsPersonalizing(true);
     setError(null);
 
     try {
-      // Get the text content (simplified - in production you'd want to preserve markdown)
-      const content = articleElement.innerHTML;
+      // We send HTML (what's rendered on the page) and expect HTML back
+      const content = contentElement.innerHTML;
 
       const response = await fetch(`${backendUrl}/personalize/content`, {
         method: 'POST',
@@ -98,8 +124,8 @@ export const PersonalizeContent: React.FC<PersonalizeContentProps> = ({ chapterT
 
       const data = await response.json();
       
-      // Replace article content with personalized version
-      articleElement.innerHTML = data.content;
+      // Replace chapter content with personalized version
+      contentElement.innerHTML = data.content;
       setIsPersonalized(true);
 
     } catch (err: any) {
@@ -113,9 +139,9 @@ export const PersonalizeContent: React.FC<PersonalizeContentProps> = ({ chapterT
   const restoreOriginal = useCallback(() => {
     if (!originalContent) return;
 
-    const articleElement = document.querySelector('article.markdown, .markdown, main article');
-    if (articleElement) {
-      articleElement.innerHTML = originalContent;
+    const contentElement = findDocContentElement();
+    if (contentElement) {
+      contentElement.innerHTML = originalContent;
       setIsPersonalized(false);
     }
   }, [originalContent]);
